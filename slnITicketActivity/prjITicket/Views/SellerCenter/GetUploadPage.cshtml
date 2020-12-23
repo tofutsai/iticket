@@ -1,0 +1,599 @@
+﻿@{
+    ViewBag.Title = "上傳活動";
+    Layout = "~/Views/Shared/_BackSellerLayout.cshtml";
+}
+<style>
+    body {
+        background-color: #F0F0F0;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="h1 card-header border-0 text-center col-md-10">
+            <strong>上傳活動</strong>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-10 text-center">
+            <!---->
+            <div class="card my-4 shadow">
+                <h3 class="card-header bg-primary text-white">活動基本資料</h3>
+                <div class="card-body">
+                    <div class="form-row text-left mt-3">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="txtActivityName">活動名稱</label>
+                            <input type="text" class="form-control" maxlength="15" id="txtActivityName" placeholder="(15個字以內)">
+                            <div id="activityNameTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selCity">城市</label>
+                            <select id="selCity" class="form-control">
+                                <!--動態塞入城市-->
+                            </select>
+                            <div id="districtTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selDistrict">區</label>
+                            <select id="selDistrict" class="form-control">
+                                <option value="-1">請選擇</option>
+                                <!--根據城市動態塞入區-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtAddress">地址</label>
+                            <input type="text" class="form-control" id="txtAddress" placeholder="xxx路xxx號">
+                            <div id="addressTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold">iframe地圖</label>
+                            <textarea id="txtMap" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-4 shadow">
+                <h3 class="card-header bg-success text-white">活動描述資料</h3>
+                <div class="card-body">
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selCategory">大分類</label>
+                            <select id="selCategory" class="form-control">
+                                <!--動態塞入大分類-->
+                            </select>
+                            <div id="subcategoryTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selSubCategory">小分類</label>
+                            <select id="selSubcategory" class="form-control">
+                                <option value="-1">請選擇</option>
+                                <!--根據大分類動態塞入小分類-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtHostwords">短描述</label>
+                            <textarea id="txtHostwords" maxlength="80" placeholder="(顯示在活動列表卡片內的內容,80字以內)" class="form-control"></textarea>
+                            <div id="hostwordsTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtDescription">長描述</label>
+                            <textarea id="txtDescription" placeholder="(顯示在詳細資料頁的長描述)" class="form-control"></textarea>
+                            <div id="descriptionTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-4 shadow">
+                <h3 class="card-header bg-secondary text-white">活動票規格資料輸入</h3>
+                <div class="card-body">
+                    <div class="form-row text-left mt-3">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold">票類別</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="5" placeholder="(5字以內)">
+                                </div>
+                                <div class="col-md-9">
+                                    <button id="btnAddTicketCategory" class="btn btn-success">添加</button>
+                                </div>
+                            </div>
+                            <div id="ticketCategoryTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                            <div id="ticketCategories" style="height:66px;border-bottom:1px solid black" class="mt-2 d-flex">
+                                <!--這裡的東西動態添加-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--輸入票的場次時間-->
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold">票場次時間</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="datetime-local" class="form-control">
+                                </div>
+                                <div class="col-md-8">
+                                    <button id="addTicketTimes" class="btn btn-success">添加</button>
+                                </div>
+                            </div>
+                            <div id="timeTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                        <table id="times" class="table table-sm table-dark col-md-5">
+                            <tr>
+                                <th class="text-center">日期</th>
+                                <th class="text-center">時間</th>
+                                <th></th>
+                            </tr>
+                            <tr id="noTime">
+                                <td class="text-center" colspan="3">尚未輸入時間</td>
+                            </tr>
+                            <!--這裡動態添加場次時間-->
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--html編輯器-->
+            <div id="divInformation" class="form-row text-left">
+                <div class="form-group col-md-12">
+                    <label class="font-weight-bold" style="font-size:20px">上傳活動詳細資料</label>
+                    <div style="width:100%">
+                        <div id="editor">
+                            <p>這裡輸入活動詳細資料</p>
+                        </div>
+                    </div>
+                    <div id="informationTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                </div>
+            </div>
+            <!--/.html編輯器-->
+            <div class="form-row text-left mt-3">
+                <div class="form-group col-md-12">
+                    <label class="font-weight-bold" style="font-size:20px">上傳活動標題圖片</label>
+                    <label class="btn btn-info">
+                        <input id="upload_img" style="display:none;" type="file" accept="image/*"><i class="fa fa-photo"></i> 上傳圖片
+                    </label>
+                    <div id="oldImg" style="display:none;"></div>
+                    <div id="newImg" style="background-image:url('/images/Activity/DefaultImg/700x400.png');margin-right:auto;margin-left:auto;border:1px solid black;width:700px;height:400px"></div>
+                    <div id="pictureTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                </div>
+            </div>
+            <div class="mt-3 d-flex justify-content-center">
+                <button type="button" id="btnSubmit" class="btn btn-primary">上傳產品</button>
+            </div>
+            <!---->
+        </div>
+    </div>
+</div>
+<script>
+    //讀取大類資料到下拉框
+    loadDataToSelCategory();
+    //大類有變化就動態變更小類下拉框的內容
+    $("#selCategory").change(function () {
+        loadDataToSelSubcategoryByCategoryId(this.value);
+    });
+    //把大類資訊塞入下拉框的函數
+    function loadDataToSelCategory() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCategory")",
+            success: function (result) {
+                $("#selCategory").html("<option style='display:none' value='-1'>請選擇</option>");
+                let categories = JSON.parse(result);
+                for (let category of categories) {
+                    let opt = $("<option></option>");
+                    opt.html(category.CategoryName);
+                    opt.val(category.CategoryID);
+                    $("#selCategory").append(opt);
+                }
+            }
+        });
+    }
+    //根據大類讀取小類資訊的函數
+    function loadDataToSelSubcategoryByCategoryId(categoryId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getSubcategoriesByCategoryId")",
+            data: { categoryId: categoryId },
+            success: function (result) {
+                $("#selSubcategory").html("<option style='display:none' value='-1'>請選擇</option>");
+                let subcategories = JSON.parse(result);
+                for (let subcategory of subcategories) {
+                    let opt = $("<option></option>");
+                    opt.html(subcategory.SubCategoryName);
+                    opt.val(subcategory.SubCategoryId);
+                    $("#selSubcategory").append(opt);
+                }
+            }
+        });
+    }
+    //讀取城市資料到下拉框
+    loadDataToSelCity();
+    //城市有變化就動態變更區下拉框的內容
+    $("#selCity").change(function () {
+        loadDataToSelDistrictByCityId(this.value);
+    });
+    //把城市資訊塞入下拉框
+    function loadDataToSelCity() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCity")",
+            success: function (result) {
+                $("#selCity").html("<option style='display:none' value='-1'>請選擇</option>");
+                let cities = JSON.parse(result);
+                for (let city of cities) {
+                    let opt = $("<option></option>");
+                    opt.html(city.CityName);
+                    opt.val(city.CityID);
+                    $("#selCity").append(opt);
+                }
+            }
+        });
+    }
+    //根據城市讀取區資訊的函數
+    function loadDataToSelDistrictByCityId(cityId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getDistrictsByCityId")",
+            data: { cityId: cityId },
+            success: function (result) {
+                $("#selDistrict").html("<option style='display:none' value='-1'>請選擇</option>");
+                let districts = JSON.parse(result);
+                for (let district of districts) {
+                    let opt = $("<option></option>");
+                    opt.html(district.DistrictName);
+                    opt.val(district.DistrictId);
+                    $("#selDistrict").append(opt);
+                }
+            }
+        });
+    }
+    //按下添加票類別要發生的事件
+    $("#btnAddTicketCategory").click(function () {
+        //清空錯誤資訊
+        $(this).closest(".row").next().html("");
+        //抓到輸入的票類名字的值
+        let ticketCategoryInput = $(this).closest("div").siblings().eq(0).children().val();
+        if (ticketCategoryInput == "") {
+            $(this).closest(".row").next().html("不准輸入空值");
+            return;
+        }
+        let $ticketCategories = $("#ticketCategories").find("span:not([aria-hidden])");
+        if ($ticketCategories.length >= 4) {
+            $(this).closest(".row").next().html("票種不能超過4種");
+            return;
+        }
+        let isSameName = false;
+        $ticketCategories.each(function (i, e) {
+            let tcName = $(e).html();
+            if (ticketCategoryInput == tcName) {
+                isSameName = true;
+                return;
+            }
+        });
+        if (isSameName) {
+            $(this).closest(".row").next().html("不准輸入一樣的票種名字");
+            return;
+        }
+        let showStr = '<div class="alert mr-1 alert-info alert-dismissible fade show" role="alert">'+
+                      `<span>${ticketCategoryInput}</span>`+
+                      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                      '<span aria-hidden="true">&times;</span>'+
+                      '</button>'+
+                      '</div >';
+        $("#ticketCategories").append(showStr);
+    });
+    //按添加票場次時間發生的事件
+    $("#addTicketTimes").click(function () {
+        //清空錯誤資訊,並儲存參考
+        let tipMsg = $(this).closest(".row").next().html("");
+        //抓到輸入的時間
+        let timeInput = $(this).closest("div").siblings().eq(0).children().val();
+        if (timeInput == "") {
+            tipMsg.html("必須輸入時間");
+            return;
+        }
+        //比對現在時間,如果輸入的時間早於今天,就不准輸入
+        let timeNow = new Date();
+        if ((new Date(timeInput)) <= timeNow) {
+            tipMsg.html("時間不能比現在早");
+            return;
+        }
+        //抓到下面表格中除了表頭的所有行
+        let times = $("#times").find("tr:not(:first-child)");
+        //如果輸入的時間在這當中已經存在,就不准輸入
+        let isSameTime = false;
+        times.each(function (i, e) {
+            if ($(e).data("value") == timeInput) {
+                tipMsg.html("這個場次已經存在");
+                isSameTime = true;
+                return;
+            }
+        });
+        if (isSameTime) return;
+        //驗證過關,就把場次塞入下方表格
+        $("#noTime").remove();
+        let newTr = `<tr data-value="${timeInput}">` +
+            `<td class="align-middle text-center">${timeInput.substring(0,timeInput.indexOf("T"))}</td>` +
+            `<td class="align-middle text-center">${timeInput.substring(timeInput.indexOf("T")+1)}</td>` +
+            '<td class="align-middle text-center">' +
+            '<input type="button" class="btn btn-danger" value="刪除"/>' +
+            '</td>' +
+            '</tr>';
+        $("#times").append($(newTr));
+    });
+    //為場次表格中的動態產生的tr綁定刪除按鈕的事件
+    $("#times").on("click", "input", function () {
+        $(this).parents("tr").remove();
+        if ($("#times tbody").children().length < 2) {
+            let strNoTime = '<tr id="noTime">' +
+                '<td class="text-center" colspan="3">尚未輸入時間</td>' +
+                '</tr>';
+            $("#times").append(strNoTime);
+        }
+    });
+    //輸入活動名稱時驗證db裡面是否有一樣名字的活動
+    let isActivityNameAvailible = false;
+    $("#txtActivityName").on("input", function () {
+        isActivityNameAvailible = false;
+        let activityName = this.value;
+        let tipMsg = $(this).next();
+        if (activityName == "") {
+            tipMsg.html("不能是空值").css({ color: "red" });
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("CheckActivityName")",
+            data: { activityName: activityName },
+            success: function (result) {
+                if (result == "OK") {
+                    tipMsg.html("活動名稱可以使用").css({ color: "green" });
+                    isActivityNameAvailible = true;
+                }
+                else {
+                    tipMsg.html("活動名稱已經被使用過").css({ color: "red" });
+                }
+            }
+        })
+    });
+    //按上傳產品要發生的事件
+    $("#btnSubmit").click(function () {
+        //抓出所有基本資料
+        let avtivityName = $("#txtActivityName").val();
+        let districtId = $("#selDistrict").val();
+        let address = $("#txtAddress").val();
+        let map = $("#txtMap").val();
+        let subcategoryId = $("#selSubcategory").val();
+        let hostwords = $("#txtHostwords").val();
+        let description = $("#txtDescription").val();
+        //抓出用戶輸入的所有票種類名並塞入陣列
+        let $ticketCategories = $("#ticketCategories").find("span:not([aria-hidden])");
+        let ticketCategories = [];
+        $ticketCategories.each(function (i, e) {
+            ticketCategories.push($(e).html());
+        });
+        //抓出用戶輸入的場次時間塞入陣列
+        let $times = $("#times").find("tr:not(:first-child,#noTime)");
+        let times = [];
+        $times.each(function (i, e) {
+            times.push($(e).data("value"));
+        });
+        //抓出html編輯器的資料
+        let information = editor.getData();
+        //抓出裁減好的圖片的base64字串
+        let pictureBase64 = $("#newImg>img").attr("src");
+        //前端資料驗證,只要有1項不過關,flag就會變成false
+        let scrollPosition = $("body").height() - $(window).height();
+        let checkDataOK = true;
+        if (!isActivityNameAvailible) {
+            scrollPosition = ($("#activityNameTip").offset().top - 150) < scrollPosition ? ($("#activityNameTip").offset().top - 150) : scrollPosition;
+            if (!avtivityName)
+                $("#activityNameTip").html("必須輸入活動名字");
+            checkDataOK = false;
+        }
+        if (districtId == -1) {
+            scrollPosition = ($("#districtTip").offset().top - 150) < scrollPosition ? ($("#districtTip").offset().top - 150) : scrollPosition;
+            $("#districtTip").html("必須選擇");
+            checkDataOK = false;
+        }
+        if (!address) {
+            scrollPosition = ($("#addressTip").offset().top - 150) < scrollPosition ? ($("#addressTip").offset().top - 150) : scrollPosition;
+            $("#addressTip").html("必須輸入地址");
+            checkDataOK = false;
+        }
+        if (subcategoryId == -1) {
+            scrollPosition = ($("#subcategoryTip").offset().top - 150) < scrollPosition ? ($("#subcategoryTip").offset().top - 150) : scrollPosition;
+            $("#subcategoryTip").html("必須選擇");
+            checkDataOK = false;
+        }
+        if (!hostwords) {
+            scrollPosition = ($("#hostwordsTip").offset().top - 200) < scrollPosition ? ($("#hostwordsTip").offset().top - 200) : scrollPosition;
+            $("#hostwordsTip").html("不可是空值");
+            checkDataOK = false;
+        }
+        if (!description) {
+            scrollPosition = ($("#descriptionTip").offset().top - 200) < scrollPosition ? ($("#descriptionTip").offset().top - 200) : scrollPosition;
+            $("#descriptionTip").html("不可是空值");
+            checkDataOK = false;
+        }
+        if (!ticketCategories.length) {
+            scrollPosition = ($("#ticketCategoryTip").offset().top - 150) < scrollPosition ? ($("#ticketCategoryTip").offset().top - 150) : scrollPosition;
+            $("#ticketCategoryTip").html("必須要有票種類");
+            checkDataOK = false;
+        }
+        if (!times.length) {
+            scrollPosition = ($("#timeTip").offset().top - 150) < scrollPosition ? ($("#timeTip").offset().top - 150) : scrollPosition;
+            $("#timeTip").html("必須要有場次時間");
+            checkDataOK = false;
+        }
+        if (!information) {
+            scrollPosition = ($("#informationTip").offset().top - 150) < scrollPosition ? ($("#informationTip").offset().top - 150) : scrollPosition;
+            $("#informationTip").html("不能是空值");
+            checkDataOK = false;
+        }
+        if (!pictureBase64) {
+            $("#pictureTip").html("必須上傳圖片");
+            checkDataOK = false;
+        }
+        if (!checkDataOK) {
+            $("html,body").animate({ scrollTop: scrollPosition + "px" }, 150);
+            return;
+        }
+        //驗證通過,就開始Ajax傳送資料
+        let activityData = {
+            activityName: avtivityName,
+            districtId: districtId,
+            address: address,
+            map: map,
+            subcategoryId: subcategoryId,
+            hostwords: hostwords,
+            description: description,
+            ticketCategories: ticketCategories,
+            times: times,
+            information: information,
+            picture: pictureBase64
+        }
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("AddActivity")",
+            data: activityData,
+            success: function (result) {
+                //todo測試
+                if (result == "loginOverTime") {
+                    alert("登陸已超時,重新登錄");
+                    location.href = "@Url.Action("Login","Login")";
+                }
+                else if (result == "sameActivityName") {
+                    alert("活動名稱已經被使用過");
+                    $("#activityNameTip").html("活動名稱已經被使用過");
+                }
+                else if (result == "error") {
+                    alert("後台出現錯誤,上傳失敗");
+                }
+                else {
+                    alert("上傳活動成功,等待審核");
+                    location.href = `/Activity/AddPriceAndUnitsInStock/?activityId=${result}`;
+                }
+            }
+        });
+    });
+    //每個輸入框有輸入就清空提示消息
+    $("#selCity,#selDistrict").change(function () {
+        $("#districtTip").html("");
+    });
+    $("#selCategory,#selSubcategory").change(function () {
+        $("#subcategoryTip").html("");
+    });
+    $("#txtAddress,#txtHostwords,#txtDescription").on("input", function () {
+        $(this).parent().find(".invalid-feedback").html("");
+    })
+    $("#divInformation").keydown(function () {
+        $("#informationTip").html("");
+    });
+    ////////////////////////////////////////////////////////////
+    //html編輯器的代碼
+    let editor;
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(neweditor => {
+            //把編輯器的參考存起來
+            editor = neweditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        //獲得html編輯器的內容用:editor.getData()
+    //圖片裁減器的代碼
+    (function ($) {
+        var width_crop = 700, // 圖片裁切寬度 px 值
+            height_crop = 400, // 圖片裁切高度 px 值
+            type_crop = "square", // 裁切形狀: square 為方形, circle 為圓形
+            width_preview = 800, // 預覽區塊寬度 px 值
+            height_preview = 500, // 預覽區塊高度 px 值
+            compress_ratio = 0.85, // 圖片壓縮比例 0~1
+            type_img = "jpg", // 圖檔格式 jpeg png webp
+            oldImg = new Image(),
+            myCrop, file, oldImgDataUrl;
+
+        // 裁切初始參數設定
+        myCrop = $("#oldImg").croppie({
+            viewport: { // 裁切區塊
+                width: width_crop,
+                height: height_crop,
+                type: type_crop
+            },
+            boundary: { // 預覽區塊
+                width: width_preview,
+                height: height_preview
+            }
+        });
+
+        function readFile(input) {
+            if (input.files && input.files[0]) {
+                file = input.files[0];
+            } else {
+                return;
+            }
+
+            if (file.type.indexOf("image") == 0) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    oldImgDataUrl = e.target.result;
+                    oldImg.src = oldImgDataUrl; // 載入 oldImg 取得圖片資訊
+                    myCrop.croppie("bind", {
+                        url: oldImgDataUrl
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("您上傳的不是圖檔！");
+            }
+        }
+
+        function displayCropImg(src) {
+            var html = "<img src='" + src + "' />";
+            $("#newImg").html(html);
+        }
+
+        $("#upload_img").on("change", function () {
+            if (this.files[0] == null) return;
+            readFile(this);  //把圖片塞入編輯框
+            initWindowPosition(); //彈出對話方塊供編輯
+        });
+        function initWindowPosition() {
+            $("#oldImg").dialog({
+                modal: true,
+                //設定對話方塊有一個按鈕叫做裁剪圖片
+                buttons: {
+                    "裁剪圖片": function () {
+                        //裁減圖片就清空提示訊息
+                        $("#pictureTip").html("");
+                        myCrop.croppie("result", {
+                            type: "base64",
+                            quality: compress_ratio
+                        }).then(function (src) {
+                            //src的結果會是base64字串,"data:image/png;base64,......"
+                            //可直接當url給img標籤,也可供上傳伺服器供儲存成檔案
+                            displayCropImg(src); //show出新裁剪好的圖片
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                width: 1000,
+                close: function () {
+                    let uploadimg = document.getElementById("upload_img");
+                    //對話方塊關閉時,把input[type="file"]標籤的內容清空
+                    //否則下次選擇相同圖片時不會觸法onchange事件然後出bug壞掉
+                    uploadimg.value = "";
+                }
+            });
+        }
+    })(jQuery);
+</script>

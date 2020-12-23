@@ -1,0 +1,235 @@
+﻿@using prjITicket.Models;
+@using prjITicket.ViewModel;
+@model VMTicketGroupsList
+@{
+    ViewBag.Title = "套票一覽";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/Activity/MultiRange/nouislider.min.css" rel="stylesheet" />
+<script src="~/Content/Activity/MultiRange/nouislider.min.js"></script>
+<style>
+    #min, #max {
+        width: 70px;
+    }
+</style>
+<script>
+    let condition = {mode:"all"};
+    $(function () {
+        //MultiRange的激活程式碼
+        html5Slider = document.getElementById('slider');
+        noUiSlider.create(html5Slider, {
+            start: [0, @Model.maxPriceOfAll],
+            connect: true,
+            range: {
+                'min': 0,
+                'max':@Model.maxPriceOfAll
+            }
+        });
+        //保持價格篩選跟input框的值同步
+        var inputMin = document.getElementById('min');
+        var inputMax = document.getElementById('max');
+        html5Slider.noUiSlider.on('update', function (values, handle) {
+            var value = values[handle];
+            if (handle) {
+                inputMax.value = Math.round(value);
+            } else {
+                inputMin.value = Math.round(value);
+            }
+        });
+        //獲得全部套票頁面的方法
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("GetTicketGroupsPages", new { page=1})",
+            success: function (data) {
+                console.log(data);
+                $("#showTicketGroupsPages").html(data);
+            }
+        });
+        //獲得關鍵字搜尋到的套票頁面的方法
+        $("#btnSearch").click(function () {
+            let keyword = $("#txtKeyword").val();
+            let orderMode = $(":radio:checked").val();
+
+            let priceFilter = $("#priceFilter").prop("checked") ? 1 : 0;
+            let values = html5Slider.noUiSlider.get();
+            let minPrice = Math.round(values[0]);
+            let maxPrice = Math.round(values[1]);
+            if (keyword.length != 0) {               
+                condition = { keyword: keyword, mode: "keyword", priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice };
+
+                $.ajax({
+                    type: "get",
+                    url: "@Url.Action("GetTicketGroupsPagesByKeyword")",
+                    data: { keyword: keyword, orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                    success: function (result) {
+                        $("#showTicketGroupsPages").html(result);
+                    }
+                });
+            }
+            else {
+                condition = { mode: "all", priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice };
+
+                $.ajax({
+                    type: "get",
+                    url: "@Url.Action("GetTicketGroupsPages")",
+                    data: { orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                    success: function (data) {                        
+                        $("#showTicketGroupsPages").html(data);
+                    }
+                });
+            }
+        });
+        //價格排序器有變化就執行以下
+        $(":radio").change(function () {
+            let orderMode = this.value;
+
+            let priceFilter = $("#priceFilter").prop("checked") ? 1 : 0;
+            let values = html5Slider.noUiSlider.get();
+            let minPrice = Math.round(values[0]);
+            let maxPrice = Math.round(values[1]);  
+
+            switch (condition.mode) {
+                case "all":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPages")",
+                        data: { orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (data) {
+                            console.log(data);
+                            $("#showTicketGroupsPages").html(data);
+                        }
+                    });
+                    break;
+                case "keyword":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPagesByKeyword")",
+                        data: { keyword: condition.keyword, orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (result) {
+                            $("#showTicketGroupsPages").html(result);
+                        }
+                    });
+                    break;
+            }
+        });
+        //價格篩選條有變化就執行以下
+        html5Slider.noUiSlider.on("set", function (values) {
+            let orderMode = $(":radio:checked").val();
+            let priceFilter = $("#priceFilter").prop("checked") ? 1 : 0;
+            if (!priceFilter) return;
+            let minPrice = Math.round(values[0]);
+            let maxPrice = Math.round(values[1]);
+            switch (condition.mode) {
+                case "all":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPages")",
+                        data: { orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (data) {
+                            console.log(data);
+                            $("#showTicketGroupsPages").html(data);
+                        }
+                    });
+                    break;
+                case "keyword":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPagesByKeyword")",
+                        data: { keyword: condition.keyword, orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (result) {
+                            $("#showTicketGroupsPages").html(result);
+                        }
+                    });
+                    break;
+            }
+        });
+        //價格篩選條旁的checkbox有變化就執行以下
+        $("#priceFilter").change(function () {
+            let orderMode = $(":radio:checked").val();
+            let priceFilter = $("#priceFilter").prop("checked") ? 1 : 0;
+            let values = html5Slider.noUiSlider.get();
+            let minPrice = Math.round(values[0]);
+            let maxPrice = Math.round(values[1]);
+            switch (condition.mode) {
+                case "all":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPages")",
+                        data: { orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (data) {
+                            console.log(data);
+                            $("#showTicketGroupsPages").html(data);
+                        }
+                    });
+                    break;
+                case "keyword":
+                    $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetTicketGroupsPagesByKeyword")",
+                        data: { keyword: condition.keyword, orderMode: orderMode, priceFilter: priceFilter, minPrice: minPrice, maxPrice: maxPrice },
+                        success: function (result) {
+                            $("#showTicketGroupsPages").html(result);
+                        }
+                    });
+                    break;
+            }
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-lg-3">
+        <!-- Search Widget -->
+        <div class="card my-4">
+            <h5 class="card-header">搜索</h5>
+            <div class="card-body">
+                <div class="input-group">
+                    <input id="txtKeyword" type="text" class="form-control" placeholder="搜尋關鍵字">
+                    <span class="input-group-append">
+                        <button id="btnSearch" class="btn btn-secondary" type="button">Go!</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <!--順序,價格篩選器-->
+        <div class="row mt-1">
+            <div class="col-md-3 ml-3">
+                <div id="btnGroupOrderMode" class="btn-group btn-group-toggle btn-group-sm m1-1 my-3" data-toggle="buttons">
+                    @*<label class="btn btn-outline-info">
+                            <input value="scoredown" type="radio" name="options" id="" autocomplete="off">評價<i class='fas fa-angle-double-down' style="font-size:18px"></i>
+                        </label>
+                        <label class="btn-outline-secondary">
+                            <input value="scoreup" type="radio" name="options" id="" autocomplete="off">評價<i class='fas fa-angle-double-up' style="font-size:18px"></i>
+                        </label>*@
+                    <label class="btn btn btn-outline-info">
+                        <input value="pricedown" checked type="radio" name="options" id="" autocomplete="off">價格<i class='fas fa-angle-double-down' style="font-size:18px"></i>
+                    </label>
+                    <label class="btn btn btn-outline-info">
+                        <input value="priceup" type="radio" name="options" id="" autocomplete="off">價格<i class='fas fa-angle-double-up' style="font-size:18px"></i>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-7 my-auto">
+                <div class="row align-items-center">
+                    <div class="col-sm-auto">
+                        <div style="width:200px;display:inline-block" id="slider"></div>
+                        <input style="margin-left:20px" disabled type="text" id="min" />至
+                        <input type="text" id="max" disabled />
+                        <input id="priceFilter" type="checkbox" checked/>價格篩選
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card border-0 mt-4" style="width: 100%;">
+            <div class="card-body">
+                <h2 class="card-text text-center">套票資訊</h2>
+                <div class="row" id="showTicketGroupsPages">
+                    <!--顯示套票-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a34156b50bd7467f9036b43d9e24dede" Name="Diagram1">
+        <EntityTypeShape EntityType="TicketSysModel.Activity" Width="1.5" PointX="5.25" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.ActivityStatus" Width="1.5" PointX="3" PointY="18" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Article" Width="1.5" PointX="13.5" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Article_Emotion" Width="1.5" PointX="15.75" PointY="18.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Article_Report" Width="1.5" PointX="18.75" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.ArticleCategories" Width="1.5" PointX="11.25" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.BanLIst" Width="1.5" PointX="10.5" PointY="22.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Categories" Width="1.5" PointX="0.75" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Cities" Width="1.5" PointX="0.75" PointY="21.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Comment" Width="1.5" PointX="10.5" PointY="18.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Districts" Width="1.5" PointX="3" PointY="21.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.EmotionAction" Width="1.5" PointX="13.5" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Member" Width="1.5" PointX="8.25" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.MemberRole" Width="1.5" PointX="6" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Order_Detail" Width="1.5" PointX="15.75" PointY="21.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Orders" Width="1.5" PointX="13.5" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Reply" Width="1.5" PointX="18.75" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Reply_Emotion" Width="1.5" PointX="21" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Reply_Report" Width="1.5" PointX="24" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Report" Width="1.5" PointX="16.5" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Seller" Width="1.5" PointX="10.5" PointY="29.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.ShoppingCart" Width="1.5" PointX="18" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.ShortMessage" Width="1.5" PointX="10.5" PointY="32.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.SubCategories" Width="1.5" PointX="3" PointY="25.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Subscribes" Width="1.5" PointX="15.75" PointY="25.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.TicketCategory" Width="1.5" PointX="7.5" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.TicketGroupDetail" Width="1.5" PointX="10.5" PointY="25.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.TicketGroups" Width="1.5" PointX="8.25" PointY="33.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.TicketQRCodes" Width="1.5" PointX="18" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.Tickets" Width="1.5" PointX="12.75" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketSysModel.TicketTimes" Width="1.5" PointX="7.5" PointY="30.625" IsExpanded="true" />
+        <AssociationConnector Association="TicketSysModel.FK_Activity_ActivityStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Activity_Districts" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Activity_Seller" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Activity_SubCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Comment_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_TicketCategory_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_TicketGroupDetail_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Tickets_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_TicketTimes_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Article_ArticleCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Article_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Article_Report_Article_Report" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Emotion_Article" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Article" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Emotion_EmotionAction" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Emotion_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Article_Report_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Article_Report_Report" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_BanLIst_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_BanLIst_Member1" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_SubCategories_Categories" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Districts_Districts" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Comment_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Member_Districts" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Orders_Districts" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Emotion_EmotionAction" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Member_MemberRole" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Orders_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Emotion_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Report_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Seller_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_ShoppingCart_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_ShortMessage_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Subscribes_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Order_Detail_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Order_Detail_Tickets1" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_TicketQRCodes_Order_Detail" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Emotion_Reply" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Report_Reply" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Reply_Report_Report" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Subscribes_Seller" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_ShoppingCart_Tickets" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Tickets_TicketCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_TicketGroupDetail_TicketGroups" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketSysModel.FK_Tickets_TicketTimes" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TicketSysModel.ActivityFavourite" Width="1.5" PointX="15.5" PointY="28.5" />
+        <AssociationConnector Association="TicketSysModel.FK_ActivityFavourite_Activity" />
+        <AssociationConnector Association="TicketSysModel.FK_ActivityFavourite_Member" />
+        <EntityTypeShape EntityType="TicketSysModel.ActivityFailedReason" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TicketSysModel.Ad_Article_Activity" Width="1.5" PointX="20.75" PointY="16.5" />
+        <AssociationConnector Association="TicketSysModel.FK_Ad_Article_Activity_Activity" />
+        <AssociationConnector Association="TicketSysModel.FK_Ad_Article_Activity_Article" />
+        <EntityTypeShape EntityType="TicketSysModel.CommentReport" Width="1.5" PointX="15.75" PointY="15.25" />
+        <AssociationConnector Association="TicketSysModel.FK_CommentReport_Comment" />
+        <AssociationConnector Association="TicketSysModel.FK_CommentReport_Member" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "首頁";
+}
+<!-- Heading Row -->
+<div class="row align-items-center my-5">
+    <div class="col-lg-7">
+        <img class="img-fluid rounded mb-4 mb-lg-0" src="@Url.Content("~/images/Home/Title.png")" alt="">
+    </div>
+    <!-- /.col-lg-8 -->
+    <div class="col-lg-5">
+        <h1 class="font-weight-light">ITicket購票網站</h1>
+        <p>
+            不論是觀光景點、文藝表演、餐廳住宿，各式商家都可能發行票券吸引消費者前來消費，然而缺乏整合資訊平台，使消費者在茫茫資訊中難以找到令人滿意的優惠價格以及套票。
+            透過整合套票發售方式，就近連結商家服務，豐富休閒品質，也可經由與好友互動，加深人際交流。
+            藉由討論版資訊交流，幫助消費者了解前人經驗、發覺新的體驗方式.
+        </p>
+        <a class="btn btn-primary" href="/Login/Register">成為會員</a>
+    </div>
+    <!-- /.col-md-4 -->
+</div>
+<!-- /.row -->
+<!-- Call to Action Well -->
+<div class="card text-white bg-secondary my-5 py-4 text-center">
+    <div class="card-body">
+        <p class="text-white m-0">
+            1.	將各式各樣的票券整合、依照類別、地理位置進行分類
+        </p>
+        <p class="text-white m-0">
+            2.	票券種類多樣化，可在同個平台一次完成食衣住行育樂的票券購買
+            推薦與加購等功能協助消費者找到有興趣的內容，亦可推廣商家的商品
+        </p>
+    </div>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <div class="col-md-4 mb-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title">活動</h2>
+                <p class="card-text">本站提供各種各樣有趣的活動,顧客可根據自己喜好挑選自己喜歡的活動,決定了之後即可直接購票</p>
+            </div>
+            <div class="card-footer">
+                <a href="/Activity/ActivityList" class="btn btn-primary btn-sm">活動一覽</a>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-md-4 -->
+    <div class="col-md-4 mb-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title">討論版</h2>
+                <p class="card-text">可以在這個版塊看到大家參加活動的心得,當不知道要參加什麽活動時可以從這獲得靈感,也可以與大家分享心得</p>
+            </div>
+            <div class="card-footer">
+                <a href="/Forum/forum_homepage" class="btn btn-primary btn-sm">參加討論</a>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-md-4 -->
+    <div class="col-md-4 mb-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title">套票</h2>
+                <p class="card-text">在這個板塊可以瀏覽各種活動組合,以及其優惠價格,多購買套票,可以充實自己的生活,又為自己省錢</p>
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("TicketGroupsList","TicketGroups")" class="btn btn-primary btn-sm">查看套票</a>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-md-4 -->
+
+</div>
+<!-- /.row -->
+<script type="text/javascript" color="255,0,0" opacity='1' zIndex="-10" count="76" src="~/Content/Login/functionJS/dist/canvas-nest.js"></script>

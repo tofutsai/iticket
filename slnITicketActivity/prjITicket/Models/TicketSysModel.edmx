@@ -1,0 +1,2935 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TicketSysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ActivityID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActivityName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SellerID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Picture" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Information" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SubCategoryId" Type="int" Nullable="false" />
+          <Property Name="Hostwords" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Map" Type="varchar(max)" />
+          <Property Name="ActivityStatusID" Type="int" Nullable="false" />
+          <Property Name="DistrictId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ActivityFailedReason">
+          <Key>
+            <PropertyRef Name="ActivityFailedReasonID" />
+          </Key>
+          <Property Name="ActivityFailedReasonID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FailedReason" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ActivityFavourite">
+          <Key>
+            <PropertyRef Name="ActivityFavouriteId" />
+          </Key>
+          <Property Name="ActivityFavouriteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ActivityId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ActivityStatus">
+          <Key>
+            <PropertyRef Name="ActivityStatusID" />
+          </Key>
+          <Property Name="ActivityStatusID" Type="int" Nullable="false" />
+          <Property Name="ActivityStatusName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ad_Article_Activity">
+          <Key>
+            <PropertyRef Name="AdID" />
+          </Key>
+          <Property Name="AdID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArticleID" Type="int" Nullable="false" />
+          <Property Name="ActivityID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Article">
+          <Key>
+            <PropertyRef Name="ArticleID" />
+          </Key>
+          <Property Name="ArticleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArticleTitle" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ArticleContent" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Picture" Type="nvarchar(max)" />
+          <Property Name="ArticleCategoryID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Article_Emotion">
+          <Key>
+            <PropertyRef Name="ArticleEmotionId" />
+          </Key>
+          <Property Name="ArticleEmotionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ArticleId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Article_Report">
+          <Key>
+            <PropertyRef Name="Article_ReportId" />
+          </Key>
+          <Property Name="Article_ReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArticleId" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ReportId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ArticleCategories">
+          <Key>
+            <PropertyRef Name="ArticleCategoryID" />
+          </Key>
+          <Property Name="ArticleCategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArticleCategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BanLIst">
+          <Key>
+            <PropertyRef Name="BanId" />
+          </Key>
+          <Property Name="BanId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BanMemberId" Type="int" Nullable="false" />
+          <Property Name="AdminMemberId" Type="int" Nullable="false" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EndTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cities">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="CommentID" />
+          </Key>
+          <Property Name="CommentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CommentMemberID" Type="int" Nullable="false" />
+          <Property Name="CommentActivityId" Type="int" Nullable="false" />
+          <Property Name="CommentContent" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="CommentScore" Type="int" Nullable="false" />
+          <Property Name="CommentDate" Type="datetime" Nullable="false" />
+          <Property Name="IsBaned" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CommentReport">
+          <Key>
+            <PropertyRef Name="CommentReportId" />
+          </Key>
+          <Property Name="CommentReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CommentId" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ReportReason" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Districts">
+          <Key>
+            <PropertyRef Name="DistrictId" />
+          </Key>
+          <Property Name="DistrictId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DistrictName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PostCode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CityId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmotionAction">
+          <Key>
+            <PropertyRef Name="EmotionActionId" />
+          </Key>
+          <Property Name="EmotionActionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmotionActionName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="MemberID" />
+          </Key>
+          <Property Name="MemberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IDentityNumber" Type="char" MaxLength="10" />
+          <Property Name="Passport" Type="varchar" MaxLength="20" />
+          <Property Name="NickName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BirthDate" Type="datetime" />
+          <Property Name="Phone" Type="char" MaxLength="10" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="Point" Type="int" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" />
+          <Property Name="MemberRoleId" Type="int" Nullable="false" />
+          <Property Name="Icon" Type="nvarchar(max)" />
+          <Property Name="Sex" Type="bit" />
+          <Property Name="DistrictId" Type="int" />
+          <Property Name="RegisterCheckCode" Type="varchar" MaxLength="50" />
+          <Property Name="provider" Type="nvarchar" MaxLength="50" />
+          <Property Name="providerFB" Type="bit" />
+          <Property Name="providerGO" Type="bit" />
+          <Property Name="fRegister_time" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MemberRole">
+          <Key>
+            <PropertyRef Name="MemberRoleId" />
+          </Key>
+          <Property Name="MemberRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberRoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order_Detail">
+          <Key>
+            <PropertyRef Name="OrderDetailID" />
+          </Key>
+          <Property Name="OrderDetailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketId" Type="int" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Discount" Type="numeric" Precision="3" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="OrderDate" Type="datetime" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DistrictId" Type="int" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="OrderStatus" Type="bit" Nullable="false" />
+          <Property Name="OrderGuid" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="PayPoint" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reply">
+          <Key>
+            <PropertyRef Name="ReplyID" />
+          </Key>
+          <Property Name="ReplyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReplyContent" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="ReplyDate" Type="datetime" Nullable="false" />
+          <Property Name="ArticleID" Type="int" Nullable="false" />
+          <Property Name="Readed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reply_Emotion">
+          <Key>
+            <PropertyRef Name="ReplyEmotionId" />
+          </Key>
+          <Property Name="ReplyEmotionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ReplyId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reply_Report">
+          <Key>
+            <PropertyRef Name="Reply_ReportId" />
+          </Key>
+          <Property Name="Reply_ReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReportId" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="ReplyId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReportReason" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Seller">
+          <Key>
+            <PropertyRef Name="SellerID" />
+          </Key>
+          <Property Name="SellerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TaxIDNumber" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="SellerHomePage" Type="nvarchar" MaxLength="50" />
+          <Property Name="SellerPhone" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SellerDeccription" Type="nvarchar(max)" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="fPass" Type="bit" />
+          <Property Name="fFileName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="ShoppingCart">
+          <Key>
+            <PropertyRef Name="ShoppingCartID" />
+          </Key>
+          <Property Name="ShoppingCartID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShortMessage">
+          <Key>
+            <PropertyRef Name="ShortMessageID" />
+          </Key>
+          <Property Name="ShortMessageID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="MessageContent" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SubCategories">
+          <Key>
+            <PropertyRef Name="SubCategoryId" />
+          </Key>
+          <Property Name="SubCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubCategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="SearchedTime" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Subscribes">
+          <Key>
+            <PropertyRef Name="SubcribeID" />
+          </Key>
+          <Property Name="SubcribeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="int" Nullable="false" />
+          <Property Name="SellerID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketCategory">
+          <Key>
+            <PropertyRef Name="TicketCategoryId" />
+          </Key>
+          <Property Name="TicketCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketCategoryName" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="ActivityId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketGroupDetail">
+          <Key>
+            <PropertyRef Name="TicketGroupDetailId" />
+          </Key>
+          <Property Name="TicketGroupDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketGroupId" Type="int" Nullable="false" />
+          <Property Name="ActivityId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketGroups">
+          <Key>
+            <PropertyRef Name="TicketGroupId" />
+          </Key>
+          <Property Name="TicketGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketGroupName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TicketGroupDiscount" Type="numeric" Precision="3" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketQRCodes">
+          <Key>
+            <PropertyRef Name="QRCodeId" />
+          </Key>
+          <Property Name="QRCodeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QRCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OrderDetailId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tickets">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketCategoryId" Type="int" Nullable="false" />
+          <Property Name="Price" Type="int" Nullable="false" />
+          <Property Name="UnitsInStock" Type="int" Nullable="false" />
+          <Property Name="ActivityID" Type="int" Nullable="false" />
+          <Property Name="TicketTimeId" Type="int" Nullable="false" />
+          <Property Name="Discount" Type="numeric" Precision="3" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketTimes">
+          <Key>
+            <PropertyRef Name="TicketTimeId" />
+          </Key>
+          <Property Name="TicketTimeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketTime" Type="datetime" Nullable="false" />
+          <Property Name="ActivityId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Activity_ActivityStatus">
+          <End Role="ActivityStatus" Type="Self.ActivityStatus" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ActivityStatus">
+              <PropertyRef Name="ActivityStatusID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="ActivityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Seller">
+          <End Role="Seller" Type="Self.Seller" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Seller">
+              <PropertyRef Name="SellerID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_SubCategories">
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubCategories">
+              <PropertyRef Name="SubCategoryId" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="SubCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityFavourite_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="ActivityFavourite" Type="Self.ActivityFavourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ActivityFavourite">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityFavourite_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="ActivityFavourite" Type="Self.ActivityFavourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ActivityFavourite">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ad_Article_Activity_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Ad_Article_Activity" Type="Self.Ad_Article_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Ad_Article_Activity">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ad_Article_Activity_Article">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Ad_Article_Activity" Type="Self.Ad_Article_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Ad_Article_Activity">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_ArticleCategories">
+          <End Role="ArticleCategories" Type="Self.ArticleCategories" Multiplicity="1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ArticleCategories">
+              <PropertyRef Name="ArticleCategoryID" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="ArticleCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Article_Report">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Report">
+          <End Role="Report" Type="Self.Report" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Report">
+              <PropertyRef Name="ReportId" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="ReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BanLIst_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="BanLIst" Type="Self.BanLIst" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="BanLIst">
+              <PropertyRef Name="BanMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BanLIst_Member1">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="BanLIst" Type="Self.BanLIst" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="BanLIst">
+              <PropertyRef Name="AdminMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comment_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="CommentActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comment_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="CommentMemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CommentReport_Comment">
+          <End Role="Comment" Type="Self.Comment" Multiplicity="1" />
+          <End Role="CommentReport" Type="Self.CommentReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comment">
+              <PropertyRef Name="CommentID" />
+            </Principal>
+            <Dependent Role="CommentReport">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CommentReport_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="CommentReport" Type="Self.CommentReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="CommentReport">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Districts_Districts">
+          <End Role="Cities" Type="Self.Cities" Multiplicity="1" />
+          <End Role="Districts" Type="Self.Districts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cities">
+              <PropertyRef Name="CityID" />
+            </Principal>
+            <Dependent Role="Districts">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_Article">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_EmotionAction">
+          <End Role="EmotionAction" Type="Self.EmotionAction" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmotionAction">
+              <PropertyRef Name="EmotionActionId" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Member_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="0..1" />
+          <End Role="Member" Type="Self.Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Member_MemberRole">
+          <End Role="MemberRole" Type="Self.MemberRole" Multiplicity="1" />
+          <End Role="Member" Type="Self.Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberRole">
+              <PropertyRef Name="MemberRoleId" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="MemberRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_Tickets1">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="TicketId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Article">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Reply" Type="Self.Reply" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Reply">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_EmotionAction">
+          <End Role="EmotionAction" Type="Self.EmotionAction" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmotionAction">
+              <PropertyRef Name="EmotionActionId" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_Reply">
+          <End Role="Reply" Type="Self.Reply" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reply">
+              <PropertyRef Name="ReplyID" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="ReplyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply" Type="Self.Reply" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Reply">
+          <End Role="Reply" Type="Self.Reply" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reply">
+              <PropertyRef Name="ReplyID" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="ReplyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Report">
+          <End Role="Report" Type="Self.Report" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Report">
+              <PropertyRef Name="ReportId" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="ReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Seller_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Seller" Type="Self.Seller" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Seller">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShoppingCart_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ShoppingCart">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShoppingCart_Tickets">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="ShoppingCart">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShortMessage_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="ShortMessage" Type="Self.ShortMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ShortMessage">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SubCategories_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="SubCategories">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subscribes_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Subscribes" Type="Self.Subscribes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Subscribes">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subscribes_Seller">
+          <End Role="Seller" Type="Self.Seller" Multiplicity="1" />
+          <End Role="Subscribes" Type="Self.Subscribes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Seller">
+              <PropertyRef Name="SellerID" />
+            </Principal>
+            <Dependent Role="Subscribes">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketCategory_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketCategory" Type="Self.TicketCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketCategory">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketGroupDetail_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketGroupDetail" Type="Self.TicketGroupDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketGroupDetail">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketGroupDetail_TicketGroups">
+          <End Role="TicketGroups" Type="Self.TicketGroups" Multiplicity="1" />
+          <End Role="TicketGroupDetail" Type="Self.TicketGroupDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketGroups">
+              <PropertyRef Name="TicketGroupId" />
+            </Principal>
+            <Dependent Role="TicketGroupDetail">
+              <PropertyRef Name="TicketGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketQRCodes_Order_Detail">
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="1" />
+          <End Role="TicketQRCodes" Type="Self.TicketQRCodes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order_Detail">
+              <PropertyRef Name="OrderDetailID" />
+            </Principal>
+            <Dependent Role="TicketQRCodes">
+              <PropertyRef Name="OrderDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketCategory">
+          <End Role="TicketCategory" Type="Self.TicketCategory" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketCategory">
+              <PropertyRef Name="TicketCategoryId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketTimes">
+          <End Role="TicketTimes" Type="Self.TicketTimes" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketTimes">
+              <PropertyRef Name="TicketTimeId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketTimeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketTimes_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketTimes" Type="Self.TicketTimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketTimes">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketSysModelStoreContainer">
+          <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActivityFailedReason" EntityType="Self.ActivityFailedReason" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActivityFavourite" EntityType="Self.ActivityFavourite" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActivityStatus" EntityType="Self.ActivityStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ad_Article_Activity" EntityType="Self.Ad_Article_Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Article_Emotion" EntityType="Self.Article_Emotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Article_Report" EntityType="Self.Article_Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ArticleCategories" EntityType="Self.ArticleCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BanLIst" EntityType="Self.BanLIst" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CommentReport" EntityType="Self.CommentReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Districts" EntityType="Self.Districts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmotionAction" EntityType="Self.EmotionAction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MemberRole" EntityType="Self.MemberRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order_Detail" EntityType="Self.Order_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reply" EntityType="Self.Reply" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reply_Emotion" EntityType="Self.Reply_Emotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reply_Report" EntityType="Self.Reply_Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Seller" EntityType="Self.Seller" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShoppingCart" EntityType="Self.ShoppingCart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShortMessage" EntityType="Self.ShortMessage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubCategories" EntityType="Self.SubCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subscribes" EntityType="Self.Subscribes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketCategory" EntityType="Self.TicketCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketGroupDetail" EntityType="Self.TicketGroupDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketGroups" EntityType="Self.TicketGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketQRCodes" EntityType="Self.TicketQRCodes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tickets" EntityType="Self.Tickets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketTimes" EntityType="Self.TicketTimes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Activity_ActivityStatus" Association="Self.FK_Activity_ActivityStatus">
+            <End Role="ActivityStatus" EntitySet="ActivityStatus" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Districts" Association="Self.FK_Activity_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Seller" Association="Self.FK_Activity_Seller">
+            <End Role="Seller" EntitySet="Seller" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_SubCategories" Association="Self.FK_Activity_SubCategories">
+            <End Role="SubCategories" EntitySet="SubCategories" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityFavourite_Activity" Association="Self.FK_ActivityFavourite_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ActivityFavourite" EntitySet="ActivityFavourite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityFavourite_Member" Association="Self.FK_ActivityFavourite_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ActivityFavourite" EntitySet="ActivityFavourite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ad_Article_Activity_Activity" Association="Self.FK_Ad_Article_Activity_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Ad_Article_Activity" EntitySet="Ad_Article_Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ad_Article_Activity_Article" Association="Self.FK_Ad_Article_Activity_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Ad_Article_Activity" EntitySet="Ad_Article_Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_ArticleCategories" Association="Self.FK_Article_ArticleCategories">
+            <End Role="ArticleCategories" EntitySet="ArticleCategories" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Member" Association="Self.FK_Article_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Article_Report" Association="Self.FK_Article_Report_Article_Report">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Member" Association="Self.FK_Article_Report_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Report" Association="Self.FK_Article_Report_Report">
+            <End Role="Report" EntitySet="Report" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BanLIst_Member" Association="Self.FK_BanLIst_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="BanLIst" EntitySet="BanLIst" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BanLIst_Member1" Association="Self.FK_BanLIst_Member1">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="BanLIst" EntitySet="BanLIst" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_Activity" Association="Self.FK_Comment_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_Member" Association="Self.FK_Comment_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CommentReport_Comment" Association="Self.FK_CommentReport_Comment">
+            <End Role="Comment" EntitySet="Comment" />
+            <End Role="CommentReport" EntitySet="CommentReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CommentReport_Member" Association="Self.FK_CommentReport_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="CommentReport" EntitySet="CommentReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Districts_Districts" Association="Self.FK_Districts_Districts">
+            <End Role="Cities" EntitySet="Cities" />
+            <End Role="Districts" EntitySet="Districts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_Article" Association="Self.FK_Emotion_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_EmotionAction" Association="Self.FK_Emotion_EmotionAction">
+            <End Role="EmotionAction" EntitySet="EmotionAction" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_Member" Association="Self.FK_Emotion_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_Districts" Association="Self.FK_Member_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_MemberRole" Association="Self.FK_Member_MemberRole">
+            <End Role="MemberRole" EntitySet="MemberRole" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_Orders" Association="Self.FK_Order_Detail_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_Tickets1" Association="Self.FK_Order_Detail_Tickets1">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Districts" Association="Self.FK_Orders_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Member" Association="Self.FK_Orders_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Article" Association="Self.FK_Reply_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Reply" EntitySet="Reply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_EmotionAction" Association="Self.FK_Reply_Emotion_EmotionAction">
+            <End Role="EmotionAction" EntitySet="EmotionAction" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_Member" Association="Self.FK_Reply_Emotion_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_Reply" Association="Self.FK_Reply_Emotion_Reply">
+            <End Role="Reply" EntitySet="Reply" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Member" Association="Self.FK_Reply_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply" EntitySet="Reply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Member" Association="Self.FK_Reply_Report_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Reply" Association="Self.FK_Reply_Report_Reply">
+            <End Role="Reply" EntitySet="Reply" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Report" Association="Self.FK_Reply_Report_Report">
+            <End Role="Report" EntitySet="Report" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Seller_Member" Association="Self.FK_Seller_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Seller" EntitySet="Seller" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShoppingCart_Member" Association="Self.FK_ShoppingCart_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShoppingCart_Tickets" Association="Self.FK_ShoppingCart_Tickets">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShortMessage_Member" Association="Self.FK_ShortMessage_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ShortMessage" EntitySet="ShortMessage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SubCategories_Categories" Association="Self.FK_SubCategories_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="SubCategories" EntitySet="SubCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribes_Member" Association="Self.FK_Subscribes_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Subscribes" EntitySet="Subscribes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribes_Seller" Association="Self.FK_Subscribes_Seller">
+            <End Role="Seller" EntitySet="Seller" />
+            <End Role="Subscribes" EntitySet="Subscribes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketCategory_Activity" Association="Self.FK_TicketCategory_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketCategory" EntitySet="TicketCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketGroupDetail_Activity" Association="Self.FK_TicketGroupDetail_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketGroupDetail" EntitySet="TicketGroupDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketGroupDetail_TicketGroups" Association="Self.FK_TicketGroupDetail_TicketGroups">
+            <End Role="TicketGroups" EntitySet="TicketGroups" />
+            <End Role="TicketGroupDetail" EntitySet="TicketGroupDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketQRCodes_Order_Detail" Association="Self.FK_TicketQRCodes_Order_Detail">
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+            <End Role="TicketQRCodes" EntitySet="TicketQRCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_Activity" Association="Self.FK_Tickets_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketCategory" Association="Self.FK_Tickets_TicketCategory">
+            <End Role="TicketCategory" EntitySet="TicketCategory" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketTimes" Association="Self.FK_Tickets_TicketTimes">
+            <End Role="TicketTimes" EntitySet="TicketTimes" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketTimes_Activity" Association="Self.FK_TicketTimes_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketTimes" EntitySet="TicketTimes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TicketSysModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ActivityID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActivityName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SellerID" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Picture" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Information" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SubCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Hostwords" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Map" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ActivityStatus" Relationship="Self.FK_Activity_ActivityStatus" FromRole="Activity" ToRole="ActivityStatus" />
+          <NavigationProperty Name="Districts" Relationship="Self.FK_Activity_Districts" FromRole="Activity" ToRole="Districts" />
+          <NavigationProperty Name="Seller" Relationship="Self.FK_Activity_Seller" FromRole="Activity" ToRole="Seller" />
+          <NavigationProperty Name="SubCategories" Relationship="Self.FK_Activity_SubCategories" FromRole="Activity" ToRole="SubCategories" />
+          <NavigationProperty Name="Comment" Relationship="Self.FK_Comment_Activity" FromRole="Activity" ToRole="Comment" />
+          <NavigationProperty Name="TicketCategory" Relationship="Self.FK_TicketCategory_Activity" FromRole="Activity" ToRole="TicketCategory" />
+          <NavigationProperty Name="TicketGroupDetail" Relationship="Self.FK_TicketGroupDetail_Activity" FromRole="Activity" ToRole="TicketGroupDetail" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Activity" FromRole="Activity" ToRole="Tickets" />
+          <NavigationProperty Name="TicketTimes" Relationship="Self.FK_TicketTimes_Activity" FromRole="Activity" ToRole="TicketTimes" />
+          <NavigationProperty Name="ActivityFavourite" Relationship="TicketSysModel.FK_ActivityFavourite_Activity" FromRole="Activity" ToRole="ActivityFavourite" />
+          <NavigationProperty Name="Ad_Article_Activity" Relationship="TicketSysModel.FK_Ad_Article_Activity_Activity" FromRole="Activity" ToRole="Ad_Article_Activity" />
+        </EntityType>
+        <EntityType Name="ActivityStatus">
+          <Key>
+            <PropertyRef Name="ActivityStatusID" />
+          </Key>
+          <Property Name="ActivityStatusID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Activity_ActivityStatus" FromRole="ActivityStatus" ToRole="Activity" />
+        </EntityType>
+        <EntityType Name="Article">
+          <Key>
+            <PropertyRef Name="ArticleID" />
+          </Key>
+          <Property Name="ArticleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArticleTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ArticleContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ArticleCategoryID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ArticleCategories" Relationship="Self.FK_Article_ArticleCategories" FromRole="Article" ToRole="ArticleCategories" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Article_Member" FromRole="Article" ToRole="Member" />
+          <NavigationProperty Name="Article_Report" Relationship="Self.FK_Article_Report_Article_Report" FromRole="Article" ToRole="Article_Report" />
+          <NavigationProperty Name="Article_Emotion" Relationship="Self.FK_Emotion_Article" FromRole="Article" ToRole="Article_Emotion" />
+          <NavigationProperty Name="Reply" Relationship="Self.FK_Reply_Article" FromRole="Article" ToRole="Reply" />
+          <NavigationProperty Name="Ad_Article_Activity" Relationship="TicketSysModel.FK_Ad_Article_Activity_Article" FromRole="Article" ToRole="Ad_Article_Activity" />
+        </EntityType>
+        <EntityType Name="Article_Emotion">
+          <Key>
+            <PropertyRef Name="ArticleEmotionId" />
+          </Key>
+          <Property Name="ArticleEmotionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ArticleId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Article" Relationship="Self.FK_Emotion_Article" FromRole="Article_Emotion" ToRole="Article" />
+          <NavigationProperty Name="EmotionAction" Relationship="Self.FK_Emotion_EmotionAction" FromRole="Article_Emotion" ToRole="EmotionAction" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Emotion_Member" FromRole="Article_Emotion" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Article_Report">
+          <Key>
+            <PropertyRef Name="Article_ReportId" />
+          </Key>
+          <Property Name="Article_ReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArticleId" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ReportId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Article" Relationship="Self.FK_Article_Report_Article_Report" FromRole="Article_Report" ToRole="Article" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Article_Report_Member" FromRole="Article_Report" ToRole="Member" />
+          <NavigationProperty Name="Report" Relationship="Self.FK_Article_Report_Report" FromRole="Article_Report" ToRole="Report" />
+        </EntityType>
+        <EntityType Name="ArticleCategories">
+          <Key>
+            <PropertyRef Name="ArticleCategoryID" />
+          </Key>
+          <Property Name="ArticleCategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArticleCategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Article" Relationship="Self.FK_Article_ArticleCategories" FromRole="ArticleCategories" ToRole="Article" />
+        </EntityType>
+        <EntityType Name="BanLIst">
+          <Key>
+            <PropertyRef Name="BanId" />
+          </Key>
+          <Property Name="BanId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BanMemberId" Type="Int32" Nullable="false" />
+          <Property Name="AdminMemberId" Type="Int32" Nullable="false" />
+          <Property Name="Reason" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_BanLIst_Member" FromRole="BanLIst" ToRole="Member" />
+          <NavigationProperty Name="Member1" Relationship="Self.FK_BanLIst_Member1" FromRole="BanLIst" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="SubCategories" Relationship="Self.FK_SubCategories_Categories" FromRole="Categories" ToRole="SubCategories" />
+        </EntityType>
+        <EntityType Name="Cities">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CityName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Districts" Relationship="Self.FK_Districts_Districts" FromRole="Cities" ToRole="Districts" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="CommentID" />
+          </Key>
+          <Property Name="CommentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommentMemberID" Type="Int32" Nullable="false" />
+          <Property Name="CommentActivityId" Type="Int32" Nullable="false" />
+          <Property Name="CommentContent" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CommentScore" Type="Int32" Nullable="false" />
+          <Property Name="CommentDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Comment_Activity" FromRole="Comment" ToRole="Activity" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Comment_Member" FromRole="Comment" ToRole="Member" />
+          <Property Name="IsBaned" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CommentReport" Relationship="TicketSysModel.FK_CommentReport_Comment" FromRole="Comment" ToRole="CommentReport" />
+        </EntityType>
+        <EntityType Name="Districts">
+          <Key>
+            <PropertyRef Name="DistrictId" />
+          </Key>
+          <Property Name="DistrictId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DistrictName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PostCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Activity_Districts" FromRole="Districts" ToRole="Activity" />
+          <NavigationProperty Name="Cities" Relationship="Self.FK_Districts_Districts" FromRole="Districts" ToRole="Cities" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Member_Districts" FromRole="Districts" ToRole="Member" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Districts" FromRole="Districts" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="EmotionAction">
+          <Key>
+            <PropertyRef Name="EmotionActionId" />
+          </Key>
+          <Property Name="EmotionActionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmotionActionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Article_Emotion" Relationship="Self.FK_Emotion_EmotionAction" FromRole="EmotionAction" ToRole="Article_Emotion" />
+          <NavigationProperty Name="Reply_Emotion" Relationship="Self.FK_Reply_Emotion_EmotionAction" FromRole="EmotionAction" ToRole="Reply_Emotion" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="MemberID" />
+          </Key>
+          <Property Name="MemberID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IDentityNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Passport" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NickName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BirthDate" Type="DateTime" Precision="3" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Point" Type="Int32" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MemberRoleId" Type="Int32" Nullable="false" />
+          <Property Name="Icon" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sex" Type="Boolean" />
+          <Property Name="DistrictId" Type="Int32" />
+          <Property Name="RegisterCheckCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="provider" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="providerFB" Type="Boolean" />
+          <Property Name="providerGO" Type="Boolean" />
+          <NavigationProperty Name="Article" Relationship="Self.FK_Article_Member" FromRole="Member" ToRole="Article" />
+          <NavigationProperty Name="Article_Emotion" Relationship="Self.FK_Emotion_Member" FromRole="Member" ToRole="Article_Emotion" />
+          <NavigationProperty Name="Article_Report" Relationship="Self.FK_Article_Report_Member" FromRole="Member" ToRole="Article_Report" />
+          <NavigationProperty Name="BanLIst" Relationship="Self.FK_BanLIst_Member" FromRole="Member" ToRole="BanLIst" />
+          <NavigationProperty Name="BanLIst1" Relationship="Self.FK_BanLIst_Member1" FromRole="Member" ToRole="BanLIst" />
+          <NavigationProperty Name="Comment" Relationship="Self.FK_Comment_Member" FromRole="Member" ToRole="Comment" />
+          <NavigationProperty Name="Districts" Relationship="Self.FK_Member_Districts" FromRole="Member" ToRole="Districts" />
+          <NavigationProperty Name="MemberRole" Relationship="Self.FK_Member_MemberRole" FromRole="Member" ToRole="MemberRole" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Member" FromRole="Member" ToRole="Orders" />
+          <NavigationProperty Name="Reply_Emotion" Relationship="Self.FK_Reply_Emotion_Member" FromRole="Member" ToRole="Reply_Emotion" />
+          <NavigationProperty Name="Reply" Relationship="Self.FK_Reply_Member" FromRole="Member" ToRole="Reply" />
+          <NavigationProperty Name="Reply_Report" Relationship="Self.FK_Reply_Report_Member" FromRole="Member" ToRole="Reply_Report" />
+          <NavigationProperty Name="Seller" Relationship="Self.FK_Seller_Member" FromRole="Member" ToRole="Seller" />
+          <NavigationProperty Name="ShoppingCart" Relationship="Self.FK_ShoppingCart_Member" FromRole="Member" ToRole="ShoppingCart" />
+          <NavigationProperty Name="ShortMessage" Relationship="Self.FK_ShortMessage_Member" FromRole="Member" ToRole="ShortMessage" />
+          <NavigationProperty Name="Subscribes" Relationship="Self.FK_Subscribes_Member" FromRole="Member" ToRole="Subscribes" />
+          <NavigationProperty Name="ActivityFavourite" Relationship="TicketSysModel.FK_ActivityFavourite_Member" FromRole="Member" ToRole="ActivityFavourite" />
+          <NavigationProperty Name="CommentReport" Relationship="TicketSysModel.FK_CommentReport_Member" FromRole="Member" ToRole="CommentReport" />
+          <Property Name="fRegister_time" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MemberRole">
+          <Key>
+            <PropertyRef Name="MemberRoleId" />
+          </Key>
+          <Property Name="MemberRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberRoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Member_MemberRole" FromRole="MemberRole" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Order_Detail">
+          <Key>
+            <PropertyRef Name="OrderDetailID" />
+          </Key>
+          <Property Name="OrderDetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketId" Type="Int32" Nullable="false" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" Precision="3" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Order_Detail_Orders" FromRole="Order_Detail" ToRole="Orders" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Order_Detail_Tickets1" FromRole="Order_Detail" ToRole="Tickets" />
+          <NavigationProperty Name="TicketQRCodes" Relationship="Self.FK_TicketQRCodes_Order_Detail" FromRole="Order_Detail" ToRole="TicketQRCodes" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OrderStatus" Type="Boolean" Nullable="false" />
+          <Property Name="OrderGuid" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Districts" Relationship="Self.FK_Orders_Districts" FromRole="Orders" ToRole="Districts" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Orders_Member" FromRole="Orders" ToRole="Member" />
+          <NavigationProperty Name="Order_Detail" Relationship="Self.FK_Order_Detail_Orders" FromRole="Orders" ToRole="Order_Detail" />
+          <Property Name="PayPoint" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reply">
+          <Key>
+            <PropertyRef Name="ReplyID" />
+          </Key>
+          <Property Name="ReplyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReplyContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="ReplyDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ArticleID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Article" Relationship="Self.FK_Reply_Article" FromRole="Reply" ToRole="Article" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Reply_Member" FromRole="Reply" ToRole="Member" />
+          <NavigationProperty Name="Reply_Emotion" Relationship="Self.FK_Reply_Emotion_Reply" FromRole="Reply" ToRole="Reply_Emotion" />
+          <NavigationProperty Name="Reply_Report" Relationship="Self.FK_Reply_Report_Reply" FromRole="Reply" ToRole="Reply_Report" />
+          <Property Name="Readed" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reply_Emotion">
+          <Key>
+            <PropertyRef Name="ReplyEmotionId" />
+          </Key>
+          <Property Name="ReplyEmotionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ReplyId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EmotionAction" Relationship="Self.FK_Reply_Emotion_EmotionAction" FromRole="Reply_Emotion" ToRole="EmotionAction" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Reply_Emotion_Member" FromRole="Reply_Emotion" ToRole="Member" />
+          <NavigationProperty Name="Reply" Relationship="Self.FK_Reply_Emotion_Reply" FromRole="Reply_Emotion" ToRole="Reply" />
+        </EntityType>
+        <EntityType Name="Reply_Report">
+          <Key>
+            <PropertyRef Name="Reply_ReportId" />
+          </Key>
+          <Property Name="Reply_ReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReportId" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ReplyId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Reply_Report_Member" FromRole="Reply_Report" ToRole="Member" />
+          <NavigationProperty Name="Reply" Relationship="Self.FK_Reply_Report_Reply" FromRole="Reply_Report" ToRole="Reply" />
+          <NavigationProperty Name="Report" Relationship="Self.FK_Reply_Report_Report" FromRole="Reply_Report" ToRole="Report" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="Int32" Nullable="false" />
+          <Property Name="ReportReason" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Article_Report" Relationship="Self.FK_Article_Report_Report" FromRole="Report" ToRole="Article_Report" />
+          <NavigationProperty Name="Reply_Report" Relationship="Self.FK_Reply_Report_Report" FromRole="Report" ToRole="Reply_Report" />
+        </EntityType>
+        <EntityType Name="Seller">
+          <Key>
+            <PropertyRef Name="SellerID" />
+          </Key>
+          <Property Name="SellerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TaxIDNumber" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="SellerHomePage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SellerPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SellerDeccription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Activity_Seller" FromRole="Seller" ToRole="Activity" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Seller_Member" FromRole="Seller" ToRole="Member" />
+          <NavigationProperty Name="Subscribes" Relationship="Self.FK_Subscribes_Seller" FromRole="Seller" ToRole="Subscribes" />
+          <Property Name="fPass" Type="Boolean" />
+          <Property Name="fFileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ShoppingCart">
+          <Key>
+            <PropertyRef Name="ShoppingCartID" />
+          </Key>
+          <Property Name="ShoppingCartID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_ShoppingCart_Member" FromRole="ShoppingCart" ToRole="Member" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_ShoppingCart_Tickets" FromRole="ShoppingCart" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="ShortMessage">
+          <Key>
+            <PropertyRef Name="ShortMessageID" />
+          </Key>
+          <Property Name="ShortMessageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="MessageContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_ShortMessage_Member" FromRole="ShortMessage" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="SubCategories">
+          <Key>
+            <PropertyRef Name="SubCategoryId" />
+          </Key>
+          <Property Name="SubCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubCategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="SearchedTime" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Activity_SubCategories" FromRole="SubCategories" ToRole="Activity" />
+          <NavigationProperty Name="Categories" Relationship="Self.FK_SubCategories_Categories" FromRole="SubCategories" ToRole="Categories" />
+        </EntityType>
+        <EntityType Name="Subscribes">
+          <Key>
+            <PropertyRef Name="SubcribeID" />
+          </Key>
+          <Property Name="SubcribeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" Nullable="false" />
+          <Property Name="SellerID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Member" Relationship="Self.FK_Subscribes_Member" FromRole="Subscribes" ToRole="Member" />
+          <NavigationProperty Name="Seller" Relationship="Self.FK_Subscribes_Seller" FromRole="Subscribes" ToRole="Seller" />
+        </EntityType>
+        <EntityType Name="TicketCategory">
+          <Key>
+            <PropertyRef Name="TicketCategoryId" />
+          </Key>
+          <Property Name="TicketCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketCategoryName" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActivityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_TicketCategory_Activity" FromRole="TicketCategory" ToRole="Activity" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_TicketCategory" FromRole="TicketCategory" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="TicketGroupDetail">
+          <Key>
+            <PropertyRef Name="TicketGroupDetailId" />
+          </Key>
+          <Property Name="TicketGroupDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketGroupId" Type="Int32" Nullable="false" />
+          <Property Name="ActivityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_TicketGroupDetail_Activity" FromRole="TicketGroupDetail" ToRole="Activity" />
+          <NavigationProperty Name="TicketGroups" Relationship="Self.FK_TicketGroupDetail_TicketGroups" FromRole="TicketGroupDetail" ToRole="TicketGroups" />
+        </EntityType>
+        <EntityType Name="TicketGroups">
+          <Key>
+            <PropertyRef Name="TicketGroupId" />
+          </Key>
+          <Property Name="TicketGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketGroupName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TicketGroupDiscount" Type="Decimal" Precision="3" Scale="2" Nullable="false" />
+          <NavigationProperty Name="TicketGroupDetail" Relationship="Self.FK_TicketGroupDetail_TicketGroups" FromRole="TicketGroups" ToRole="TicketGroupDetail" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketQRCodes">
+          <Key>
+            <PropertyRef Name="QRCodeId" />
+          </Key>
+          <Property Name="QRCodeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QRCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OrderDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order_Detail" Relationship="Self.FK_TicketQRCodes_Order_Detail" FromRole="TicketQRCodes" ToRole="Order_Detail" />
+        </EntityType>
+        <EntityType Name="Tickets">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="UnitsInStock" Type="Int32" Nullable="false" />
+          <Property Name="ActivityID" Type="Int32" Nullable="false" />
+          <Property Name="TicketTimeId" Type="Int32" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" Precision="3" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Tickets_Activity" FromRole="Tickets" ToRole="Activity" />
+          <NavigationProperty Name="Order_Detail" Relationship="Self.FK_Order_Detail_Tickets1" FromRole="Tickets" ToRole="Order_Detail" />
+          <NavigationProperty Name="ShoppingCart" Relationship="Self.FK_ShoppingCart_Tickets" FromRole="Tickets" ToRole="ShoppingCart" />
+          <NavigationProperty Name="TicketCategory" Relationship="Self.FK_Tickets_TicketCategory" FromRole="Tickets" ToRole="TicketCategory" />
+          <NavigationProperty Name="TicketTimes" Relationship="Self.FK_Tickets_TicketTimes" FromRole="Tickets" ToRole="TicketTimes" />
+        </EntityType>
+        <EntityType Name="TicketTimes">
+          <Key>
+            <PropertyRef Name="TicketTimeId" />
+          </Key>
+          <Property Name="TicketTimeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ActivityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_TicketTimes_Activity" FromRole="TicketTimes" ToRole="Activity" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_TicketTimes" FromRole="TicketTimes" ToRole="Tickets" />
+        </EntityType>
+        <Association Name="FK_Activity_ActivityStatus">
+          <End Role="ActivityStatus" Type="Self.ActivityStatus" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ActivityStatus">
+              <PropertyRef Name="ActivityStatusID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="ActivityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Seller">
+          <End Role="Seller" Type="Self.Seller" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Seller">
+              <PropertyRef Name="SellerID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_SubCategories">
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubCategories">
+              <PropertyRef Name="SubCategoryId" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="SubCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comment_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="CommentActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketCategory_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketCategory" Type="Self.TicketCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketCategory">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketGroupDetail_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketGroupDetail" Type="Self.TicketGroupDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketGroupDetail">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketTimes_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="TicketTimes" Type="Self.TicketTimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="TicketTimes">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_ArticleCategories">
+          <End Role="ArticleCategories" Type="Self.ArticleCategories" Multiplicity="1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ArticleCategories">
+              <PropertyRef Name="ArticleCategoryID" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="ArticleCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Article_Report">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_Article">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Article">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="Reply" Type="Self.Reply" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Reply">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_EmotionAction">
+          <End Role="EmotionAction" Type="Self.EmotionAction" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmotionAction">
+              <PropertyRef Name="EmotionActionId" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Emotion_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article_Emotion" Type="Self.Article_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article_Emotion">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Article_Report_Report">
+          <End Role="Report" Type="Self.Report" Multiplicity="1" />
+          <End Role="Article_Report" Type="Self.Article_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Report">
+              <PropertyRef Name="ReportId" />
+            </Principal>
+            <Dependent Role="Article_Report">
+              <PropertyRef Name="ReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BanLIst_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="BanLIst" Type="Self.BanLIst" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="BanLIst">
+              <PropertyRef Name="BanMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BanLIst_Member1">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="BanLIst" Type="Self.BanLIst" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="BanLIst">
+              <PropertyRef Name="AdminMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SubCategories_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="SubCategories" Type="Self.SubCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="SubCategories">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Districts_Districts">
+          <End Role="Cities" Type="Self.Cities" Multiplicity="1" />
+          <End Role="Districts" Type="Self.Districts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cities">
+              <PropertyRef Name="CityID" />
+            </Principal>
+            <Dependent Role="Districts">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comment_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="CommentMemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Member_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="0..1" />
+          <End Role="Member" Type="Self.Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Districts">
+          <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Districts">
+              <PropertyRef Name="DistrictId" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_EmotionAction">
+          <End Role="EmotionAction" Type="Self.EmotionAction" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmotionAction">
+              <PropertyRef Name="EmotionActionId" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Member_MemberRole">
+          <End Role="MemberRole" Type="Self.MemberRole" Multiplicity="1" />
+          <End Role="Member" Type="Self.Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberRole">
+              <PropertyRef Name="MemberRoleId" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="MemberRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply" Type="Self.Reply" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Seller_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Seller" Type="Self.Seller" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Seller">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShoppingCart_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ShoppingCart">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShortMessage_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="ShortMessage" Type="Self.ShortMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ShortMessage">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subscribes_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Subscribes" Type="Self.Subscribes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="Subscribes">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_Tickets1">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="TicketId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketQRCodes_Order_Detail">
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="1" />
+          <End Role="TicketQRCodes" Type="Self.TicketQRCodes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order_Detail">
+              <PropertyRef Name="OrderDetailID" />
+            </Principal>
+            <Dependent Role="TicketQRCodes">
+              <PropertyRef Name="OrderDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Emotion_Reply">
+          <End Role="Reply" Type="Self.Reply" Multiplicity="1" />
+          <End Role="Reply_Emotion" Type="Self.Reply_Emotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reply">
+              <PropertyRef Name="ReplyID" />
+            </Principal>
+            <Dependent Role="Reply_Emotion">
+              <PropertyRef Name="ReplyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Reply">
+          <End Role="Reply" Type="Self.Reply" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reply">
+              <PropertyRef Name="ReplyID" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="ReplyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reply_Report_Report">
+          <End Role="Report" Type="Self.Report" Multiplicity="1" />
+          <End Role="Reply_Report" Type="Self.Reply_Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Report">
+              <PropertyRef Name="ReportId" />
+            </Principal>
+            <Dependent Role="Reply_Report">
+              <PropertyRef Name="ReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subscribes_Seller">
+          <End Role="Seller" Type="Self.Seller" Multiplicity="1" />
+          <End Role="Subscribes" Type="Self.Subscribes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Seller">
+              <PropertyRef Name="SellerID" />
+            </Principal>
+            <Dependent Role="Subscribes">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShoppingCart_Tickets">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="ShoppingCart">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketCategory">
+          <End Role="TicketCategory" Type="Self.TicketCategory" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketCategory">
+              <PropertyRef Name="TicketCategoryId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketGroupDetail_TicketGroups">
+          <End Role="TicketGroups" Type="Self.TicketGroups" Multiplicity="1" />
+          <End Role="TicketGroupDetail" Type="Self.TicketGroupDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketGroups">
+              <PropertyRef Name="TicketGroupId" />
+            </Principal>
+            <Dependent Role="TicketGroupDetail">
+              <PropertyRef Name="TicketGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketTimes">
+          <End Role="TicketTimes" Type="Self.TicketTimes" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketTimes">
+              <PropertyRef Name="TicketTimeId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketTimeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketSysEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Activity" EntityType="Self.Activity" />
+          <EntitySet Name="ActivityStatus" EntityType="Self.ActivityStatus" />
+          <EntitySet Name="Article" EntityType="Self.Article" />
+          <EntitySet Name="Article_Emotion" EntityType="Self.Article_Emotion" />
+          <EntitySet Name="Article_Report" EntityType="Self.Article_Report" />
+          <EntitySet Name="ArticleCategories" EntityType="Self.ArticleCategories" />
+          <EntitySet Name="BanLIst" EntityType="Self.BanLIst" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" />
+          <EntitySet Name="Cities" EntityType="Self.Cities" />
+          <EntitySet Name="Comment" EntityType="Self.Comment" />
+          <EntitySet Name="Districts" EntityType="Self.Districts" />
+          <EntitySet Name="EmotionAction" EntityType="Self.EmotionAction" />
+          <EntitySet Name="Member" EntityType="Self.Member" />
+          <EntitySet Name="MemberRole" EntityType="Self.MemberRole" />
+          <EntitySet Name="Order_Detail" EntityType="Self.Order_Detail" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" />
+          <EntitySet Name="Reply" EntityType="Self.Reply" />
+          <EntitySet Name="Reply_Emotion" EntityType="Self.Reply_Emotion" />
+          <EntitySet Name="Reply_Report" EntityType="Self.Reply_Report" />
+          <EntitySet Name="Report" EntityType="Self.Report" />
+          <EntitySet Name="Seller" EntityType="Self.Seller" />
+          <EntitySet Name="ShoppingCart" EntityType="Self.ShoppingCart" />
+          <EntitySet Name="ShortMessage" EntityType="Self.ShortMessage" />
+          <EntitySet Name="SubCategories" EntityType="Self.SubCategories" />
+          <EntitySet Name="Subscribes" EntityType="Self.Subscribes" />
+          <EntitySet Name="TicketCategory" EntityType="Self.TicketCategory" />
+          <EntitySet Name="TicketGroupDetail" EntityType="Self.TicketGroupDetail" />
+          <EntitySet Name="TicketGroups" EntityType="Self.TicketGroups" />
+          <EntitySet Name="TicketQRCodes" EntityType="Self.TicketQRCodes" />
+          <EntitySet Name="Tickets" EntityType="Self.Tickets" />
+          <EntitySet Name="TicketTimes" EntityType="Self.TicketTimes" />
+          <AssociationSet Name="FK_Activity_ActivityStatus" Association="Self.FK_Activity_ActivityStatus">
+            <End Role="ActivityStatus" EntitySet="ActivityStatus" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Districts" Association="Self.FK_Activity_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Seller" Association="Self.FK_Activity_Seller">
+            <End Role="Seller" EntitySet="Seller" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_SubCategories" Association="Self.FK_Activity_SubCategories">
+            <End Role="SubCategories" EntitySet="SubCategories" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_Activity" Association="Self.FK_Comment_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketCategory_Activity" Association="Self.FK_TicketCategory_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketCategory" EntitySet="TicketCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketGroupDetail_Activity" Association="Self.FK_TicketGroupDetail_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketGroupDetail" EntitySet="TicketGroupDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_Activity" Association="Self.FK_Tickets_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketTimes_Activity" Association="Self.FK_TicketTimes_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="TicketTimes" EntitySet="TicketTimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_ArticleCategories" Association="Self.FK_Article_ArticleCategories">
+            <End Role="ArticleCategories" EntitySet="ArticleCategories" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Member" Association="Self.FK_Article_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Article_Report" Association="Self.FK_Article_Report_Article_Report">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_Article" Association="Self.FK_Emotion_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Article" Association="Self.FK_Reply_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Reply" EntitySet="Reply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_EmotionAction" Association="Self.FK_Emotion_EmotionAction">
+            <End Role="EmotionAction" EntitySet="EmotionAction" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Emotion_Member" Association="Self.FK_Emotion_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article_Emotion" EntitySet="Article_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Member" Association="Self.FK_Article_Report_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Article_Report_Report" Association="Self.FK_Article_Report_Report">
+            <End Role="Report" EntitySet="Report" />
+            <End Role="Article_Report" EntitySet="Article_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BanLIst_Member" Association="Self.FK_BanLIst_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="BanLIst" EntitySet="BanLIst" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BanLIst_Member1" Association="Self.FK_BanLIst_Member1">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="BanLIst" EntitySet="BanLIst" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SubCategories_Categories" Association="Self.FK_SubCategories_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="SubCategories" EntitySet="SubCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Districts_Districts" Association="Self.FK_Districts_Districts">
+            <End Role="Cities" EntitySet="Cities" />
+            <End Role="Districts" EntitySet="Districts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_Member" Association="Self.FK_Comment_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_Districts" Association="Self.FK_Member_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Districts" Association="Self.FK_Orders_Districts">
+            <End Role="Districts" EntitySet="Districts" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_EmotionAction" Association="Self.FK_Reply_Emotion_EmotionAction">
+            <End Role="EmotionAction" EntitySet="EmotionAction" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_MemberRole" Association="Self.FK_Member_MemberRole">
+            <End Role="MemberRole" EntitySet="MemberRole" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Member" Association="Self.FK_Orders_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_Member" Association="Self.FK_Reply_Emotion_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Member" Association="Self.FK_Reply_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply" EntitySet="Reply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Member" Association="Self.FK_Reply_Report_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Seller_Member" Association="Self.FK_Seller_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Seller" EntitySet="Seller" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShoppingCart_Member" Association="Self.FK_ShoppingCart_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShortMessage_Member" Association="Self.FK_ShortMessage_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ShortMessage" EntitySet="ShortMessage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribes_Member" Association="Self.FK_Subscribes_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Subscribes" EntitySet="Subscribes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_Orders" Association="Self.FK_Order_Detail_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_Tickets1" Association="Self.FK_Order_Detail_Tickets1">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketQRCodes_Order_Detail" Association="Self.FK_TicketQRCodes_Order_Detail">
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+            <End Role="TicketQRCodes" EntitySet="TicketQRCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Emotion_Reply" Association="Self.FK_Reply_Emotion_Reply">
+            <End Role="Reply" EntitySet="Reply" />
+            <End Role="Reply_Emotion" EntitySet="Reply_Emotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Reply" Association="Self.FK_Reply_Report_Reply">
+            <End Role="Reply" EntitySet="Reply" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reply_Report_Report" Association="Self.FK_Reply_Report_Report">
+            <End Role="Report" EntitySet="Report" />
+            <End Role="Reply_Report" EntitySet="Reply_Report" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribes_Seller" Association="Self.FK_Subscribes_Seller">
+            <End Role="Seller" EntitySet="Seller" />
+            <End Role="Subscribes" EntitySet="Subscribes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShoppingCart_Tickets" Association="Self.FK_ShoppingCart_Tickets">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketCategory" Association="Self.FK_Tickets_TicketCategory">
+            <End Role="TicketCategory" EntitySet="TicketCategory" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketGroupDetail_TicketGroups" Association="Self.FK_TicketGroupDetail_TicketGroups">
+            <End Role="TicketGroups" EntitySet="TicketGroups" />
+            <End Role="TicketGroupDetail" EntitySet="TicketGroupDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketTimes" Association="Self.FK_Tickets_TicketTimes">
+            <End Role="TicketTimes" EntitySet="TicketTimes" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <EntitySet Name="ActivityFavourite" EntityType="TicketSysModel.ActivityFavourite" />
+          <AssociationSet Name="FK_ActivityFavourite_Activity" Association="TicketSysModel.FK_ActivityFavourite_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ActivityFavourite" EntitySet="ActivityFavourite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityFavourite_Member" Association="TicketSysModel.FK_ActivityFavourite_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="ActivityFavourite" EntitySet="ActivityFavourite" />
+          </AssociationSet>
+          <EntitySet Name="ActivityFailedReason" EntityType="TicketSysModel.ActivityFailedReason" />
+          <EntitySet Name="Ad_Article_Activity" EntityType="TicketSysModel.Ad_Article_Activity" />
+          <AssociationSet Name="FK_Ad_Article_Activity_Activity" Association="TicketSysModel.FK_Ad_Article_Activity_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Ad_Article_Activity" EntitySet="Ad_Article_Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ad_Article_Activity_Article" Association="TicketSysModel.FK_Ad_Article_Activity_Article">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="Ad_Article_Activity" EntitySet="Ad_Article_Activity" />
+          </AssociationSet>
+          <EntitySet Name="CommentReport" EntityType="TicketSysModel.CommentReport" />
+          <AssociationSet Name="FK_CommentReport_Comment" Association="TicketSysModel.FK_CommentReport_Comment">
+            <End Role="Comment" EntitySet="Comment" />
+            <End Role="CommentReport" EntitySet="CommentReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CommentReport_Member" Association="TicketSysModel.FK_CommentReport_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="CommentReport" EntitySet="CommentReport" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ActivityFavourite">
+          <Key>
+            <PropertyRef Name="ActivityFavouriteId" />
+          </Key>
+          <Property Name="ActivityFavouriteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ActivityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="TicketSysModel.FK_ActivityFavourite_Activity" FromRole="ActivityFavourite" ToRole="Activity" />
+          <NavigationProperty Name="Member" Relationship="TicketSysModel.FK_ActivityFavourite_Member" FromRole="ActivityFavourite" ToRole="Member" />
+        </EntityType>
+        <Association Name="FK_ActivityFavourite_Activity">
+          <End Type="TicketSysModel.Activity" Role="Activity" Multiplicity="1" />
+          <End Type="TicketSysModel.ActivityFavourite" Role="ActivityFavourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ActivityFavourite">
+              <PropertyRef Name="ActivityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityFavourite_Member">
+          <End Type="TicketSysModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="TicketSysModel.ActivityFavourite" Role="ActivityFavourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="ActivityFavourite">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ActivityFailedReason">
+          <Key>
+            <PropertyRef Name="ActivityFailedReasonID" />
+          </Key>
+          <Property Name="ActivityFailedReasonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FailedReason" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Ad_Article_Activity">
+          <Key>
+            <PropertyRef Name="AdID" />
+          </Key>
+          <Property Name="AdID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArticleID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="TicketSysModel.FK_Ad_Article_Activity_Activity" FromRole="Ad_Article_Activity" ToRole="Activity" />
+          <NavigationProperty Name="Article" Relationship="TicketSysModel.FK_Ad_Article_Activity_Article" FromRole="Ad_Article_Activity" ToRole="Article" />
+        </EntityType>
+        <Association Name="FK_Ad_Article_Activity_Activity">
+          <End Type="TicketSysModel.Activity" Role="Activity" Multiplicity="1" />
+          <End Type="TicketSysModel.Ad_Article_Activity" Role="Ad_Article_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Ad_Article_Activity">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ad_Article_Activity_Article">
+          <End Type="TicketSysModel.Article" Role="Article" Multiplicity="1" />
+          <End Type="TicketSysModel.Ad_Article_Activity" Role="Ad_Article_Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="ArticleID" />
+            </Principal>
+            <Dependent Role="Ad_Article_Activity">
+              <PropertyRef Name="ArticleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CommentReport">
+          <Key>
+            <PropertyRef Name="CommentReportId" />
+          </Key>
+          <Property Name="CommentReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommentId" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="ReportReason" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Comment" Relationship="TicketSysModel.FK_CommentReport_Comment" FromRole="CommentReport" ToRole="Comment" />
+          <NavigationProperty Name="Member" Relationship="TicketSysModel.FK_CommentReport_Member" FromRole="CommentReport" ToRole="Member" />
+        </EntityType>
+        <Association Name="FK_CommentReport_Comment">
+          <End Type="TicketSysModel.Comment" Role="Comment" Multiplicity="1" />
+          <End Type="TicketSysModel.CommentReport" Role="CommentReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comment">
+              <PropertyRef Name="CommentID" />
+            </Principal>
+            <Dependent Role="CommentReport">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CommentReport_Member">
+          <End Type="TicketSysModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="TicketSysModel.CommentReport" Role="CommentReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="CommentReport">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TicketSysModelStoreContainer" CdmEntityContainer="TicketSysEntities">
+          <EntitySetMapping Name="Activity">
+            <EntityTypeMapping TypeName="TicketSysModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ActivityName" ColumnName="ActivityName" />
+                <ScalarProperty Name="SellerID" ColumnName="SellerID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Picture" ColumnName="Picture" />
+                <ScalarProperty Name="Information" ColumnName="Information" />
+                <ScalarProperty Name="SubCategoryId" ColumnName="SubCategoryId" />
+                <ScalarProperty Name="Hostwords" ColumnName="Hostwords" />
+                <ScalarProperty Name="Map" ColumnName="Map" />
+                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityStatus">
+            <EntityTypeMapping TypeName="TicketSysModel.ActivityStatus">
+              <MappingFragment StoreEntitySet="ActivityStatus">
+                <ScalarProperty Name="ActivityStatusID" ColumnName="ActivityStatusID" />
+                <ScalarProperty Name="ActivityStatusName" ColumnName="ActivityStatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Article">
+            <EntityTypeMapping TypeName="TicketSysModel.Article">
+              <MappingFragment StoreEntitySet="Article">
+                <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
+                <ScalarProperty Name="ArticleTitle" ColumnName="ArticleTitle" />
+                <ScalarProperty Name="ArticleContent" ColumnName="ArticleContent" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Picture" ColumnName="Picture" />
+                <ScalarProperty Name="ArticleCategoryID" ColumnName="ArticleCategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Article_Emotion">
+            <EntityTypeMapping TypeName="TicketSysModel.Article_Emotion">
+              <MappingFragment StoreEntitySet="Article_Emotion">
+                <ScalarProperty Name="ArticleEmotionId" ColumnName="ArticleEmotionId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="ArticleId" ColumnName="ArticleId" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Article_Report">
+            <EntityTypeMapping TypeName="TicketSysModel.Article_Report">
+              <MappingFragment StoreEntitySet="Article_Report">
+                <ScalarProperty Name="Article_ReportId" ColumnName="Article_ReportId" />
+                <ScalarProperty Name="ArticleId" ColumnName="ArticleId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ArticleCategories">
+            <EntityTypeMapping TypeName="TicketSysModel.ArticleCategories">
+              <MappingFragment StoreEntitySet="ArticleCategories">
+                <ScalarProperty Name="ArticleCategoryID" ColumnName="ArticleCategoryID" />
+                <ScalarProperty Name="ArticleCategoryName" ColumnName="ArticleCategoryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BanLIst">
+            <EntityTypeMapping TypeName="TicketSysModel.BanLIst">
+              <MappingFragment StoreEntitySet="BanLIst">
+                <ScalarProperty Name="BanId" ColumnName="BanId" />
+                <ScalarProperty Name="BanMemberId" ColumnName="BanMemberId" />
+                <ScalarProperty Name="AdminMemberId" ColumnName="AdminMemberId" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="TicketSysModel.Categories">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cities">
+            <EntityTypeMapping TypeName="TicketSysModel.Cities">
+              <MappingFragment StoreEntitySet="Cities">
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comment">
+            <EntityTypeMapping TypeName="TicketSysModel.Comment">
+              <MappingFragment StoreEntitySet="Comment">
+                <ScalarProperty Name="IsBaned" ColumnName="IsBaned" />
+                <ScalarProperty Name="CommentID" ColumnName="CommentID" />
+                <ScalarProperty Name="CommentMemberID" ColumnName="CommentMemberID" />
+                <ScalarProperty Name="CommentActivityId" ColumnName="CommentActivityId" />
+                <ScalarProperty Name="CommentContent" ColumnName="CommentContent" />
+                <ScalarProperty Name="CommentScore" ColumnName="CommentScore" />
+                <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Districts">
+            <EntityTypeMapping TypeName="TicketSysModel.Districts">
+              <MappingFragment StoreEntitySet="Districts">
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmotionAction">
+            <EntityTypeMapping TypeName="TicketSysModel.EmotionAction">
+              <MappingFragment StoreEntitySet="EmotionAction">
+                <ScalarProperty Name="EmotionActionId" ColumnName="EmotionActionId" />
+                <ScalarProperty Name="EmotionActionName" ColumnName="EmotionActionName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Member">
+            <EntityTypeMapping TypeName="TicketSysModel.Member">
+              <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="fRegister_time" ColumnName="fRegister_time" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IDentityNumber" ColumnName="IDentityNumber" />
+                <ScalarProperty Name="Passport" ColumnName="Passport" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Point" ColumnName="Point" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="MemberRoleId" ColumnName="MemberRoleId" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="RegisterCheckCode" ColumnName="RegisterCheckCode" />
+                <ScalarProperty Name="provider" ColumnName="provider" />
+                <ScalarProperty Name="providerFB" ColumnName="providerFB" />
+                <ScalarProperty Name="providerGO" ColumnName="providerGO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberRole">
+            <EntityTypeMapping TypeName="TicketSysModel.MemberRole">
+              <MappingFragment StoreEntitySet="MemberRole">
+                <ScalarProperty Name="MemberRoleId" ColumnName="MemberRoleId" />
+                <ScalarProperty Name="MemberRoleName" ColumnName="MemberRoleName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Order_Detail">
+            <EntityTypeMapping TypeName="TicketSysModel.Order_Detail">
+              <MappingFragment StoreEntitySet="Order_Detail">
+                <ScalarProperty Name="OrderDetailID" ColumnName="OrderDetailID" />
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="TicketSysModel.Orders">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="PayPoint" ColumnName="PayPoint" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
+                <ScalarProperty Name="OrderGuid" ColumnName="OrderGuid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reply">
+            <EntityTypeMapping TypeName="TicketSysModel.Reply">
+              <MappingFragment StoreEntitySet="Reply">
+                <ScalarProperty Name="Readed" ColumnName="Readed" />
+                <ScalarProperty Name="ReplyID" ColumnName="ReplyID" />
+                <ScalarProperty Name="ReplyContent" ColumnName="ReplyContent" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="ReplyDate" ColumnName="ReplyDate" />
+                <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reply_Emotion">
+            <EntityTypeMapping TypeName="TicketSysModel.Reply_Emotion">
+              <MappingFragment StoreEntitySet="Reply_Emotion">
+                <ScalarProperty Name="ReplyEmotionId" ColumnName="ReplyEmotionId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="ReplyId" ColumnName="ReplyId" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reply_Report">
+            <EntityTypeMapping TypeName="TicketSysModel.Reply_Report">
+              <MappingFragment StoreEntitySet="Reply_Report">
+                <ScalarProperty Name="Reply_ReportId" ColumnName="Reply_ReportId" />
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="ReplyId" ColumnName="ReplyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Report">
+            <EntityTypeMapping TypeName="TicketSysModel.Report">
+              <MappingFragment StoreEntitySet="Report">
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+                <ScalarProperty Name="ReportReason" ColumnName="ReportReason" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Seller">
+            <EntityTypeMapping TypeName="TicketSysModel.Seller">
+              <MappingFragment StoreEntitySet="Seller">
+                <ScalarProperty Name="fFileName" ColumnName="fFileName" />
+                <ScalarProperty Name="fPass" ColumnName="fPass" />
+                <ScalarProperty Name="SellerID" ColumnName="SellerID" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="TaxIDNumber" ColumnName="TaxIDNumber" />
+                <ScalarProperty Name="SellerHomePage" ColumnName="SellerHomePage" />
+                <ScalarProperty Name="SellerPhone" ColumnName="SellerPhone" />
+                <ScalarProperty Name="SellerDeccription" ColumnName="SellerDeccription" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShoppingCart">
+            <EntityTypeMapping TypeName="TicketSysModel.ShoppingCart">
+              <MappingFragment StoreEntitySet="ShoppingCart">
+                <ScalarProperty Name="ShoppingCartID" ColumnName="ShoppingCartID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShortMessage">
+            <EntityTypeMapping TypeName="TicketSysModel.ShortMessage">
+              <MappingFragment StoreEntitySet="ShortMessage">
+                <ScalarProperty Name="ShortMessageID" ColumnName="ShortMessageID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="MessageContent" ColumnName="MessageContent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SubCategories">
+            <EntityTypeMapping TypeName="TicketSysModel.SubCategories">
+              <MappingFragment StoreEntitySet="SubCategories">
+                <ScalarProperty Name="SubCategoryId" ColumnName="SubCategoryId" />
+                <ScalarProperty Name="SubCategoryName" ColumnName="SubCategoryName" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="SearchedTime" ColumnName="SearchedTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subscribes">
+            <EntityTypeMapping TypeName="TicketSysModel.Subscribes">
+              <MappingFragment StoreEntitySet="Subscribes">
+                <ScalarProperty Name="SubcribeID" ColumnName="SubcribeID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="SellerID" ColumnName="SellerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketCategory">
+            <EntityTypeMapping TypeName="TicketSysModel.TicketCategory">
+              <MappingFragment StoreEntitySet="TicketCategory">
+                <ScalarProperty Name="TicketCategoryId" ColumnName="TicketCategoryId" />
+                <ScalarProperty Name="TicketCategoryName" ColumnName="TicketCategoryName" />
+                <ScalarProperty Name="ActivityId" ColumnName="ActivityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketGroupDetail">
+            <EntityTypeMapping TypeName="TicketSysModel.TicketGroupDetail">
+              <MappingFragment StoreEntitySet="TicketGroupDetail">
+                <ScalarProperty Name="TicketGroupDetailId" ColumnName="TicketGroupDetailId" />
+                <ScalarProperty Name="TicketGroupId" ColumnName="TicketGroupId" />
+                <ScalarProperty Name="ActivityId" ColumnName="ActivityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketGroups">
+            <EntityTypeMapping TypeName="TicketSysModel.TicketGroups">
+              <MappingFragment StoreEntitySet="TicketGroups">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TicketGroupId" ColumnName="TicketGroupId" />
+                <ScalarProperty Name="TicketGroupName" ColumnName="TicketGroupName" />
+                <ScalarProperty Name="TicketGroupDiscount" ColumnName="TicketGroupDiscount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketQRCodes">
+            <EntityTypeMapping TypeName="TicketSysModel.TicketQRCodes">
+              <MappingFragment StoreEntitySet="TicketQRCodes">
+                <ScalarProperty Name="QRCodeId" ColumnName="QRCodeId" />
+                <ScalarProperty Name="QRCode" ColumnName="QRCode" />
+                <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tickets">
+            <EntityTypeMapping TypeName="TicketSysModel.Tickets">
+              <MappingFragment StoreEntitySet="Tickets">
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="TicketCategoryId" ColumnName="TicketCategoryId" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="UnitsInStock" ColumnName="UnitsInStock" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="TicketTimeId" ColumnName="TicketTimeId" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketTimes">
+            <EntityTypeMapping TypeName="TicketSysModel.TicketTimes">
+              <MappingFragment StoreEntitySet="TicketTimes">
+                <ScalarProperty Name="TicketTimeId" ColumnName="TicketTimeId" />
+                <ScalarProperty Name="TicketTime" ColumnName="TicketTime" />
+                <ScalarProperty Name="ActivityId" ColumnName="ActivityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityFavourite">
+            <EntityTypeMapping TypeName="TicketSysModel.ActivityFavourite">
+              <MappingFragment StoreEntitySet="ActivityFavourite">
+                <ScalarProperty Name="ActivityId" ColumnName="ActivityId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="ActivityFavouriteId" ColumnName="ActivityFavouriteId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityFailedReason">
+            <EntityTypeMapping TypeName="TicketSysModel.ActivityFailedReason">
+              <MappingFragment StoreEntitySet="ActivityFailedReason">
+                <ScalarProperty Name="FailedReason" ColumnName="FailedReason" />
+                <ScalarProperty Name="ActivityFailedReasonID" ColumnName="ActivityFailedReasonID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ad_Article_Activity">
+            <EntityTypeMapping TypeName="TicketSysModel.Ad_Article_Activity">
+              <MappingFragment StoreEntitySet="Ad_Article_Activity">
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ArticleID" ColumnName="ArticleID" />
+                <ScalarProperty Name="AdID" ColumnName="AdID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CommentReport">
+            <EntityTypeMapping TypeName="TicketSysModel.CommentReport">
+              <MappingFragment StoreEntitySet="CommentReport">
+                <ScalarProperty Name="ReportReason" ColumnName="ReportReason" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
+                <ScalarProperty Name="CommentReportId" ColumnName="CommentReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

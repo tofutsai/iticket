@@ -1,0 +1,57 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@model IPagedList<Comment>
+@functions{
+    string FormatTime(DateTime time)
+    {
+        return time.ToString("yyyy/MM/dd HH:mm:ss");
+    }
+}
+@{
+    if (Model.Count == 0)
+    {
+        <p>暫無評論</p>
+    }
+    else
+    {
+        foreach (Comment comment in Model)
+        {
+            string commentContent = comment.IsBaned ? "***這條評論違反規定已被屏蔽***" : comment.CommentContent;
+            int score = comment.CommentScore;
+            <p class="text-warning">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= score)
+                    {
+                        @:&#9733;
+                    }
+                    else
+                    {
+                        @:&#9734;
+                    }
+                }
+            </p>
+            <p>@commentContent</p>
+            <small class="text-muted">Posted by @comment.Member.NickName on @FormatTime(comment.CommentDate)</small>
+            if (!comment.IsBaned)
+            {
+                <a style="margin-left:20px" href="javascript:;" onclick="reportComment(@comment.CommentID)">舉報</a>
+            }
+            <hr>
+        }
+        @Html.PagedListPager(Model, page => Url.Action("GetActivityCommentPage", new { activityId = ViewBag.ActivityId, currentPage = page }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+                new AjaxOptions() { OnBegin = "returnToCommentTop", InsertionMode = InsertionMode.Replace, UpdateTargetId = "comments" }
+                )
+            );
+    }
+}
+<script>
+    function returnToCommentTop() {
+        //回到錨點
+        let position = $("#commentHead").offset().top - 60;
+        $("html,body").animate({ scrollTop: position + "px" }, 150);
+    }
+</script>

@@ -1,0 +1,32 @@
+﻿@using System.Web.Mvc;
+
+@helper ReCaptchaWidget(System.Web.Mvc.HtmlHelper helper, string submitBtn, string url, string theme = "light")
+{
+    const string SITE_KEY = "6Lck4OkZAAAAADdGl9V0zMUMbQewiWitpt85iJA7";
+    <script>
+        var onloadCallback = function () {
+            grecaptcha.render('reCAPTCHAWidget', {
+                'sitekey': '@SITE_KEY',
+                'theme': '@theme',
+                'callback': function(response) {
+                    $.ajax({
+                        url: '@url',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { response: response },
+                        success: function (json) {
+                            if (json.success) {
+                                @*$('#@submitBtn').show();*@
+                                $('#@submitBtn').prop("disabled", false);
+                                $('#reCAPTCHAWidget').hide();
+                               
+                            }
+                        }
+                    });
+                }
+            });
+        };
+    </script>
+    <div id="reCAPTCHAWidget"></div>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+}

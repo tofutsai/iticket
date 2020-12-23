@@ -1,0 +1,113 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@model IPagedList<prjITicket.Models.TicketGroups>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@*@model IEnumerable<prjITicket.Models.TicketGroups>*@
+
+@{
+    //ViewBag.Title = "PackageCenter";
+    int count = 0;
+    //Layout = "~/Views/Shared/_BackSellerLayout.cshtml";
+}
+
+@*<div>
+    <div class="form-inline sticky-top" style="z-index:1500;margin-bottom:10px;">
+        <div class="col-md-offset-0 col-md-10 ">
+            <input type="text" id="txtQuery" name="txtQuery" style="margin-top:10px;margin-left:-12px;" />
+            <input id="Query" type="button" value="查詢" class="btn btn-secondary" />
+            <a style="margin-left:20px;" href="JavaScript:;" class="btn btn-success">新增套票</a>
+        </div>
+    </div>
+</div>*@
+<table class="table table-info">
+    <tr class="text-center">
+        <th>
+            序號
+        </th>
+        <th>
+            套票名稱
+        </th>
+        <th>
+            套票折扣
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        count++;
+        <tr class="table-warning text-center">
+            <td>
+                @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketGroupName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketGroupDiscount)
+            </td>
+            <td>
+                <a id="btndetail" href="#" class="btn btn-light" onclick="ShowDetail(@item.TicketGroupId);">套票細項</a>
+                <a href="@Url.Action("UpDateTicketGroup","Activity",new { groupId=item.TicketGroupId})" class="btn btn-success">修改</a>
+                <a href="@Url.Action("DeleteTicketGroup","Activity",new { groupId=item.TicketGroupId})" class="btn btn-danger">刪除</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div style="z-index:1800" class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">套票明細</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="showdetail" class="table table-info"></table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+@Html.PagedListPager(Model, page => Url.Action("PackageCenter", new { page = page, txtQuery=ViewBag.Keyword }),
+           PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+               new AjaxOptions()
+               {
+                   InsertionMode = InsertionMode.Replace,
+                   UpdateTargetId = "QResult"
+               }
+                ))
+
+<script>
+
+    function ShowDetail(ticketGroupId)
+    {
+        $("#exampleModalLong").modal('show');
+         $.ajax({
+            type: 'POST',
+             url: `@Url.Action("PackageCenterDetailShow")?ticketGroupId=${ticketGroupId}`,
+            success: function (result)
+            {
+                $("#showdetail").empty();
+                $("#showdetail").append(`<tr class="text-center"><th>序號</th><th>套票名稱</th><th>活動名稱</th><th>庫存</th><th>照片</th></tr>`);
+                $.each(result, function (i, e) {
+                    $("#showdetail").append(`
+
+<tr class="text-center"><td class="align-middle">${i + 1}</td><td class="align-middle">${e.TicketGroupName}</td><td class="align-middle">${e.ActivityName}</td><td class="align-middle">${e.UnitsInStock}</td><td><img style="width:200px" src='/images/Activity/${e.Picture}' alt="Alternate Text"/></td></tr>
+`)
+                });
+
+            }
+        });
+    }
+
+</script>

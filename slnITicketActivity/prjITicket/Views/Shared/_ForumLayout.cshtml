@@ -1,0 +1,396 @@
+﻿@using prjITicket.Models
+@{
+    TicketSysEntities db = new TicketSysEntities();
+    Member member = Session[CDictionary.SK_Logined_Member] as Member;
+    Seller memberseller = null;
+    int pass = 0;
+    try
+    {
+        if (Session[CDictionary.SK_Logined_Member] != null && (Session[CDictionary.SK_Logined_Member] as Member).MemberRoleId == 3)
+        {
+            int memberid = (Session[CDictionary.SK_Logined_Member] as Member).MemberID;
+            memberseller = db.Seller.Where(x => x.MemberId == memberid).FirstOrDefault();
+            pass = memberseller.fPass == true ? 1 : 0;
+        }
+    }
+    catch { }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <!--購物車藍色配色-->
+    <script src="~/Scripts/Layout/modernizr-2.8.3.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/Layout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="~/Content/Layout/css/shop-homepage.css" rel="stylesheet">
+    <link href="~/Content/Layout/css/shop-item.css" rel="stylesheet" />
+    <!--Bootstrap圖示引用-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous">
+    <!-- Bootstrap core JavaScript -->
+    <script src="~/Content/Layout/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/Layout/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--Ajax換頁要引用的東西-->
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <!--footer-->
+    <link href="~/Content/Login/footerstyle.css" rel="stylesheet" />
+    <!--字體-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <script>
+        $(function () {
+            //阻止下拉菜單點擊自動關閉
+            $(".dropdown-menu").on('click', function (e) {
+                e.stopPropagation();
+            });
+            //每一頁載入就載入購物車數據,因為購物車在最上面nav條,所以程式碼寫在這裡
+            loadShoppingCart();
+        });
+        //讀取購物車資料的函數
+        function loadShoppingCart() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("GetShoppingCart","Activity")",
+            success: function (result) {
+                if (result == "noShoppingCart") {
+                    //如果沒有購物車或者數量是0的處理
+                    $("#shoppingCartBody").html("<p style='text-align:center;font-size:25px;color:green'>購物車是空的!</p><div style='text-align:center'><img src='/images/Activity/NoiItemInCart.png' style='width:150px'></div><p style='text-align:center'><a href='@Url.Action("ActivityList","Activity")'>去購物!</a></p>");
+                    $("#shoppingCartItemCount").html("");
+                }
+                else {
+                    putJsonDataToShoppingCart(result);
+                }
+            }
+        });
+        }
+        //把購物車資料顯示在畫面上的函數
+        function putJsonDataToShoppingCart(json) {
+            let shoppingCart = JSON.parse(json);
+            $("#shoppingCartBody").empty();
+            //計算總的購物車數量用來顯示在紅色圓巴巴裡面
+            let totalCount = shoppingCart.reduce((count, item) => count += item.Quantity, 0); //OK
+            //最多顯示9個
+            for (let i = 0; i < (shoppingCart.length > 9 ? 9 : shoppingCart.length); i++) {
+                let itemStr = "<tr>" +
+                    '<td class="align-middle text-center">' +
+                    `<a href="javascript:;" onclick="deleteShoppingCartItem(${shoppingCart[i].TicketID})"><i class="far fa-trash-alt"></i></a>` +
+                    '</td>' +
+                    '<td class="align-middle">' +
+                    '<div>' +
+                    `${shoppingCart[i].ActivityName}` +
+                    '</div>' +
+                    '<div class="text-muted" style="font-size:13px">' +
+                    `${shoppingCart[i].TicketCategoryName}(${shoppingCart[i].Time})` +
+                    '</div>' +
+                    '</td>' +
+                    `<td class="align-middle">${shoppingCart[i].Quantity}件</td>` +
+                    '<td class="align-middle text-right">' +
+                    `$${shoppingCart[i].Price}` +
+                    `<span class="text-muted" style="font-size:13px">x${shoppingCart[i].Quantity}</span>` +
+                    '</td>' +
+                    '</tr >';
+                $("#shoppingCartBody").append($(itemStr));
+            }
+            if (shoppingCart.length > 9) {
+                $("#shoppingCartBody").append($(`<tr><td colspan="4" style="text-align:center">還有${shoppingCart.length - 9}筆</td></tr>`)); //OK
+            }
+            $("#shoppingCartItemCount").html(totalCount > 99 ? "99+" : totalCount); //OK
+        }
+        //刪除購物車條目的函數
+        function deleteShoppingCartItem(ticketId) {
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("DeleteShoppingCartItem", "Activity")",
+                data: { ticketId: ticketId },
+                success: function (result) {
+                    if (result == "noShoppingCart") {
+                    //如果沒有購物車或者數量是0的處理
+                        $("#shoppingCartBody").html("<p style='text-align:center;font-size:25px;color:green'>購物車是空的!</p><div style='text-align:center'><img src='/images/Activity/NoiItemInCart.png' style='width:150px'></div><p style='text-align:center'><a href='@Url.Action("ActivityList","Activity")'>去購物!</a></p>");
+                        $("#shoppingCartItemCount").html("");
+                    }
+                    else {
+                        putJsonDataToShoppingCart(result);
+                    }
+                }
+            });
+        }
+        //商家中心審核判斷
+        function alertshow() {
+            if (@pass!= 1) {
+                swal({
+                    title: "審核尚未通過,請到會員中心=>公司資料查看",
+                    text: "請點擊",
+                    icon: "error",
+                    closeOnConfirm: true,
+                    button: { className: "btn-outline-light", text: "確定" }, closeOnClickOutside: false, closeOnEsc: false,
+                }).then(x => {
+                    if (x) { location.href = "/Activity/ActivityList" }
+                });
+            }
+            else
+            {
+                location.href = "/SellerCenter/ManagementCenter"
+            }
+        }
+    </script>
+    <style>
+        /*子菜單滑出樣式*/
+        .dropright:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index","Home")" style="font-family:'Indie Flower'">ITicket購票網</a>
+            @{
+                if (member != null && member.provider == null)
+                {
+                    <span id="txtDisplayName" style="color:#ffffff">
+                        @member.Name (@member.MemberRole.MemberRoleName)
+                    </span>
+                }
+                else if (member != null && member.provider != null)
+                {
+                    <span id="txtDisplayName" style="color:#ffffff">
+                        @member.Name (普通會員)
+                    </span>
+                }
+            }
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index","Home")">
+                            Home
+                        </a>
+                    </li>
+                    @{
+                        Member admin = Session[CDictionary.SK_Logined_Member] as Member;
+                        try
+                        {
+                            if (admin != null && admin.MemberRoleId == 4)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("BackEndIndex","BackEndMain")">
+                                        後台
+                                    </a>
+                                </li>
+                            }
+                        }
+                        catch { }
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ActivityList","Activity")">商品一覽</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("forum_homepage","Forum")">
+                            討論區
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown ml-auto mr-auto">
+                            <button style="width:35px;height:35px;text-align:center;position:relative;" class="btn btn-cart btn-sm" type="button" id="dropdownMessageButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-bell" style="color:white;font-size:2em;line-height:35px;width:35px;display:inline-block;margin-left:-10px"></i>
+                                @{
+                                    //Member member = Session[CDictionary.SK_Logined_Member] as Member;
+                                    if (member != null)
+                                    {
+                                        var msgcount = db.ShortMessage.Where(m => m.MemberID == member.MemberID).Count();
+                                        if (msgcount > 3)
+                                        {
+                                            <span class="badge badge-pill badge-danger shortmessage" style="position:absolute;top:2px;left:15px">3<small style="position:absolute;top:0;">+</small></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-pill badge-danger shortmessage" style="position:absolute;top:2px;left:15px">@msgcount</span>
+                                        }
+                                        @*<script>
+                                        $("#dropdownMessageButton").click(function () {
+                                            $(".shortmessage").remove();
+                                        })
+                                    </script>*@
+
+                                    }
+
+                                }
+
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" style="min-width: 300px" aria-labelledby="dropdownMenuButton">
+                                <div class="p-6">
+                                    <h6 style="text-align:center">最近收到的通知</h6>
+                                    <table id="shortmegs" class="table">
+                                        @{
+
+                                            if (member != null)
+                                            {
+                                                var msgs = db.Member.FirstOrDefault(m => m.MemberID == member.MemberID).ShortMessage.OrderByDescending(s => s.ShortMessageID).Take(3).ToList();
+                                                foreach (ShortMessage msg in msgs)
+                                                {
+                                                    <tr>
+                                                        <td>@msg.MessageContent</td>
+                                                    </tr>
+                                                }
+                                                <tr style="text-align:center;">
+                                                    @if (member.provider == null && member.MemberRole.MemberRoleName == "商家")
+                                                    {
+                                                        <td>
+                                                            <a href="@Url.Action("BussEdit","Login",new { mode="shortMessage"})">查看詳細內容</a>
+                                                        </td>
+                                                    }
+                                                    else if (member.provider == null && member.MemberRole.MemberRoleName == "普通會員")
+                                                    {
+                                                        <td>
+                                                            <a href="@Url.Action("MemberEdit","Login",new { mode="shortMessage"})">查看詳細內容</a>
+                                                        </td>
+                                                    }
+                                                    else if (member.provider == null && member.MemberRole.MemberRoleName == "管理者")
+                                                    {
+                                                        <td>
+                                                            <a href="@Url.Action("MemberEdit","Login",new { mode="shortMessage"})">查看詳細內容</a>
+                                                        </td>
+                                                    }
+                                                    else if (member.provider != null)
+                                                    {
+                                                        <td>
+                                                            <a href="@Url.Action("MemberEdit","Login",new { mode="shortMessage"})">查看詳細內容</a>
+                                                        </td>
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown ml-auto">
+                            <button style="width:35px;height:35px" class="btn btn-cart btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                @if (Session[CDictionary.SK_Logined_Member] != null && (Session[CDictionary.SK_Logined_Member] as Member).Icon != null)
+                                {
+                                    <i id="layoutimg" style="content:url(@Url.Content("~/images/Login/Upload/"+(Session[CDictionary.SK_Logined_Member]as Member).Icon));width:35px;height:35px;transform:translate(-6px,-3px);border-radius:50%"></i>
+                                }
+                                else
+                                {
+                                    <i style="content:url(../../images/Login/Layout/bar.png);width:35px;height:35px;transform:translate(-6px,-3px);border-radius:50%"></i>
+                                }
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" style="min-width: 300px" aria-labelledby="dropdownMenuButton">
+                                <div class="p-3">
+                                    @if (Session[CDictionary.SK_Logined_Member] == null)
+                                    {
+                                        <a class="btn btn-block btn-primary btn-sm text-white " href="@Url.Action("Login", "Login")">登入</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("Register", "Login")">註冊</a>
+                                    }
+
+
+                                    else if ((Session[CDictionary.SK_Logined_Member] as Member).provider == "facebook" ||
+                                        (Session[CDictionary.SK_Logined_Member] as Member).provider == "google")
+                                    {
+                                        <a class="btn btn-block btn-primary btn-sm text-white " href="@Url.Action("MemberEdit", "Login")">會員中心</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("Logout", "Login")">登出</a>
+
+                                    }
+                                    else if ((Session[CDictionary.SK_Logined_Member] as Member).MemberRole.MemberRoleName == "普通會員" ||
+                                        (Session[CDictionary.SK_Logined_Member] as Member).MemberRole.MemberRoleName == "未驗證")
+                                    {
+                                        <a class="btn btn-block btn-primary btn-sm text-white " href="@Url.Action("MemberEdit", "Login")">會員中心</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("Logout", "Login")">登出</a>
+
+                                    }
+                                    else if ((Session[CDictionary.SK_Logined_Member] as Member).MemberRole.MemberRoleName == "商家")
+                                    {
+                                        <a class="btn btn-block btn-primary btn-sm text-white " href="@Url.Action("BussEdit", "Login")">會員中心</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("Logout", "Login")">登出</a>
+                                        <a onclick="alertshow()" class="btn btn-block btn-primary btn-sm text-white" href="javascript:;">商家中心</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("CustomerSupport","Activity")">客服專用</a>
+                                    }
+                                    else if ((Session[CDictionary.SK_Logined_Member] as Member).MemberRole.MemberRoleName == "管理者")
+                                    {
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("Logout", "Login")">登出</a>
+                                        <a class="btn btn-block btn-primary btn-sm text-white" href="@Url.Action("MemberEdit", "Login")">會員中心</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <!--下拉式購物車-->
+                        <div id="dropDownShoppingCart" class="dropdown ml-auto">
+                            <button class="btn btn-cart btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-shopping-cart text-light fa-2x"></i>
+                                <span id="shoppingCartItemCount" class="badge badge-pill badge-danger"><!--動態塞購物車數量--></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" style="min-width:400px" aria-labelledby="dropdownMenuButton">
+                                <div class="p-3">
+                                    <table class="table table-sm ">
+                                        <h6>已選擇商品</h6>
+                                        <tbody id="shoppingCartBody">
+                                            <!--動態塞入購物車項目-->
+                                        </tbody>
+                                    </table>
+                                    <a href="@Url.Action("ShoppingCartList","Activity")" class="btn btn-block btn-primary btn-sm text-white">查看購物車</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/.下拉式購物車-->
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+    <!--你的View在這裡-->
+    @RenderBody()
+    <!-- Footer -->
+    @*<div class="mt-5 pt-5 pb-5 footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-xs-12 about-company">
+                        <h2>ITicket購票網</h2>
+                        <p class="pr-5 text-white-50">
+                            您現在所使用的瀏覽器為 Chrome
+                        </p>
+                        <p><a href="#"><i class="fa fa-facebook-square mr-1"></i></a><a href="#"><i class="fa fa-linkedin-square"></i></a></p>
+                    </div>
+                    <div class="col-lg-3 col-xs-12 links">
+                        <h4 class="mt-lg-0 mt-sm-3">購票網門市據點:</h4>
+                        <ul class="m-0 p-0">
+                            <li>- <a href="#">台北門市</a></li>
+                            <li>- <a href="#">新北門市</a></li>
+                            <li>- <a href="#">台中門市</a></li>
+                            <li>- <a href="#">高雄門市</a></li>
+                            <li>- <a href="#">桃園門市</a></li>
+                            <li>- <a href="#">台南門市</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-xs-12 location">
+                        <h4 class="mt-lg-0 mt-sm-4">聯絡地址:</h4>
+                        <p>台北市大安區復興路一段392號2F-2</p>
+                        <p class="mb-0"><i class="fa fa-phone mr-3"></i>(02) 754-3010</p>
+                        <p><i class="fa fa-envelope-o mr-3"></i>info@hsdf.com</p>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col copyright">
+                        <p class=""><small class="text-white-50">© 2019. All Rights Reserved.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <script type="text/javascript" color="255,0,0" opacity='1' zIndex="-10" count="200" src="~/Content/Login/functionJS/dist/canvas-nest.js"></script>
+</body>
+</html>

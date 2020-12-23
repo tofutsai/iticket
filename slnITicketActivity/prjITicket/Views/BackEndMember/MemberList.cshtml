@@ -1,0 +1,171 @@
+﻿@{
+    Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+    ViewBag.Title = "會員管理";
+}
+
+<!-- 1. nav -->
+<nav class="fixed-top p-2" style="z-index: 1500; top: 0; left: 260px;">
+    <button type="button" id="ctrlBtn5" class="btn btn-outline-primary mr-2"><i class="far fa-bell"></i> 系統通知</button>
+    <button type="button" id="ctrlBtn4" class="btn btn-outline-secondary mr-2"><i class="fas fa-user-friends"></i> 所有</button>
+    <button type="button" id="ctrlBtn3" class="btn btn-outline-secondary mr-2"><i class="fas fa-store"></i> 商家</button>
+    <button type="button" id="ctrlBtn2" class="btn btn-outline-secondary mr-2"><i class="fas fa-user"></i> 普通</button>
+    <button type="button" id="ctrlBtn1" class="btn btn-outline-secondary mr-2"><i class="fas fa-question-circle"></i> 未驗證</button>
+    <button type="button" id="ctrlBtn0" class="btn btn-outline-secondary mr-2"><i class="fas fa-ban"></i> 停權會員</button>
+    <form id="ctrlForm" class="form-inline d-inline">
+        <input id="searchbox" class="form-control mr-sm-2" type="search" placeholder="關鍵字搜尋" aria-label="Search">
+        <!-- hidden -->
+        <input type="hidden" id="fPageCurrent" name="PageCurrent" value="1">
+        <input type="hidden" id="fPageSize" name="PageSize" value="10">
+        <input type="hidden" id="fKeyword" name="Keyword" value="">
+        <input type="hidden" id="fSort" name="Sort" value="0">
+        <input type="hidden" id="fRoleId" name="RoleId" value="4" />
+        <input type="hidden" id="fVeri" name="Veri" value="false" />
+    </form>
+    <div id="isHandle" class="spinner-border text-warning align-middle d-none" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</nav>
+
+<!-- 2. header -->
+<header>
+    <h1 class="mt-4">會員管理</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/BackEndMain/BackEndIndex">後台</a></li>
+        <li class="breadcrumb-item active">會員管理</li>
+    </ol>
+</header>
+
+<!-- 3. main -->
+<main class="card">
+    <div class="card-header sticky-top" style="z-index: 500; top: 55px; background-color: #f7f7f7;">
+        <i class="fas fa-address-card mr-2"></i>會員管理
+        <span id="ctrlHint" class="text-success mx-2"></span>
+        <label class="float-right mr-3" style="cursor: pointer">
+            <input id="ctrlVeri" type="checkbox"> 未審核商家
+        </label>
+    </div>
+    <div class="card-body">
+        <!-- row top -->
+        <div class="row mb-1">
+            <div class="col-4">
+                每頁顯示
+                <select id="pageAmount" class="custom-select-sm" style="cursor: pointer">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 筆資料
+            </div>
+            <div class="col-8">
+                <nav id="pageTop" class="float-right"></nav>
+            </div>
+        </div>
+        <!-- table -->
+        <table class="table table-bordered" style="font-size: 90%; width: 100%; table-layout: fixed">
+            <thead>
+                <tr>
+                    <th id="listHead0" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 4%;">
+                        <i class="far fa-bell"></i>
+                    </th>
+                    <th id="listHead1" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 15%;">
+                        <i class="fas fa-envelope mr-1"></i>Email
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="listHead2" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-user-edit mr-1"></i>暱稱
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="listHead3" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-user mr-1"></i>姓名
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="listHead4" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-mobile-alt mr-1"></i>電話
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 15%;">
+                        <i class="fas fa-user-shield mr-1"></i>會員權限
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 30%;">
+                        <i class="fas fa-user-cog mr-1"></i>會員權限設定 (與停權到期日)
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+        </table>
+        <!-- row bottom -->
+        <div class="row mt-1">
+            <div class="col-4">
+                <span id="pageMessage"></span>
+            </div>
+            <div class="col-8">
+                <nav id="pageBottom" class="float-right"></nav>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- AjaxBox -->
+<div id="AjaxBox" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="z-index: 1600">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content text-white bg-dark">
+            <!-- modal-header -->
+            <div class="modal-header">
+                <h5 class="modal-title">會員管理</h5>
+                <button id="AjaxBoxDemo" class="btn btn-outline-info ml-3">Demo</button>
+                <button class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <!-- modal-body -->
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag2-tab" class="nav-link active" data-toggle="tab" href="#AjaxBoxTag2" aria-controls="AjaxBoxTag2" aria-selected="true">
+                            會員資料
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag3-tab" class="nav-link" data-toggle="tab" href="#AjaxBoxTag3" aria-controls="AjaxBoxTag3" aria-selected="false">
+                            商家資料
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag4-tab" class="nav-link" data-toggle="tab" href="#AjaxBoxTag4" aria-controls="AjaxBoxTag4" aria-selected="false">
+                            停權紀錄
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag5-tab" class="nav-link d-none" data-toggle="tab" href="#AjaxBoxTag5" aria-controls="AjaxBoxTag5" aria-selected="false">
+                            會員權限管理
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="AjaxBoxTag2" class="tab-pane fade show active" aria-labelledby="AjaxBoxTag2-tab"></div>
+                    <div id="AjaxBoxTag3" class="tab-pane fade" aria-labelledby="AjaxBoxTag3-tab"></div>
+                    <div id="AjaxBoxTag4" class="tab-pane fade" aria-labelledby="AjaxBoxTag4-tab"></div>
+                    <div id="AjaxBoxTag5" class="tab-pane fade" aria-labelledby="AjaxBoxTag5-tab"></div>
+                </div>
+            </div>
+            <!-- modal-footer -->
+            <div class="modal-footer">
+                <button id="Cancel" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times mr-1"></i> 取消</button>
+                <button id="BanTaskAction" class="btn btn-danger"><i class="fas fa-skull-crossbones mr-1"></i> 新增停權</button>
+                <button id="UnBanTaskAction" class="btn btn-success"><i class="fas fa-ankh mr-1"></i> 解除停權</button>
+                <button id="Confirm" class="btn btn-primary d-none"><i class="fas fa-sync mr-1"></i> 以管理者身份執行</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"
+        integrity="sha512-kp7YHLxuJDJcOzStgd6vtpxr4ZU9kjn77e6dBsivSz+pUuAuMlE2UTdKB7jjsWT84qbS8kdCWHPETnP/ctrFsA=="
+        crossorigin="anonymous"></script>
+<script src="~/Content/BackEnd/js/BackEndFactory.jsx" type="text/babel"></script>
+<script src="~/Content/BackEnd/js/BackEndMember.jsx" type="text/babel"></script>
+<script src="~/Content/BackEnd/js/BackEndDemoDemo.jsx" type="text/babel"></script>

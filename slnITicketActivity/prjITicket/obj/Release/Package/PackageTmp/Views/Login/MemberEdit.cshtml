@@ -1,0 +1,849 @@
+﻿@model prjITicket.ViewModel.CMember
+@using prjITicket.Models;
+@using prjITicket.ViewModel;
+
+@{
+    ViewBag.Title = "會員資料設定";
+    Member x = Session[CDictionary.SK_Logined_Member] as Member;
+}
+<style>
+    .test {
+        visibility: hidden;
+        position: absolute;
+    }
+
+    body {
+        background-color: #F6F6F6;
+    }
+
+    li {
+        padding-bottom: 5px;
+    }
+
+    .page-menu li:hover {
+        background-color: #F0F0F0;
+        cursor: pointer;
+    }
+
+    .page-menu li a:link {
+        text-decoration: none;
+    }
+
+    .page-menu li a {
+        color: black;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+@*SweetAlert彈框*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    //取得partialView Activityfavourite activityid 刪除我的收藏
+    $(function () {
+        $("#form1div").on("click", ".delete", function () {
+            let activityId = $(this).data("activityid");
+            let memberId = $(this).data("memberid")
+            console.log(memberId)
+            console.log(activityId);
+            //執行刪除ajax
+            deletefavourite(memberId, activityId);
+        });
+
+        //取得memberId、shortmessageId 刪除短訊息
+        $("#form1div").on("click", ".deleteMessage", function () {
+            let memberId = $(this).data("memberid");
+            let shortmessageId = $(this).data("messageid")
+            console.log(memberId);
+            console.log(shortmessageId);
+            //
+            deleteMessage(memberId, shortmessageId)
+        });
+
+        //找到orderid下的oreder_detail
+        $("#form1div").on("click", ".showqrCode", function () {
+            $("#dialogshow").empty();
+            let orderid = $(this).data("orderid");           
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("getQRCodeByOrderId")",
+                data: { orderId: orderid },
+                success: function (result) {
+                    let $dailogShow = $("#dialogshow");
+                    $dailogShow.css({ "text-align": "center" });
+                    let datas = JSON.parse(result);
+                    for (let i = 0; i < datas.length; i++){
+                        let qrCodeData = JSON.parse(datas[i]);
+                        for (let j = 0; j < qrCodeData.QRCodes.length; j++) {
+                            $dailogShow.append($(`<h3>${qrCodeData.ActivityName}</h3>`));
+                            $dailogShow.append($(`<p>${qrCodeData.TicketCategoryName} ${qrCodeData.Time}</p>`));
+                            $dailogShow.append($(`<img style="margin-bottom:20px" src="data:img/png;base64,${qrCodeData.QRCodes[j]}"/>`));
+                        }
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+
+<br />
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="form-horizontal rounded border p-4" style="background-color:white;">
+            @if (Session[CDictionary.SK_Logined_Member] != null && (Session[CDictionary.SK_Logined_Member] as Member).Icon != null)
+            {
+                <img src="~/images/Login/Upload/@Model.Icon" id="loadimg" style="border:1px;width:100%;" />
+            }
+            else
+            {
+                <img src="~/images/Login/Layout/bar.png" id="loadimg" style="border:1px;width:100%;" />
+            }
+            <p></p>
+            <label class="btn btn-info">
+                <input id="upload_img" style="display:none;" type="file" accept="image/*"><i class="fa fa-photo"></i> 上傳照片
+            </label>
+            <div id="oldImg" style="display:none;"></div>
+            <div id="newImg"></div>
+            <button id="btnSubmit" class="btn btn-primary">保存</button>
+        </div>
+        <div class="form-horizontal rounded border p-3 my-4" style="background-color:white;">
+
+            <div class="form-group" style="width:220px;height:120px;">
+                <ul class="page-menu list-item-group" style="list-style-type:none; float:left; margin:0px; padding:0px;">
+                    <li><a href="~/Login/MemberEdit"><img src="~/images/Login/Layout/settings.png" style="margin-right:10px;" /><span>會員資料設定</span></a></li>
+                    <li><img src="~/images/Login/Layout/money.png" style="margin-right:10px;" /><span>iTikect Points</span><span id="point" name="point" style="float:right; width:100px; text-align:right;"><strong style="color:#FFD306">@Model.Point</strong></span></li>
+                    <li style="position:relative;"><a href="javascript:;" id="orderDetail"><img src="~/images/Login/Layout/check-list.png" style="margin-right:10px;" /><span>我的訂單<span class="badge badge-pill badge-danger" style="position:absolute;top:2px;">@Model.entity.Orders.Where(m => m.MemberID == Model.entity.MemberID).Count()</span></span></a></li>
+                    <li style="position:relative;"><a href="javascript:;" id="showMessage"><img src="~/images/Login/Layout/chat.png" style="margin-right:10px;" /><span>我的訊息<span id="shortMessageNumber" class="badge badge-pill badge-danger" style="position:absolute;top:2px;">@Model.entity.ShortMessage.Where(m => m.MemberID == Model.MemberID).Count()</span></span></a></li>
+                    <li style="position:relative;"><a href="javascript:;" id="ActivityFavouriteDetail"><img src="~/images/Login/Layout/heart.png" style="margin-right:10px;" /><span>我的收藏<span id="activityFavourite" class="badge badge-pill badge-danger" style="position:absolute;top:2px;">@Model.entity.ActivityFavourite.Where(m => m.MemberId == Model.entity.MemberID).Count()</span></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        @*@using (Html.BeginForm("MemberEdit", "Login", FormMethod.Post))
+            {*@
+        @*@Html.AntiForgeryToken()*@
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-horizontal rounded border p-4" id="form1div" style="width:800px; background-color:white;">
+                        @if (ViewBag.Mode == "shortMessage")
+                        {
+                            int memberId = Model.MemberID;
+                            Html.RenderAction("getShortMassageByMemberId", new { MemberId = memberId });
+                        }
+                        else
+                        {
+                            <div class="h1 text-center"><strong>會員資料</strong></div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-md">
+                                    <div class="alert alert-success alert-rounded text-center" role="alert" id="butport1">基本資料</div>
+                                </div>
+                                <div class="col-12 col-md" style="margin:0 20px 0 0" id="btnMemPassword">
+                                    <div class="alert alert-light alert-rounded text-center" role="alert" id="butport2">會員密碼修改</div>
+                                </div>
+                            </div>
+                            <div class="row" style="background-color:white" id="port1">
+                                <div class="col-md-6">
+
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", id = "txtName" } })
+                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.IDentityNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.IDentityNumber, new { htmlAttributes = new { @class = "form-control", id = "txtIDentityNumber" } })
+                                            <span></span>
+                                            @Html.ValidationMessageFor(model => model.IDentityNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    @*<div class="form-group">
+                        @Html.LabelFor(model => model.Passport, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            @Html.EditorFor(model => model.Passport, new { htmlAttributes = new { @class = "form-control", id = "txtPassport" } })
+                            @Html.ValidationMessageFor(model => model.Passport, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Sex, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-5">
+                                            <select class="form-control" name="sex" id="txtSex">
+                                                @if (Model.Sex == false)
+                                                {
+                                                    <option value="0">男性</option>
+                                                    <option value="1">女性</option>
+                                                }
+                                                else if (Model.Sex == true)
+                                                {
+                                                    <option value="1">女性</option>
+                                                    <option value="0">男性</option>
+                                                }
+                                                else
+                                                {
+                                                    <option>-請選擇-</option>
+                                                    <option value="0">男性</option>
+                                                    <option value="1">女性</option>
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.NickName, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.NickName, new { htmlAttributes = new { @class = "form-control", id = "txtNickName" } })
+                                            @Html.ValidationMessageFor(model => model.NickName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            <input type="date" name="BirthDate" class="form-control" id="txtBirthDate" />
+                                            @if (Model.BirthDate != null)
+                                            {
+                                                DateTime birthDate = Model.BirthDate.Value;
+                                                <script>
+                                                    $("#txtBirthDate").val(`@birthDate.ToString("yyyy-MM-dd")`);
+                                                </script>
+                                            }
+                                            <span></span>
+                                            @*@Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })*@
+                                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", id = "txtPhone" } })
+                                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-12">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <select id="txtcity" class="form-control" style="width:100px; float:left; margin:0px 0px 3px 0px;"></select>
+                                                        <select id="txtdistrict" class="form-control" style="width:110px;float:left; margin:0px 0px 3px 15px;"></select>
+                                                        <input id="txtpostalcode" class="form-control" type="text" style="width:100px;float:left; margin:0px 0px 3px 15px;" placeholder="郵遞區號" readonly>
+
+                                                        <input id="txtaddress" class="form-control" type="text" style="width:320px;float:left; margin:0px 0px 3px 15px;">
+                                                        @if (Model.Address != null)
+                                                        {
+                                                            string address = Model.Address;
+                                                            <script>
+                                                                $("#txtaddress").val(`@address.ToString()`)
+                                                            </script>
+                                                        }
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-10" style="margin:10px 0 0 0;">
+                                                <input id="btnMember" type="button" value="確認儲存" class="btn btn-success" />
+                                                <input id="demobtnMember" type="button" value="Demo鍵" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*}*@
+
+
+        @*@using (Html.BeginForm("MemberEdit", "Login", FormMethod.Post, new { style = "display:none;", id = "Form2" }))
+            {
+                @Html.AntiForgeryToken()*@
+        <div class="container" id="btnPasswordHidden">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <div class="form-horizontal rounded border p-4" id="form2div" style="width:800px; display:none;">
+                            <div style="display:none;background-color:white;width:798px; padding:10px; margin:0px" id="port2">
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">請輸入原密碼:</label>
+                                    <div class="col-md-6">
+                                        @Html.PasswordFor(model => model.Password, new { @class = "form-control", id = "txtPassword" })
+                                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">請輸入新密碼:</label>
+                                    <div class="col-md-6">
+                                        @Html.PasswordFor(model => model.NewPassword, new { @class = "form-control", id = "txtNPassword" })
+                                        @Html.ValidationMessageFor(model => model.NewPassword, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">請再一次輸入新密碼:</label>
+                                    <div class="col-md-6">
+                                        @Html.PasswordFor(model => model.PasswordCheck, new { @class = "form-control", id = "txtANPassword" })
+                                        @Html.ValidationMessageFor(model => model.PasswordCheck, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input id="btnPassword" type="button" value="確認儲存" class="btn btn-success" />
+                                        <input id="demobtnPassword" type="button" value="Demo鍵" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*}*@
+    </div>
+</div>
+
+<!-- 彈框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">QRCode</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="dialogshow" class="modal-body">
+                <!--動態塞二維碼-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     console.log("@x.provider");
+     $(function () {
+         if ("@x.provider"== "facebook" ||"@x.provider"== "google")
+         {
+             $("#btnPasswordHidden").hide();
+             $("#btnMemPassword").hide();
+         }
+     })
+</script>
+
+<script>
+    document.getElementById("btnMember").addEventListener("click", function () {
+
+         let sexValue = $("#txtSex").val();
+         if (sexValue == 0) sexValue = false;
+         if (sexValue == 1) sexValue = true;
+         let member = {
+             Name: $("#txtName").val()
+             , IDentityNumber: $("#txtIDentityNumber").val()
+             , Passport: $("#txtPassport").val()
+             , NickName: $("#txtNickName").val()
+             , BirthDate: $("#txtBirthDate").val()
+             , Phone: $("#txtPhone").val()
+             , Point: $("#txtPoint").val()
+             , Address:$("#txtaddress").val()
+             , DistrictId: $("#txtdistrict").val()
+             , Sex: sexValue
+             , RegisterCheckCode: $("#txtRegisterCheckCode").val()
+             , agreeterm: $("#txtagreeterm").val()
+         }
+        $.ajax({
+
+        url:'@Url.Action("MemberSave")',
+        type: 'POST',
+        data: member,
+        success: function (data) {
+            $("#txtDisplayName").html(member.Name+" (@x.MemberRole.MemberRoleName)");
+            console.log(data);
+            swal("儲存成功!", "會員資料修改成功!", "success");
+        }
+
+         });
+    });
+
+    document.getElementById("btnPassword").addEventListener("click", function () {
+        if ($("#txtNPassword").val() == $("#txtANPassword").val()) {
+              let member = {
+                  Password: $("#txtPassword").val(),
+                  NPassword:$("#txtNPassword").val()
+              }
+              $.ajax({
+                  url: '@Url.Action("MemberPassSave")',
+                  type: 'POST',
+                  data: member,
+                  success: function (data) {
+
+                      console.log(data);
+                      if (data == "密碼修改成功，下次請用新密碼登入") {
+                          $("#txtPassword").val("");
+                          $("#txtNPassword").val("");
+                          $("#txtANPassword").val("");
+                          swal("儲存成功!", "下次請用新密碼登入!", "success");
+                      }
+                      else if (data == "請輸入密碼，修改失敗") {
+                          swal("儲存失敗!", "請輸入密碼，修改失敗!", "error");
+                      }
+                      else {
+                          swal("儲存失敗!", "原密碼輸入錯誤，修改失敗!", "error");
+                      }
+                  }
+              });
+          }
+          else
+          {
+            swal("儲存失敗!", "新密碼兩者不一致，修改失敗!", "error");
+          }
+
+    });
+
+
+    //當每次輸入時驗證身分證號碼
+    let txtIdCode = document.getElementById("txtIDentityNumber");
+    txtIdCode.oninput = function () {
+        let msg = checkIdCode(this.value);
+        this.nextElementSibling.innerHTML = msg;
+        if (msg == "格式正確")
+            this.nextElementSibling.style.color = "green";
+        else
+            this.nextElementSibling.style.color = "red";
+    }
+    //判斷身分證字號的函數
+    function checkIdCode(code) {
+        let txtId = document.getElementById("txtIDentityNumber");
+        txtId.value = txtId.value.toUpperCase();
+        if (code.length > 10)
+            return "不准超過10位";
+        if (code.charAt(0).toUpperCase() < "A" || code.charAt(0).toUpperCase() > "Z")
+            return "第一個字必須是英文字母";
+        if (code.length >= 2 && code.charAt(1) != "1" && code.charAt(1) != "2")
+            return "第二個字必須是1或者2";
+        if (code.length >= 3) {
+            for (let i = 2; i < code.length; i++) {
+                if (code.charAt(i) < "0" || code.charAt(i) > "9")
+                    return "第3-10位必須是數字";
+            }
+        }
+        if (code.length < 10)
+            return "身分證字號要有10位";
+        //檢驗第10位檢驗碼
+        //紀錄字母轉換表
+        let cityCodes = {
+            "A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15",
+            "G": "16", "H": "17", "I": "34", "J": "18", "K": "19", "L": "20",
+            "M": "21", "N": "22", "O": "35", "P": "23", "Q": "24", "R": "25",
+            "S": "26", "T": "27", "U": "28", "V": "29", "X": "30", "Y": "31"
+        }
+        //取得英文字母對應的代碼
+        let cityCode = cityCodes[code.charAt(0).toUpperCase()];
+        //替換英文字母為代碼
+        code = cityCode + code.slice(1);
+        //算出檢查碼
+        let step1 = 0;
+        let x = 9;
+        for (let i = 0; i < code.length - 1; i++) {
+            if (i == 0) {
+                step1 += parseInt(code.charAt(i))
+            }
+            else {
+                step1 += parseInt(code.charAt(i)) * x--;
+            }
+        }
+        let step2 = step1 % 10;
+        let checkCode = 10 - step2;
+        //因為字母替換成了2位數字,所以檢查碼變成了第11位,也就是索引10
+        if (code.charAt(10) != checkCode)
+            return "檢查碼不正確";
+        return "格式正確";
+    }
+    //todo
+    //判斷出生日期不得大於現在日期
+    let birthDate = document.getElementById("txtBirthDate");
+
+    birthDate.onchange = function () {
+        console.log(this.value)
+        var nowdate = new Date();
+        //var nowdate = now.format("yyyy-MM-dd");
+        let birthdate = this.value;
+        if (birthdate > nowdate) {
+            this.nextElementSibling.style.color = "red";
+            this.nextElementSibling.innerHTML = "日期不可大於今天";
+        }
+    }
+
+</script>
+
+<script>
+
+    $("#butport2").click(function () {
+        $("#Form2").show();
+        $("#port2").show();
+        $("#form2div").show();
+        $("#port1").hide();
+        $("#butport2").addClass("alert-success").removeClass("alert-light");
+        $("#butport1").removeClass("alert-success").addClass("alert-light");
+        //$("#port1").addClass("invisible").addClass("position-absolute");
+        //$("#port2").addClass("position-absolute");
+        $("#port2").css('border-radius', '0px 0px 4px 4px');
+        $("#form1div").removeClass("form - horizontal rounded border p-4").addClass(" form - horizontal ")
+            .css('border-top', '1px solid #e6e6e6').css('border-left', '1px solid #e6e6e6').css('border-right', '1px solid #e6e6e6')
+            .css('border-radius', '4px 4px 0px 0px').css('padding', '24px 24px 0px 24px');
+        $("#form2div").removeClass("form - horizontal rounded border p-4").css('border-bottom', '1px solid #e6e6e6')
+            .css('border-left', '1px solid #e6e6e6').css('border-right', '1px solid #e6e6e6').css('border-radius', '0px 0px 4px 4px');
+
+
+    });
+    $("#butport1").click(function () {
+        $("#port1").show();
+        $("#port2").hide();
+
+        $("#butport1").addClass("alert-success").removeClass("alert-light");
+        $("#butport2").removeClass("alert-success").addClass("alert-light");
+        //$("#port2").addClass("invisible").addClass("position-absolute");
+        //$("#port1").removeClass("invisible").removeClass("position-absolute");
+        $("#form1div").addClass("form - horizontal rounded border p-4");
+    });
+</script>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<script>
+
+    $(function () {
+        loadCities();
+
+        $("#txtcity").change(function () {
+            let cityId = $("#txtcity").val();
+            loadDataToDistrictByCityId(cityId);
+        });
+        $("#txtdistrict").change(function () {
+            let districtId = $("#txtdistrict").val();
+            loadDataToPostalCode(districtId);
+        });
+        //藉由MemberId取得訂單明細
+        $("#orderDetail").click(function () {
+            loadOrderDataByMemberId()
+        });
+
+        //藉由MemberId取得我的收藏
+        $("#ActivityFavouriteDetail").click(function () {
+            loadActivityFavouriteByMemberId()
+        });
+
+        //藉由MemberId取得系統訊息
+        $("#showMessage").click(function () {
+            loadShortMessageByMemberId()
+        })
+        //demo會員資料變更
+        $("#demobtnMember").click(function () {
+            loaddemoMember();
+        })
+        //demo會員密碼變更
+        $("#demobtnPassword").click(function () {
+            loaddemoPassword();
+        })
+    });
+    //從資料庫抓城市
+    function loadCities() {
+        $.ajax({
+            type: 'get',
+            url:`@Url.Action("getAllCities")`,
+            success: function (result) {
+                let cities = JSON.parse(result);
+                $("#txtcity").html("<option>選城市</option>")
+                for (let city of cities) {
+                    let opt = $("<option></option>")
+                    //登入抓CityID
+                    @if (Model.DistrictId != null)
+                    {
+                        @:if (city.CityID == @Model.entity.Districts.CityId)
+                        @:{
+                            @:opt.prop("selected", true);
+                            @:loadDataToDistrictByCityId(city.CityID);
+                        @:}
+                    }
+
+                    opt.html(city.CityName)
+                    opt.val(city.CityID)
+                    $("#txtcity").append(opt);
+
+                }
+            }
+        });
+    }
+
+    //根據城市讀取區資訊的函數
+    function loadDataToDistrictByCityId(cityId) {
+        $.ajax({
+            type: 'get',
+            url: "@Url.Action("getDistrictsByCityId")",
+            data: { cityId: cityId },
+            success: function (result) {
+                $("#txtdistrict").html("<option style='display:none' value='-1'>請選擇</option>");
+                let districts = JSON.parse(result);
+                for (let district of districts) {
+                    let opt = $("<option></option>");
+
+                    //登入抓districtId
+                    @if(Model.DistrictId != null)
+                    {
+                        @:if (district.DistrictId ==@Model.entity.Districts.DistrictId)
+                        @:{
+                            @:opt.prop("selected", true);
+                            @:loadDataToPostalCode(district.DistrictId);
+                        @:}
+                    }
+
+                    opt.html(district.DistrictName);
+                    opt.val(district.DistrictId);
+                    $("#txtdistrict").append(opt);
+
+                }
+            }
+        });
+    }
+    //根據區讀取郵遞區號
+    function loadDataToPostalCode(districtId) {
+        $.ajax({
+            type: 'get',
+            url: "@Url.Action("getPostCodeByDistrictId")",
+            data: { districtId: districtId },
+            success: function (result) {
+                $("#txtpostalcode").val(result);
+            }
+        });
+    }
+    //藉由MemberId取得訂單明細
+    function loadOrderDataByMemberId() {
+        $.ajax({
+            type: 'get',
+            url: `@Url.Action("getOrderbyMemberId")`,
+            data: { memberId:"@Model.MemberID"},
+            success: function (result) {
+                $("#form2div").hide();
+                $("#form1div").html(result);
+            }
+        })
+    }
+
+    //藉由MemberId取得收藏明細
+    function loadActivityFavouriteByMemberId() {
+        $.ajax({
+            type: 'get',
+            url: '@Url.Action("getActivityFavouriteByMemberId")',
+            data: { MemberId: "@Model.MemberID" },
+            success: function (result) {
+                $("#form2div").hide();
+                $("#form1div").html(result);
+            }
+        });
+    }
+
+    //藉由MemberId更改收藏明細的圈圈數字
+    function changeActivityFavouriteByMemberId() {
+        $.ajax({
+            type: 'get',
+            url: '@Url.Action("changeActivityFavouriteByMemberId")',
+            data: { MemberId: "@Model.MemberID" },
+            success: function (result) {
+
+                $("#activityFavourite").html(result);
+            }
+        });
+    }
+
+
+     //藉由MemberId取得後台系統訊息
+    function loadShortMessageByMemberId() {
+        $.ajax({
+            type: 'get',
+            url: '@Url.Action("getShortMassageByMemberId")',
+            data: { MemberId: "@Model.entity.MemberID" },
+            success: function (result) {
+                $("#form2div").hide();
+                $("#form1div").html(result);
+            }
+        });
+    }
+
+      //todo 12/15藉由MemberId更改我的訊息圈圈數字
+    function changeShortMessageNumber() {
+        $.ajax({
+            type: 'get',
+            url: "@Url.Action("changeShortMessageNumber")",
+            data: { MemberId: "@Model.MemberID" },
+            success: function (result) {
+                $("#shortMessageNumber").html(result);
+                if (result > 3) {
+                    //$(".fa-bell").empty();
+                    $(".fa-bell").append($(`3<small style="position:absolute;top:0;">+</small>`));
+                }
+                else {
+                    $(".shortmessage").html(result);
+                }
+               
+            }
+        });
+    }
+
+    //demo會員資料變更
+    function loaddemoMember() {
+        $("#txtName").val("王池田");
+        $("#txtNickName").val("池田");
+        $("#txtIDentityNumber").val("A129688927");
+        $("#txtPhone").val("0911155337");
+        $("#txtSex").val("0", true);
+        $("#txtBirthDate").val("2000-12-25");
+        $("#txtcity").val("5", true);
+        $("#txtdistrict").html("<option value='9'>大安區</option>");
+        $("#txtpostalcode").val("106")
+        $("#txtaddress").val("復興南路一段390號")
+
+    }
+    //demo會員密碼變更
+    function loaddemoPassword() {
+        $("#txtPassword").val("gb0zWxjwido");
+        $("#txtNPassword").val("gb0zWxjwido");
+        $("#txtANPassword").val("gb0zWxjwido");
+    }
+
+
+    (function ($) {
+        var width_crop = 400, // 圖片裁切寬度 px 值
+            height_crop = 400, // 圖片裁切高度 px 值
+            type_crop = "circle", // 裁切形狀: square 為方形, circle 為圓形
+            width_preview = 500, // 預覽區塊寬度 px 值
+            height_preview = 500, // 預覽區塊高度 px 值
+            compress_ratio = 0.85, // 圖片壓縮比例 0~1
+            type_img = "jpg", // 圖檔格式 jpeg png webp
+            oldImg = new Image(),
+            myCrop, file, oldImgDataUrl;
+
+        // 裁切初始參數設定
+        myCrop = $("#oldImg").croppie({
+            viewport: { // 裁切區塊
+                width: width_crop,
+                height: height_crop,
+                type: type_crop
+            },
+            boundary: { // 預覽區塊
+                width: width_preview,
+                height: height_preview
+            }
+        });
+
+        function readFile(input) {
+            if (input.files && input.files[0]) {
+                file = input.files[0];
+            } else {
+                return;
+            }
+
+            if (file.type.indexOf("image") == 0) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    oldImgDataUrl = e.target.result;
+                    oldImg.src = oldImgDataUrl; // 載入 oldImg 取得圖片資訊
+                    myCrop.croppie("bind", {
+                        url: oldImgDataUrl
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("您上傳的不是圖檔！");
+            }
+        }
+
+        function displayCropImg(src) {
+            //var html = "<img src='" + src + "' />";
+            //$("#newImg").html(html);
+            $("#loadimg").attr("src", src);
+            //$("#layoutimg").attr("src", src);
+            $("#layoutimg").css({
+                content:`url(${src})`
+            });
+        }
+
+        $("#upload_img").on("change", function () {
+            if (this.files[0] == null) return;
+            readFile(this);  //把圖片塞入編輯框
+            initWindowPosition(); //彈出對話方塊供編輯
+        });
+        function initWindowPosition() {
+            $("#oldImg").dialog({
+                modal: true,
+                //設定對話方塊有一個按鈕叫做裁剪圖片
+                buttons: {
+                    "裁剪圖片": function () {
+                        myCrop.croppie("result", {
+                            type: "base64",
+                            quality: compress_ratio
+                        }).then(function (src) {
+                            //src的結果會是base64字串,"data:image/png;base64,......"
+                            //可直接當url給img標籤,也可供上傳伺服器供儲存成檔案
+                            displayCropImg(src); //show出新裁剪好的圖片
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                width: 1000,
+                close: function () {
+                    let uploadimg = document.getElementById("upload_img");
+                    //對話方塊關閉時,把input[type="file"]標籤的內容清空
+                    //否則下次選擇相同圖片時不會觸法onchange事件然後出bug壞掉
+                    uploadimg.value = "";
+                }
+            });
+        }
+        //按保存就上傳base64字串給服務器
+        $("#btnSubmit").click(function () {
+            let base64code = $("#loadimg").attr("src");
+            if (!base64code) return;
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("CreateImage")",
+                data: { input: base64code },
+                success: function () {
+                    swal("儲存成功!", "","success");
+                    
+                }
+            })
+        });
+    })(jQuery);
+</script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/mvc/3.0/jquery.validate.unobtrusive.js"
+        type="text/javascript"></script>

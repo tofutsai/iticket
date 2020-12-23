@@ -1,0 +1,288 @@
+﻿@using prjITicket.Models;
+@model Activity
+@{
+    ViewBag.Title = "價格,庫存量,折扣";
+}
+    <script>
+    let ticketsData;
+    $(function () {
+        //頁面一起來,就動態造出table
+        getAllTicketInfoToTable(@ViewBag.ActivityId);
+        //按下修改/新增要做的事情
+        $("#btnSet").click(function () {
+            let ticketCategoryId = $("#exampleModalLabel").data("ticketCategoryId");
+            let ticketTimeId = $("#exampleModalLabel").data("ticketTimeId");
+            let price = $("#txtPrice").val();
+            let unitsInStock = $("#txtQuantity").val();
+            let discount = $("#txtDiscount").val();
+            //如果有空值,就不准輸入
+            if (!price || !unitsInStock || !discount) {
+                $("#errorTip").html("不能輸入空值");
+                //阻止對話框的後續關閉動作
+                return false;
+            }
+            if (price < 1) {
+                $("#errorTip").html("價格不能小於1");
+                return false;
+            }
+            if (unitsInStock < 0) {
+                $("#errorTip").html("庫存量不能低於0");
+                return false;
+            }
+            if (discount > 0.9 || discount < 0) {
+                $("#errorTip").html("折扣需介於0-0.9");
+                return false;
+            }
+            //都驗證成功,就開始真正錄入資料
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SetTicketProperties")",
+                data: {
+                    TicketCategoryId: ticketCategoryId,
+                    TicketTimeId: ticketTimeId,
+                    ActivityID:@ViewBag.ActivityId,
+                    Price: price,
+                    UnitsInStock: unitsInStock,
+                    Discount: discount
+                },
+                success: function (result) {
+                    if (result == "OK") {
+                        getAllTicketInfoToTable(@ViewBag.ActivityId);
+                    }
+                    else {
+                        alert(result);
+                    }
+                }
+            });
+        });
+        //按下刪除要做的事情
+        $("#btnDelete").click(function () {
+            let ticketCategoryId = $("#exampleModalLabel").data("ticketCategoryId");
+            let ticketTimeId = $("#exampleModalLabel").data("ticketTimeId");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("deleteTicket")",
+                data: { ticketCategoryId: ticketCategoryId, ticketTimeId: ticketTimeId },
+                success: function (result) {
+                    if (result == "OK") {
+                        getAllTicketInfoToTable(@ViewBag.ActivityId);
+                    }
+                    else {
+                        alert(result);
+                    }
+                }
+            });
+        });
+    });
+    //動態製造出顯示票資料的表格
+    function getAllTicketInfoToTable(activityId) {
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("getAllTicketInfo")",
+            data: { activityId: activityId },
+            success: function (result) {
+                let thead1 = "";
+                let thead2 = "";
+                ticketsData = JSON.parse(result);
+                let tcs = ticketsData.TicketCategoty;
+                //製造表頭部分,循環讀取票種類當資料列
+                for (let i = 0; i < tcs.length; i++) {
+                    let categoryShow = `<td class="font-weight-bold" colspan="3">${tcs[i].TicketCategoryName}</td>`;
+                    thead1 += categoryShow;
+                    thead2 += "<td class='font-italic'>價格</td><td class='font-italic'>庫存量</td><td class='font-italic'>折扣</td>";
+                }
+                let tbody = "";
+                let tts = ticketsData.TicketTime;
+                //製造表的body,循環讀取每條場次當資料行
+                for (let i = 0; i < tts.length; i++) {
+                    let trTime = `<tr><td class="font-weight-bold">${tts[i].Time}</td>`;
+                    for (let j = 0; j < tcs.length; j++) {
+                        let ticket = getTicketByCategoryIdAndTimeId(tcs[j].TicketCategoryId, tts[i].TicketTimeId);
+                        trTime += `<td><a style="${ticket.Price?'':'color:red'}" onclick="showTicketData(${ticket.Price},${ticket.UnitsInStock},${ticket.Discount},${tcs[j].TicketCategoryId},${tts[i].TicketTimeId})" data-toggle="modal" data-target="#exampleModal" href="javascript:;">${ticket.Price}</a></td>` +
+                            `<td><a style="${ticket.Price?'':'color:red'}" onclick="showTicketData(${ticket.Price},${ticket.UnitsInStock},${ticket.Discount},${tcs[j].TicketCategoryId},${tts[i].TicketTimeId})"  data-toggle="modal" data-target="#exampleModal" href="javascript:;">${ticket.UnitsInStock}</a></td>`+
+                            `<td><a style="${ticket.Price?'':'color:red'}" onclick="showTicketData(${ticket.Price},${ticket.UnitsInStock},${ticket.Discount},${tcs[j].TicketCategoryId},${tts[i].TicketTimeId})"  data-toggle="modal" data-target="#exampleModal" href="javascript:;">${ticket.Discount}</a></td>`;
+                    }
+                    trTime += "</tr>";
+                    tbody += trTime;
+                }
+                //組合出最終的表格字串
+                let tableStr = '<tr>' +
+                    `<td rowspan="2" style="width:200px" class="align-middle">場次\\票種</td>${thead1}` +
+                    '</tr>' +
+                    `<tr>${thead2}</tr>` + tbody;
+                $("#tbTickets").html(tableStr);
+            }
+        });
+    }
+    function getTicketByCategoryIdAndTimeId(ticketCategoryId, ticketTimeId) {
+        for (let t of ticketsData.Tickets) {
+            if (t.TicketCategoryId == ticketCategoryId && t.TicketTimeId == ticketTimeId) {
+                return t;
+            }
+        }
+        return { Price: null, UnitsInStock: null, Discount: null, TicketID:null };
+    }
+    //點擊表格裡的資訊就把資料show在彈框裡
+    function showTicketData(price, quantity, discount, ticketCategoryId, ticketTimeId) {
+        //清空上一次的錯誤資訊
+        $("#errorTip").html("");
+        if (!price) {
+            $("#btnSet").html("新增");
+            $("#btnDelete").hide();
+        }
+        else {
+            $("#btnSet").html("修改");
+            $("#btnDelete").show();
+        }
+        $("#txtPrice").val(price);
+        $("#txtQuantity").val(quantity);
+        $("#txtDiscount").val(discount);
+        let ticketInfo = `${getCategoryNameById(ticketCategoryId)} ${getTicketTimeById(ticketTimeId)}`;
+        //在對話框頭部顯示票的場次和時間
+        $("#exampleModalLabel").html(ticketInfo);
+        //並記錄id到表頭中
+        $("#exampleModalLabel").data("ticketCategoryId", ticketCategoryId);
+        $("#exampleModalLabel").data("ticketTimeId", ticketTimeId);
+    }
+    //根據ticketCategoryId獲得ticketCategoryName
+    function getCategoryNameById(ticketCategoryId) {
+        for (let ticketCategory of ticketsData.TicketCategoty) {
+            if (ticketCategory.TicketCategoryId == ticketCategoryId) {
+                return ticketCategory.TicketCategoryName;
+            }
+        }
+    }
+    //根據ticketTimeId獲得ticketTime
+    function getTicketTimeById(ticketTimeId) {
+        for (let ticketTime of ticketsData.TicketTime) {
+            if (ticketTime.TicketTimeId == ticketTimeId) {
+                return ticketTime.Time;
+            }
+        }
+    }
+    </script>
+<div class="h1 text-center my-3">價格,庫存量,折扣設定</div>
+<table id="tbTickets" class="table table-bordered text-center shadow">
+    <!--動態塞入表格-->
+</table>
+<!-- 彈框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold" id="exampleModalLabel"><!--動態塞入票資料--></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="dialogContent" class="modal-body">
+                <div class="form-row text-left p-2">
+                    <div class="form-group col-md-4">
+                        <label class="font-weight-bold" for="">價格</label>
+                        <input id="txtPrice" step="100" min="1" type="number" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="font-weight-bold" for="">數量</label>
+                        <input id="txtQuantity" step="10" min="1" type="number" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="font-weight-bold" for="">折扣</label>
+                        <input id="txtDiscount" type="number" step="0.05" min="0" max="0.9" class="form-control" />
+                    </div>
+                    <div id="errorTip" style="height:10px;line-height:10px" class="invalid-feedback d-block pl-2"></div>
+                </div>
+                <div class="my-3 d-flex justify-content-center">
+                    <button type="button" id="btnSet" data-dismiss="modal" class="btn btn-primary mx-2">設定</button>
+                    <button type="button" id="btnDelete" data-dismiss="modal" class="btn btn-danger mx-2">刪除</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="row justify-content-center">
+        <div class="col-md-6 border shadow">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">個別設定</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">全行設定</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div class="form-row text-left p-2">
+                        <div class="form-group col-md-5">
+                            <label class="font-weight-bold" for="selTicketCategory">票種</label>
+                            <select id="selTicketCategory" class="form-control">
+                                <option style="display:none" value="-1">請選擇</option>
+                                @foreach(TicketCategory tc in Model.TicketCategory)
+                                {
+                                    <option value="@tc.TicketCategoryId">@tc.TicketCategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label class="font-weight-bold" for="selTicketTimes">場次</label>
+                            <select id="selTicketTimes" class="form-control">
+                                <option style="display:none" value="-1">請選擇</option>
+                                @foreach(TicketTimes tt in Model.TicketTimes)
+                                {
+                                    <option value="@tt.TicketTimeId">@tt.TicketTime.ToString("yyyy/MM/dd HH:mm")</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left p-2">
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">價格</label>
+                            <input id="txtPrice1" step="100" min="1" type="number" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">數量</label>
+                            <input id="txtQuantity1" step="10" min="1" type="number" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">折扣</label>
+                            <input id="txtDiscount1" type="number" step="0.05" min="0" max="0.9" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="my-3 d-flex justify-content-center">
+                        <button type="button" disabled id="btnSet1" class="btn btn-primary mx-2">增加</button>
+                        <button type="button" disabled id="btnDelete1" class="btn btn-danger mx-2">刪除</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="form-row text-left p-2">
+                        <div class="form-group col-md-5">
+                            <label class="font-weight-bold" for="">目標行或列</label>
+                            <select id="" class="form-control">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left p-2">
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">價格</label>
+                            <input type="number" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">數量</label>
+                            <input type="number" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="font-weight-bold" for="">折扣</label>
+                            <input type="number" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="my-3 d-flex justify-content-center">
+                        <button type="button" id="" class="btn btn-primary mx-2">設定</button>
+                        <button type="button" id="" class="btn btn-danger mx-2">刪除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@

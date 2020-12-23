@@ -1,0 +1,89 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@model IPagedList<TicketGroups>
+@{
+    ViewBag.Title = "套票一覽";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@{
+    foreach (TicketGroups group in Model)
+    {
+        <div class="col-md-6 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        @group.TicketGroupName
+                        <span style="float:right" class="text-info">@(Math.Round((1 - group.TicketGroupDiscount) * 100, 0).ToString().Trim('0'))折<!--塞折扣--></span>
+                    </h2>
+                    <table class="table table-sm" style="margin-bottom:0">
+                        <tr>
+                            <th>票名</th>
+                            <th>價格</th>
+                        </tr>
+                        @foreach (Activity activity in group.TicketGroupDetail.Select(tgd => tgd.Activity))
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(activity.ActivityName, "ActivityDetail", "Activity", new { activityId = activity.ActivityID }, new { target = "_blank" }) </td>
+                                <td>
+                                    @if (activity.Tickets.Count() == 0)
+                                    {
+                                        @:暫無
+                                    }
+                                    else
+                                    {
+                                        @activity.Tickets.Min(t => t.Price)
+                                    }
+                                </td>
+                            </tr>
+                        }
+                            <tr>
+                                <!--計算表格中條目總價格,忽略沒有票的項目-->
+                                <td colspan="2" style="font-size:20px" class="text-right">
+                                    總計:@group.TicketGroupDetail.Select(
+                                                             tgd => { return tgd.Activity.Tickets.Count() == 0 ? 0 : tgd.Activity.Tickets.Min(t => t.Price); }).Sum()
+                                </td>
+                            </tr>
+                    </table>
+                    <div class="d-flex justify-content-end align-items-end">
+                        <div class="h3 ml-auto mb-0 text-danger">
+                            <small>特價 $NT</small>
+                            <!--計算打折後的價格-->
+                            <strong>
+                                @(Math.Round(group.TicketGroupDetail.Select(
+                                        tgd => { return tgd.Activity.Tickets.Count() == 0 ? 0 : tgd.Activity.Tickets.Min(t => t.Price); }).Sum() * (1 - group.TicketGroupDiscount), 0))
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    @Html.ActionLink("查看詳細", "TicketGroupsDetail", new { ticketgroupId = group.TicketGroupId }, new { @class = "btn btn-primary btn-sm" })
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="col-md-12">
+    @if(ViewBag.ActionName== "GetTicketGroupsPages")
+    {
+        @Html.PagedListPager(Model, page=>Url.Action("GetTicketGroupsPages", new { page=page, orderMode = ViewBag.OrderMode, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, priceFilter = ViewBag.PriceFilter }),
+        PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+        {
+            InsertionMode=InsertionMode.Replace,
+            UpdateTargetId= "showTicketGroupsPages"
+        }))
+    }
+    else if(ViewBag.ActionName== "GetTicketGroupsPagesByKeyword")
+    {
+        @Html.PagedListPager(Model, page=>Url.Action("GetTicketGroupsPagesByKeyword", new { page=page, keyword=ViewBag.Keyword, orderMode=ViewBag.OrderMode, minPrice=ViewBag.MinPrice, maxPrice=ViewBag.MaxPrice, priceFilter=ViewBag.PriceFilter }),
+       PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+       {
+           InsertionMode = InsertionMode.Replace,
+           UpdateTargetId = "showTicketGroupsPages"
+       }))
+    }
+
+</div> 

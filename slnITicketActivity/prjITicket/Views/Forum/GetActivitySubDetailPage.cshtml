@@ -1,0 +1,125 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@model Activity
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<div class="card mt-4">
+    <img class="card-img-top img-fluid" src="@Url.Content("~/images/Activity/"+Model.Picture)" alt="">
+    <div class="card-body">
+        <h3 class="card-title">@Model.ActivityName</h3>
+        <!---->
+        <!--下面顯示價格,如果沒有票,就顯示無價格;有票就顯示最便宜的,如果有折扣,就顯示原價與折扣價,否則只顯示原價-->
+        <h4>
+            @{
+                if (Model.Tickets.Count() == 0)
+                {
+                    @:暫無價格
+                }
+                else
+                {
+                    Tickets cheapestTicket = Model.Tickets.OrderBy(t => t.Price * (1 - t.Discount)).FirstOrDefault();
+                    if (cheapestTicket.Discount != 0)
+                    {
+                        <del id="ticketPrice" class="text-muted small">TWD @cheapestTicket.Price</del>@:&nbsp;&nbsp;&nbsp;&nbsp;TWD @(Math.Round(cheapestTicket.Price * (1 - cheapestTicket.Discount), 0))
+                    }
+                    else
+                    {
+                        <span id="ticketPrice" class="text-muted small">TWD </span>@Math.Round(cheapestTicket.Price * (1 - cheapestTicket.Discount), 0)
+                    }
+                }
+            }
+        </h4>
+        <!---->
+        @*<h4>$24.99</h4>*@
+        <p class="card-text">@Model.Description</p>
+        <p class="card-text">
+            <span id="activitySubDetailStars" class="text-warning">
+                @{
+                    //判斷該活動的平均評價並顯示在網頁
+                    if (Model.Comment.Count() == 0)
+                    {
+                        @:暫無評價
+                        <script>document.getElementById("activitySubDetailStars").className = "text-mute"</script>
+                    }
+                    else
+                    {
+                        int score = (int)Math.Round(Model.Comment.Average(c => c.CommentScore), 0);
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= score)
+                            {
+                                @:&#9733;
+                            }
+                            else
+                            {
+                                @:&#9734;
+                            }
+                        }
+                        <script>$("#activitySubDetailStars").after("@score stars")</script>
+                    }
+                }
+            </span>
+        </p>
+        <a href="@Url.Action("ActivityDetail","Activity",new { activityId=Model.ActivityID})" class="btn btn-primary">查看詳細</a>
+        <a href="javascript:;" onclick="returnToActivityList()" class="btn btn-info">返回</a>
+    </div>
+</div>
+<!-- /.card -->
+<script>
+    //Ajax上傳評論後刷新評論頁面查看剛上傳的評論
+    $("#btnComment").on("click", function () {
+        let content = $("textarea").val();
+        let starCount = $("#commentStars img[src='/images/Activity/CommentStar/chngstar.gif']").length;
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("AddActivityComment")",
+            data: { activityId:@Model.ActivityID, content: content, starCount: starCount },
+            success: function (result) {
+                outResult = result;
+                if (result == "OK") {
+                    //上傳成功清空textarea
+                    $("textarea").val("");
+                    //上傳成功恢復星星
+                    setStarsActive();
+                    $(".font_num").html("0").css({ color: "blue" });
+                    loadCommentPage(1);
+                    //回到錨點
+                    let position = $("#commentHead").offset().top - 60;
+                    $("html,body").animate({ scrollTop: position + "px" }, 150);
+                }
+                else {
+                    $("#addCommentError").html(result);
+                }
+            }
+        });
+    });
+    //默認啓動星星
+    setStarsActive();
+    //啓動星星評價的方法
+    function setStarsActive() {
+        $("#commentStars img").attr("src", "/images/Activity/CommentStar/star.gif");
+        $("#commentStars img").mouseenter(function () {
+            $(this).attr("src", "/images/Activity/CommentStar/chngstar.gif").parent().prevAll().children().attr("src", "/images/Activity/CommentStar/chngstar.gif");
+            $(this).parent().nextAll().children().attr("src", "/images/Activity/CommentStar/star.gif");
+        });
+        $("#commentStars").mouseleave(function () {
+            $("#commentStars img").attr("src", "/images/Activity/CommentStar/star.gif");
+        });
+        $("#commentStars img").click(function () {
+            $("#commentStars img").off();
+            $("#commentStars").off();
+        });
+    }
+    //textarea輸入的時候實時提供當前字數
+    $('textarea').on('input propertychange', function () {
+        $("#addCommentError").html("");
+        var length = $(this).val().length;
+        if (length == 300) {
+            $(".font_num").css({ color: "red" });
+        }
+        else {
+            $(".font_num").css({ color: "blue" });
+        }
+        $('.font_num').html(length);
+    });
+</script>

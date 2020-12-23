@@ -1,0 +1,15 @@
+﻿body {
+    
+}
+.iconlogin {
+    content:url(../../images/login_icon.jpg);
+}
+.myboday {
+    width: 240px;
+    height: 280px;
+    line-height: 280px;
+    clear: both;
+    color: #f9c81e;
+    background-color: #fffaf3;
+    float: left;
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="TicketSysEntities-Web.config Connection String" description="TicketSysEntities 應用程式在 web.config 中用來存取資料庫的連接字串。" defaultValue="metadata=res://*/Models.TicketSysModel.csdl|res://*/Models.TicketSysModel.ssdl|res://*/Models.TicketSysModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;Server=tcp:iticket128.database.windows.net,1433;Initial Catalog=TicketSys;Persist Security Info=False;User ID=fantasysdo2008;Password=Aa1!admin;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\LearnPrograming\\資策會\\期末專題\\正在進行中的專案\\slnITicketActivity\\prjITicket\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='TicketSysEntities']/@connectionString" />
+  </parameter>
+</parameters>

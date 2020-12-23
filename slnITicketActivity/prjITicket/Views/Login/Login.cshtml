@@ -1,0 +1,275 @@
+﻿@model prjITicket.ViewModel.CMember
+@using prjITicket.Models
+@*<script src="~/Content/js/main.js"></script>*@
+<link rel="stylesheet" href="~/Content/Login/fonts/material-icon/css/material-design-iconic-font.min.css">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="~/Content/Login/css_login/style.css">
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*驗證機器人*@
+<script src="~/Content/Login/functionJS/GoogleReCaptchaAPI.js"></script>
+@*顯示或隱藏密碼*@
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+@*sweetalert*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+@{
+    ViewBag.Title = "登入";
+
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="main">
+
+        <section class="sign-in">
+            <div class="container_login">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="~/Content/Login/images/signin-image.jpg" alt="sing up image"></figure>
+                        @*<a href="#" class="signup-image-link">Create an account</a>*@
+                        @Html.ActionLink("一般會員註冊", "Register", "Login", new { htmlAttributes = new { @class = "signup-image-link" }, style = "font-size:16px;" })
+                        <span>                                       </span>
+                        @Html.ActionLink("企業註冊", "BussRegister", "Login", new { htmlAttributes = new { @class = "signup-image-link" }, style = "font-size:16px;" })
+                    </div>
+                    <div class="signin-form">
+                        <h2 class="form-title">登入帳號</h2>
+                        <form method="POST" class="register-form" id="login-form">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                <label for="your_name"><i class="zmdi zmdi-account material-icons-name" style="font-size:24px"></i></label>
+                                @*<input type="Email" name="Email" id="Email" placeholder="Your Email" />*@
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @placeholder = "你的Email", id = "youremail" } })
+                            </div>
+                            <div class="form-group" style="position:relative">
+                                <label for="your_pass"><i class="zmdi zmdi-lock" style="font-size:20px"></i></label>
+                                @*<input type="password" name="your_pass" id="your_pass" placeholder="Password" />*@
+                                @Html.PasswordFor(model => model.Password, new { @placeholder = "密碼", id = "pwd" })
+                                <i class="fa fa-eye" onclick="showhide()" id="eye" style="font-size:20px;line-height:36px;position:absolute;top:0;right:0"></i>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                                <label for="remember-me" class="label-agree-term"><span><span></span></span>記住帳密</label>
+                            </div>
+                            <div class="g-recaptcha " data-sitekey="6LdLEP8ZAAAAALCj9nZjFMuqSQjxfT-eZvtQNV-n" data-theme="dark"></div>
+                            @*<div>
+
+                        @ViewFunc.ReCaptchaWidget(Html, "signin", Url.Action("ValidateReCAPTCHA", "Login"), "dark")
+
+                    </div>*@
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="登入" @*disabled*@ />
+                            </div>
+                            <p>
+                                <a href="~/Login/Forget" id="btnForget">忘記密碼?</a>
+                            </p>
+                            <p style="color:red">@ViewBag.Message</p>
+                        </form>
+                        <div class="social-login">
+                            <span class="social-label">Or login with</span>
+                            <ul class="socials">
+                                <li>
+                                    <a href="#"><i class="display-flex-center zmdi zmdi-facebook" onclick="FBlogin()"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="display-flex-center zmdi zmdi-google" id="google" onclick="GoogleLogin();"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-secondary" id="mangeruser">管理員</a>
+                <a href="#" class="btn btn-secondary" id="user">一般使用者</a>
+                <a href="#" class="btn btn-secondary" id="bussuser">商家</a>
+                <a href="#" class="btn btn-secondary" id="testuser">一般會員登入</a>
+                <a href="#" class="btn btn-secondary" id="testbussuser">商家會員登入</a>
+            </div>
+        </section>
+    </div>
+}
+<script>
+    $("#mangeruser").click(function () {
+        $("#youremail").val("admin@gmail.com");
+        $("#pwd").val("Aa1!admin");
+    });
+    $("#user").click(function () {
+        $("#youremail").val("renoro@gitxmail.com");
+        $("#pwd").val("gb0zWxjwido");
+    });
+    $("#bussuser").click(function () {
+        $("#youremail").val("fantasysdo@yahoo.co.jp");
+        $("#pwd").val("Aa1!admin");
+    });
+    $("#testuser").click(function () {
+        $("#youremail").val("iticketshopping1@gmail.com");
+        $("#pwd").val("zz010203");
+    });
+    $("#testbussuser").click(function () {
+        $("#youremail").val("iticket128@gmail.com");
+        $("#pwd").val("zz010203");
+    });
+</script>
+<script>
+    $(function () {
+
+
+        var w = 770;
+        var h = 600;
+        var l = (screen.availWidth - w) / 2;
+        var t = (screen.availHeight - h) / 2;
+        $("#btnForget").on('click', function (event) {
+
+            window.open(this.href, "window", "width= " + w + ",height=" + h + ",left=" + l + ",top=" + t + ", scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+            return false;
+        });
+
+    });
+</script>
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()"
+        onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+<script type="text/javascript">
+   //google
+    let Google_appId = "358496110641-pj78uo0vmrpgupdhu5hl5fvq1ag43oud.apps.googleusercontent.com";
+    function HandleGoogleApiLibrary() {
+        // Load "client" & "auth2" libraries
+        gapi.load('client:auth2', {
+            callback: function () {
+                // Initialize client & auth libraries
+                gapi.client.init({
+                    clientId: Google_appId,
+                    scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me',
+
+                }).then(
+                    function (success) {
+                        // You can now make API calls
+                        console.log("Google Libraries are initialized successfully");
+                    },
+                    function (error) {
+
+                        console.log(error);
+                    }
+                );
+            },
+            onerror: function () {
+
+                console.log("Failed to load libraries");
+            }
+        });
+    }
+
+    function GoogleLogin() {
+
+        gapi.auth2.getAuthInstance().signIn().then(
+            function (success) {
+
+                let member = JSON.stringify(success["xt"]);
+                console.log(member);
+                 $.ajax({
+                 url:'@Url.Action("GoLogin")',
+                 type: 'POST',
+                 data: { returnUrl: member },
+                 async: false,
+        success: function (data) {
+            console.log('測試123' + member);
+            console.log(data);
+            //console.log("test");
+            location.href = "/Activity/ActivityList"
+        }
+
+         });
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+
+    }
+
+</script>
+<script>
+    //臉書
+    function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+        console.log('statusChangeCallback');
+        console.log(response);                   // The current login status of the person.
+        if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+            testAPI();
+        } else {                                 // Not logged into your webpage or we are unable to tell.
+            document.getElementById('status').innerHTML = 'Please log ' +
+                'into this webpage沒成功.';
+        }
+    }
+
+
+    function checkLoginState() {               // Called when a person is finished with the Login Button.
+        FB.getLoginStatus(function (response) {   // See the onlogin handler
+            statusChangeCallback(response);
+        });
+    }
+
+
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '1061437810936108',
+            cookie: true,                     // Enable cookies to allow the server to access the session.
+            xfbml: true,                     // Parse social plugins on this webpage.
+            version: 'v9.0'           // Use this Graph API version for this call.
+        });
+
+
+    };
+
+    function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+        console.log('Welcome!  Fetching your information.... ');
+        let member;
+        FB.api('/me', 'get', { "fields": "id,name,email" }, function (response) {
+            member = JSON.stringify(response);
+
+        $.ajax({
+        url:'@Url.Action("FBLogin")',
+        type: 'POST',
+        data: { returnUrl: member },
+        async: false,
+        success: function (data) {
+            console.log('測試123' + member);
+            console.log(data);
+            //console.log("test");
+            location.href = "/Activity/ActivityList"
+        }
+
+         });
+
+        });
+
+    }
+
+    function FBlogin()
+    {
+        FB.login(function (response) {
+            if (response.status === 'connected') {
+                checkLoginState();
+
+            } else {
+                // The person is not logged into your webpage or we are unable to tell.
+                alert("Facebook帳號無法登入");
+            }
+        }, { scope: 'public_profile,email' });
+
+    }
+
+</script>
+@*顯示或隱藏密碼*@
+<script type="text/javascript">
+    var eye = document.getElementById("eye");
+    var pwd = document.getElementById("pwd");
+
+    function showhide() {
+
+        if (pwd.type == "password") {
+            pwd.type = "text";
+            eye.className = 'fa fa-eye-slash'
+        } else {
+            pwd.type = "password";
+            eye.className = 'fa fa-eye'
+        }
+    }
+</script>
+<script type="text/javascript" color="255,0,0" opacity='1' zIndex="-10" count="76" src="~/Content/Login/functionJS/dist/canvas-nest.js"></script>

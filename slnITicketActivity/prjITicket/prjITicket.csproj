@@ -1,0 +1,1019 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D5ADA627-7A09-4E9A-A504-F0BBDC8A7AE4}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>prjITicket</RootNamespace>
+    <AssemblyName>prjITicket</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44327</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AllPay.Payment.Integration">
+      <HintPath>..\..\..\新技術\歐付寶\Payment_Net-master\Payment_Net-master\AioSDK\AllPay.Payment.Integration.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="GoogleRecaptcha, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleRecaptcha.1.2.1\lib\GoogleRecaptcha.dll</HintPath>
+    </Reference>
+    <Reference Include="GoogleRecaptchaMvc, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleRecaptchaMvc.1.0.1\lib\GoogleRecaptchaMvc.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqKit, Version=1.1.21.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqKit.1.1.21\lib\net45\LinqKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="zxing, Version=0.16.6.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.6\lib\net461\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.6.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.6\lib\net461\zxing.presentation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.4\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.4\lib\net45\System.Web.Webpages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.4\lib\net45\System.Web.Webpages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.4\lib\net45\System.Web.Webpages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.4\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.4\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Activity\ChatMember\Chat.css" />
+    <Content Include="Content\Activity\ChatSeller\ChatRoom.css" />
+    <Content Include="Content\Activity\CommentStar.css" />
+    <Content Include="Content\Activity\MultiRange\nouislider.min.css" />
+    <Content Include="Content\Activity\MultiRange\nouislider.min.js" />
+    <Content Include="Content\BackEnd\css\myLayout.css" />
+    <Content Include="Content\BackEnd\css\shop-homepage.css" />
+    <Content Include="Content\BackEnd\css\shop-item.css" />
+    <Content Include="Content\BackEnd\css\styles.css" />
+    <Content Include="Content\BackEnd\demo\chart-area-demo.js" />
+    <Content Include="Content\BackEnd\demo\chart-bar-demo.js" />
+    <Content Include="Content\BackEnd\demo\chart-pie-demo.js" />
+    <Content Include="Content\BackEnd\demo\datatables-demo.js" />
+    <Content Include="Content\BackEnd\image\ITicket_logo1.png" />
+    <Content Include="Content\BackEnd\image\ITicket_logo1_notext.png" />
+    <Content Include="Content\BackEnd\image\ITicket_Logo2.png" />
+    <Content Include="Content\BackEnd\image\ITicket_logo2_notext.png" />
+    <Content Include="Content\BackEnd\js\BackEndArticle.jsx" />
+    <Content Include="Content\BackEnd\js\BackEndComment.jsx" />
+    <Content Include="Content\BackEnd\js\BackEndDemoDemo.jsx" />
+    <Content Include="Content\BackEnd\js\BackEndFactory.jsx" />
+    <Content Include="Content\BackEnd\js\BackEndMember.jsx" />
+    <Content Include="Content\BackEnd\js\scripts.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\AUTHORS.txt" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.min.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.slim.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.slim.min.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\external\sizzle\dist\sizzle.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\external\sizzle\dist\sizzle.min.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\external\sizzle\LICENSE.txt" />
+    <Content Include="Content\BackEnd\node_modules\jquery\LICENSE.txt" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\jsonp.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\load.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\script.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\var\location.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\var\nonce.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\var\rquery.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\ajax\xhr.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes\attr.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes\classes.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes\prop.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\attributes\val.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\callbacks.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\access.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\camelCase.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\DOMEval.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\init.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\isAttached.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\nodeName.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\parseHTML.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\parseXML.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\ready-no-deferred.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\ready.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\readyException.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\stripAndCollapse.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\toType.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\core\var\rsingleTag.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\addGetHookIf.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\adjustCSS.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\curCSS.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\finalPropName.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\hiddenVisibleSelectors.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\showHide.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\cssExpand.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\getStyles.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\isHiddenWithinTree.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\rboxStyle.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\rnumnonpx.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\css\var\swap.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\data.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\data\Data.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\data\var\acceptData.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\data\var\dataPriv.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\data\var\dataUser.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\deferred.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\deferred\exceptionHook.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\deprecated.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\deprecated\ajax-event-alias.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\deprecated\event.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\dimensions.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\effects.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\effects\animatedSelector.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\effects\Tween.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\event.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\event\focusin.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\event\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\event\trigger.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\exports\amd.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\exports\global.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\jquery.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\buildFragment.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\getAll.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\setGlobalEval.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\var\rscriptType.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\var\rtagName.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\wrapMap.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\manipulation\_evalUrl.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\offset.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\queue.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\queue\delay.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\selector-native.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\selector-sizzle.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\selector.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\serialize.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\traversing.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\traversing\findFilter.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\traversing\var\dir.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\traversing\var\rneedsContext.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\traversing\var\siblings.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\arr.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\class2type.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\document.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\documentElement.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\flat.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\fnToString.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\getProto.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\hasOwn.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\indexOf.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\isFunction.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\isWindow.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\ObjectFunctionString.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\pnum.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\push.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\rcheckableType.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\rcssNum.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\rnothtmlwhite.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\slice.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\support.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\var\toString.js" />
+    <Content Include="Content\BackEnd\node_modules\jquery\src\wrap.js" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Forum_use\bootstrap.min.css" />
+    <Content Include="Content\Forum_use\build\ckeditor.js" />
+    <Content Include="Content\Forum_use\build\translations\af.js" />
+    <Content Include="Content\Forum_use\build\translations\ar.js" />
+    <Content Include="Content\Forum_use\build\translations\ast.js" />
+    <Content Include="Content\Forum_use\build\translations\az.js" />
+    <Content Include="Content\Forum_use\build\translations\bg.js" />
+    <Content Include="Content\Forum_use\build\translations\ca.js" />
+    <Content Include="Content\Forum_use\build\translations\cs.js" />
+    <Content Include="Content\Forum_use\build\translations\da.js" />
+    <Content Include="Content\Forum_use\build\translations\de-ch.js" />
+    <Content Include="Content\Forum_use\build\translations\de.js" />
+    <Content Include="Content\Forum_use\build\translations\el.js" />
+    <Content Include="Content\Forum_use\build\translations\en-au.js" />
+    <Content Include="Content\Forum_use\build\translations\en-gb.js" />
+    <Content Include="Content\Forum_use\build\translations\eo.js" />
+    <Content Include="Content\Forum_use\build\translations\es.js" />
+    <Content Include="Content\Forum_use\build\translations\et.js" />
+    <Content Include="Content\Forum_use\build\translations\eu.js" />
+    <Content Include="Content\Forum_use\build\translations\fa.js" />
+    <Content Include="Content\Forum_use\build\translations\fi.js" />
+    <Content Include="Content\Forum_use\build\translations\fr.js" />
+    <Content Include="Content\Forum_use\build\translations\gl.js" />
+    <Content Include="Content\Forum_use\build\translations\gu.js" />
+    <Content Include="Content\Forum_use\build\translations\he.js" />
+    <Content Include="Content\Forum_use\build\translations\hr.js" />
+    <Content Include="Content\Forum_use\build\translations\hu.js" />
+    <Content Include="Content\Forum_use\build\translations\id.js" />
+    <Content Include="Content\Forum_use\build\translations\it.js" />
+    <Content Include="Content\Forum_use\build\translations\ja.js" />
+    <Content Include="Content\Forum_use\build\translations\km.js" />
+    <Content Include="Content\Forum_use\build\translations\kn.js" />
+    <Content Include="Content\Forum_use\build\translations\ko.js" />
+    <Content Include="Content\Forum_use\build\translations\ku.js" />
+    <Content Include="Content\Forum_use\build\translations\lt.js" />
+    <Content Include="Content\Forum_use\build\translations\lv.js" />
+    <Content Include="Content\Forum_use\build\translations\ms.js" />
+    <Content Include="Content\Forum_use\build\translations\nb.js" />
+    <Content Include="Content\Forum_use\build\translations\ne.js" />
+    <Content Include="Content\Forum_use\build\translations\nl.js" />
+    <Content Include="Content\Forum_use\build\translations\no.js" />
+    <Content Include="Content\Forum_use\build\translations\oc.js" />
+    <Content Include="Content\Forum_use\build\translations\pl.js" />
+    <Content Include="Content\Forum_use\build\translations\pt-br.js" />
+    <Content Include="Content\Forum_use\build\translations\pt.js" />
+    <Content Include="Content\Forum_use\build\translations\ro.js" />
+    <Content Include="Content\Forum_use\build\translations\ru.js" />
+    <Content Include="Content\Forum_use\build\translations\si.js" />
+    <Content Include="Content\Forum_use\build\translations\sk.js" />
+    <Content Include="Content\Forum_use\build\translations\sl.js" />
+    <Content Include="Content\Forum_use\build\translations\sq.js" />
+    <Content Include="Content\Forum_use\build\translations\sr-latn.js" />
+    <Content Include="Content\Forum_use\build\translations\sr.js" />
+    <Content Include="Content\Forum_use\build\translations\sv.js" />
+    <Content Include="Content\Forum_use\build\translations\th.js" />
+    <Content Include="Content\Forum_use\build\translations\tr.js" />
+    <Content Include="Content\Forum_use\build\translations\tt.js" />
+    <Content Include="Content\Forum_use\build\translations\ug.js" />
+    <Content Include="Content\Forum_use\build\translations\uk.js" />
+    <Content Include="Content\Forum_use\build\translations\vi.js" />
+    <Content Include="Content\Forum_use\build\translations\zh-cn.js" />
+    <Content Include="Content\Forum_use\build\translations\zh.js" />
+    <Content Include="Content\Forum_use\css\border-anim-h.gif" />
+    <Content Include="Content\Forum_use\css\border-anim-v.gif" />
+    <Content Include="Content\Forum_use\css\border-h.gif" />
+    <Content Include="Content\Forum_use\css\border-v.gif" />
+    <Content Include="Content\Forum_use\css\imgareaselect-animated.css" />
+    <Content Include="Content\Forum_use\css\imgareaselect-default.css" />
+    <Content Include="Content\Forum_use\css\jquery.imgareaselect.min.js" />
+    <Content Include="Content\Forum_use\css\myLayout.css" />
+    <Content Include="Content\Forum_use\css\qq.css" />
+    <Content Include="Content\Forum_use\css\shop-homepage.css" />
+    <Content Include="Content\Forum_use\css\shop-item.css" />
+    <Content Include="Content\Forum_use\css\styles.css" />
+    <Content Include="Content\Forum_use\Forum.css" />
+    <Content Include="Content\Forum_use\forumcontent.css" />
+    <Content Include="Content\Forum_use\ImageStore\0dce6959-6791-4235-9a76-8b68e9b21706.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\0faf0a4c-06ac-4a75-9d7d-0648947c0b47.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\1144.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\148a83de-c749-4f71-9874-a63b75df9183.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\15c726a9-4c08-4358-a20b-10bd00c40516.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\170aa7b6-1e62-4c9f-bce5-1b76cf85212b.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\18e0fa06-1e76-47ba-bede-a45ad7898089.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\2ee498cf-67ee-4210-bec0-3745413a49dd.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\306acb90-fc29-4d90-8b53-fffd6ee0cb84.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\3a9ba3f5-f46a-4b67-9f13-280069f41fa2.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\404Error.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4bef9b91-f571-46db-bd1e-6eaa0041b8a4.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4c1fbb58-fa38-4ff9-8174-c113561c1dfd.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4cb018cc-309e-4d9c-977d-909f2e2a205e.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4e6f02f1-c2f0-437a-bb78-e14f85588967.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4ed66f04-19e6-400a-8a51-f78fe7fdf5e5.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\4f4af66d-c130-4657-af6f-0fd500cd8ebd.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\5456471c-d8f6-422d-8572-95709d4d5c03.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\55022a89-ecdc-4b77-9941-f37147779631.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\57b8bc9b-bdad-473e-9208-7d765f214aa8.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\62503313-6b82-4c79-b512-87e58e2f594c.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\6c96d619-dec1-4d24-ac05-bfb47e70d52c.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\6d90aef4-0044-4f93-a162-65032004fadc.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\73029c2f-73cd-4626-92cd-56cb242ddc50.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\78fbadfd-de5c-471c-893e-bd574d605003.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\7c0a1d00-2835-4576-993c-6d77255ed6ee.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\7dc95bc5-5ab6-42b7-bf62-9183ee4f35b6.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\80daf9cd-f192-4708-9035-59f42e9944be.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\822d2698-a877-4544-9dea-3fb9dc7a45df.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\8a01e615-a62c-4c9a-812b-4d704f8a381e.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\8af19fe7-96d6-4691-b539-2f083f8c5300.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\907048fe-a85e-4801-b13a-e93aa747eba8.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\99e58d8c-9ddc-4f71-ab4c-61632401d1ee.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\a35476bd-6bc2-49a4-9d36-240c467610d1.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\a45e3b8a-83da-44c3-9cc7-906dbe4d6c71.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\a4f3d2b4-82eb-444f-b29b-c729449e7398.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\a7439c90-c212-4aee-9a59-c3efa5b21ed2.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\b70a27a7-08af-49b3-bddc-33bf88b39e2c.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\b7e3ee1d-c30e-42d5-9598-d704ccfc9358.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\b8659b1f-6e23-417a-b2a1-cc0c9adf02da.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\bf8213d2-f5a5-48f3-bc76-51839e70f86a.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\c24f63f8-5e1d-44b7-943e-9caf183927c5.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\c2bad02e-f88a-47de-876c-b4793644ec60.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\c37997e9-94ec-46b6-b5cb-909da997abfe.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\c82c5e52-c7cb-4515-942c-1b285d8429bb.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\cb82961c-4f04-479c-8f2d-1bfe0d1e0902.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\d58bd604-0563-46c3-baeb-eb33635e6072.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\d5ef6e91-cc2b-4621-85b0-5ea131664680.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\d8634d5e-d55f-44d4-bc16-90f03ac00c3f.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\deae2d8a-3d9f-4465-8fb1-031a1cbcdc1f.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\default.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\e0e0f3b0-ef67-444f-84b3-08a593a6e1d2.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\e12812f1-f5f7-4b54-aac7-7f89ea0cde73.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\e20db465-7952-4ab0-a660-96364b265518.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\e821a0be-f276-401e-a0a1-178db393c50b.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\f80d22e0-c66f-4f93-9d5b-4909b280996f.jpg" />
+    <Content Include="Content\Forum_use\ImageStore\fa6519b6-ec44-4989-a702-07beb058fbf6.jpg" />
+    <Content Include="Content\Forum_use\img\anonymous.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien01.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien02.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien03.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien04.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien05.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien06.jpg" />
+    <Content Include="Content\Forum_use\img\Hualien07.jpg" />
+    <Content Include="Content\Forum_use\img\NTC01.jpg" />
+    <Content Include="Content\Forum_use\img\NTC02.jpg" />
+    <Content Include="Content\Forum_use\img\NTC03.jpg" />
+    <Content Include="Content\Forum_use\img\NTC04.jpg" />
+    <Content Include="Content\Forum_use\img\NTC05.jpg" />
+    <Content Include="Content\Forum_use\img\NTC06.jpg" />
+    <Content Include="Content\Forum_use\img\NTC07.jpg" />
+    <Content Include="Content\Forum_use\img\starbackground.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei01.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei02.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei03.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei04.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei05.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei06.jpg" />
+    <Content Include="Content\Forum_use\img\Taipei07.jpg" />
+    <Content Include="Content\Forum_use\img\無標題簡報.jpg" />
+    <Content Include="Content\Layout\css\shop-homepage.css" />
+    <Content Include="Content\Layout\css\shop-item.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-grid.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-reboot.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.js" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.min.js" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.slim.js" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Content\Login\css_login\jquery-ui.css" />
+    <Content Include="Content\Login\css_login\style.css" />
+    <Content Include="Content\Login\fonts\material-icon\css\material-design-iconic-font.css" />
+    <Content Include="Content\Login\fonts\material-icon\css\material-design-iconic-font.min.css" />
+    <Content Include="Content\Login\fonts\material-icon\fonts\Material-Design-Iconic-Font.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-600.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-900.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-regular.svg" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700.svg" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-italic.svg" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-regular.svg" />
+    <Content Include="Content\Login\footerstyle.css" />
+    <Content Include="Content\Login\functionCS\ShowPassword.css" />
+    <Content Include="Content\Login\functionJS\dist\canvas-nest.js" />
+    <Content Include="Content\Login\functionJS\GoogleReCaptchaAPI.js" />
+    <Content Include="Content\Login\images\form-v1-1.png" />
+    <Content Include="Content\Login\images\form-v1-2.png" />
+    <Content Include="Content\Login\images\form-v1-3.png" />
+    <Content Include="Content\Login\images\form-v1-4.png" />
+    <Content Include="Content\Login\images\form-v1-5.png" />
+    <Content Include="Content\Login\images\form-v1-6.png" />
+    <Content Include="Content\Login\images\form-v1-icon-2.png" />
+    <Content Include="Content\Login\images\form-v1-icon-3.png" />
+    <Content Include="Content\Login\images\form-v1-icon.png" />
+    <Content Include="Content\Login\images\signin-image.jpg" />
+    <Content Include="Content\Login\images\signup-image.jpg" />
+    <Content Include="Content\Login\images\wizard-v4.jpg" />
+    <Content Include="Content\Login\SellerImageSQL0907.sql" />
+    <Content Include="Content\Login\SellerImage\0830.txt" />
+    <Content Include="Content\Login\SellerImage\1007.txt" />
+    <Content Include="Content\Login\SellerImage\2.jpg" />
+    <Content Include="Content\Login\SellerImage\abc10142.jpg" />
+    <Content Include="Content\Login\SellerImage\abc1016anonymous.jpg" />
+    <Content Include="Content\Login\SellerImage\anonymous.jpg" />
+    <Content Include="Content\Login\SellerImage\git版本控制解釋.txt" />
+    <Content Include="Content\Login\SellerImage\個人照 %281%29.png" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="images\Activity\089aedcd-dfd7-43f4-98da-128cd1423294.png" />
+    <Content Include="images\Activity\0c4e2c54-3427-4be9-8b69-bbbc84db2474.png" />
+    <Content Include="images\Activity\0f2c6128-c34e-4df2-b219-91a3957d68f4.png" />
+    <Content Include="images\Activity\241c7e2f-fed4-4995-a78f-1d125b7a8600.png" />
+    <Content Include="images\Activity\269b26ab-3065-42e2-9d69-5f37a20103d7.png" />
+    <Content Include="images\Activity\2af276bb-5e7d-4675-9def-88a28357d7f6.png" />
+    <Content Include="images\Activity\3b3c5fc4-d9ac-4645-9661-6404a67276a1.png" />
+    <Content Include="images\Activity\5e4a0c19-c53d-4365-9215-ed991f9af0ed.png" />
+    <Content Include="images\Activity\66721de1-f1af-40bd-9ed2-525d02a96ab5.png" />
+    <Content Include="images\Activity\739b3141-00b1-462a-9a77-183ce476d0b8.png" />
+    <Content Include="images\Activity\878b41ec-a5cf-4a40-83a5-74b6445faebb.png" />
+    <Content Include="images\Activity\89cca3b6-8c71-4027-ac2b-7d1c9c7f88f5.png" />
+    <Content Include="images\Activity\8e83e146-536a-40eb-977d-298d32f2ce92.png" />
+    <Content Include="images\Activity\91794127-4cd6-4c90-bc23-c425b47e18f4.png" />
+    <Content Include="images\Activity\9ceb6c23-9c40-416d-982d-7f93d286ab02.png" />
+    <Content Include="images\Activity\b09474a7-9636-45a7-a9e2-4f61ce41de90.png" />
+    <Content Include="images\Activity\bca11e21-e718-40eb-9111-3d2b51f7b0ef.png" />
+    <Content Include="images\Activity\c563e13b-dd3b-4fa8-bb5d-f20286b98517.png" />
+    <Content Include="images\Activity\cf641fef-b14c-4f5e-9f43-c74ee8005e93.png" />
+    <Content Include="images\Activity\CommentStar\chngstar.gif" />
+    <Content Include="images\Activity\CommentStar\star.gif" />
+    <Content Include="images\Activity\d2eb06e5-7a4f-48e1-96f0-6b20e3717b7a.png" />
+    <Content Include="images\Activity\DefaultImg\700x400.png" />
+    <Content Include="images\Activity\DefaultImg\ProductNotFound.png" />
+    <Content Include="images\Activity\e9b42052-0767-4587-a55c-5afc96165d6f.png" />
+    <Content Include="images\Activity\eded5ae7-76bc-4d49-9506-f134bc8039a2.png" />
+    <Content Include="images\Activity\f99bb599-c217-4b74-a123-6f83194b4905.png" />
+    <Content Include="images\Activity\neneka.png" />
+    <Content Include="images\Activity\NoiItemInCart.png" />
+    <Content Include="images\Activity\taibeigame.jpg" />
+    <Content Include="images\Activity\zelda.png" />
+    <Content Include="images\Home\Title.png" />
+    <Content Include="images\Layout\login_icon.jpg" />
+    <Content Include="images\Login\Layout\bar.png" />
+    <Content Include="images\Login\Layout\chat.png" />
+    <Content Include="images\Login\Layout\check-list.png" />
+    <Content Include="images\Login\Layout\heart.png" />
+    <Content Include="images\Login\Layout\login_icon.jpg" />
+    <Content Include="images\Login\Layout\money.png" />
+    <Content Include="images\Login\Layout\settings.png" />
+    <Content Include="images\Login\Upload\25bb1348-829d-4b33-ad00-7050eb23fba0.png" />
+    <Content Include="images\Login\Upload\2ce06ff7-c85e-4347-b1fe-c0cff54abeeb.png" />
+    <Content Include="images\Login\Upload\2d203de6-0c49-4263-a507-2544eeb50f1c.png" />
+    <Content Include="images\Login\Upload\486e24e6-07d3-4156-bd23-bb89c315b5dc.png" />
+    <Content Include="images\Login\Upload\4cb7b7f5-c401-4b6c-a109-9ddb6b28bbc2.png" />
+    <Content Include="images\Login\Upload\5452117d-d74d-42d1-abe9-24e3308b914d.png" />
+    <Content Include="images\Login\Upload\78b7982a-0935-40fc-91e9-00a1bc15253a.png" />
+    <Content Include="images\Login\Upload\8ff6ca38-5ce2-43dc-8867-ab7ebec07530.png" />
+    <Content Include="images\Login\Upload\96c11506-e1a5-4b34-8e68-ceb1146a9edc.png" />
+    <Content Include="images\Login\Upload\a6476ab0-5db1-460a-bde5-a76f21b30173.png" />
+    <Content Include="images\Login\Upload\b772ed79-5f7b-4b00-aac2-a6b7568860d6.png" />
+    <Content Include="images\Login\Upload\c296e1de-9dd2-4221-abea-b788d61d98e8.png" />
+    <Content Include="images\Login\Upload\c5eaf7b3-d955-46ed-9a62-243d5055c557.png" />
+    <Content Include="images\Login\Upload\ca5a0793-678f-4029-b601-3afc23a54bbf.png" />
+    <Content Include="images\Login\Upload\d8710037-da57-4688-aa8e-3431ed9c651b.png" />
+    <Content Include="images\Login\Upload\default.png" />
+    <Content Include="images\Login\Upload\ec95222d-a00b-4c12-bac4-03fcca951751.png" />
+    <Content Include="Models\TicketSysModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TicketSysModel.edmx</DependentUpon>
+      <LastGenOutput>TicketSysModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\TicketSysModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TicketSysModel.edmx</DependentUpon>
+      <LastGenOutput>TicketSysModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.js.map" />
+    <Content Include="Content\Layout\vendor\bootstrap\js\bootstrap.min.js.map" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.min.map" />
+    <Content Include="Content\Layout\vendor\jquery\jquery.slim.min.map" />
+    <Content Include="Content\Login\css_login\style.css.map" />
+    <Content Include="Content\Login\fonts\material-icon\fonts\Material-Design-Iconic-Font.eot" />
+    <Content Include="Content\Login\fonts\material-icon\fonts\Material-Design-Iconic-Font.ttf" />
+    <Content Include="Content\Login\fonts\material-icon\fonts\Material-Design-Iconic-Font.woff" />
+    <Content Include="Content\Login\fonts\material-icon\fonts\Material-Design-Iconic-Font.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-300italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-500italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-600.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-600.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-600.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-600.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-700italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-800italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-900.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-900.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-900.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-900.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-regular.eot" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-regular.ttf" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-regular.woff" />
+    <Content Include="Content\Login\fonts\poppins\poppins-v5-latin-regular.woff2" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700.eot" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700.ttf" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700.woff" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700.woff2" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-700italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-italic.eot" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-italic.ttf" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-italic.woff" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-italic.woff2" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-regular.eot" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-regular.ttf" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-regular.woff" />
+    <Content Include="Content\Login\fonts\poppins\roboto-condensed-v16-latin-regular.woff2" />
+    <EntityDeploy Include="Models\TicketSysModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TicketSysModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\TicketSysModel.edmx.diagram">
+      <DependentUpon>TicketSysModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="App_Code\ViewFunc.cshtml" />
+    <Content Include="Content\Forum_use\build\ckeditor.js.map" />
+    <Content Include="Content\BackEnd\node_modules\jquery\bower.json" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.min.map" />
+    <Content Include="Content\BackEnd\node_modules\jquery\dist\jquery.slim.min.map" />
+    <Content Include="Content\BackEnd\node_modules\jquery\external\sizzle\dist\sizzle.min.map" />
+    <Content Include="Content\BackEnd\node_modules\jquery\package.json" />
+    <Content Include="Content\BackEnd\node_modules\jquery\README.md" />
+    <Content Include="Content\Login\DemoFile\企業合同確認書.docx" />
+    <Content Include="Content\Login\SellerImage\201教室座位表.pdf" />
+    <Content Include="Content\Login\SellerImage\TicketSys.bak" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
+    <None Include="Properties\PublishProfiles\iticket128 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\shoppingcarajax - Web Deploy.pubxml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\Layout\modernizr-2.8.3.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\Shared\ForgetEmail.html" />
+    <Content Include="Views\Shared\RegisterEmailTemplate.html" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="ChatHub.cs" />
+    <Compile Include="Controllers\ActivityController.cs" />
+    <Compile Include="Controllers\BackEndActivityController.cs" />
+    <Compile Include="Controllers\BackEndArticleController.cs" />
+    <Compile Include="Controllers\BackEndCommentController.cs" />
+    <Compile Include="Controllers\BackEndMainController.cs" />
+    <Compile Include="Controllers\BackEndMemberController.cs" />
+    <Compile Include="Controllers\BackEndOrderController.cs" />
+    <Compile Include="Controllers\BackEndTicketGroupController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\ForumController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\BackEndApiController.cs" />
+    <Compile Include="Controllers\QRCodeController.cs" />
+    <Compile Include="Controllers\SellerCenterController.cs" />
+    <Compile Include="Controllers\TicketGroupsController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Activity.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ActivityFailedReason.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ActivityFavourite.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ActivityStatus.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Ad_Article_Activity.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Article.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ArticleCategories.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Article_Emotion.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Article_Report.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BackEndFactory.cs" />
+    <Compile Include="Models\BanLIst.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CAdmin.cs" />
+    <Compile Include="Models\Categories.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CDictionary.cs" />
+    <Compile Include="Models\CGoToPay.cs" />
+    <Compile Include="Models\Cities.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Comment.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CommentReport.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\COrderDetailByTicketGroup.cs" />
+    <Compile Include="Models\CShoppingCart.cs" />
+    <Compile Include="Models\Districts.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EmotionAction.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\facebook.cs" />
+    <Compile Include="Models\Forum\Authority.cs" />
+    <Compile Include="Models\Forum\CCropImage.cs" />
+    <Compile Include="Models\Forum\CForum_ArticleList_Factory.cs" />
+    <Compile Include="Models\Forum\CleanClear.cs" />
+    <Compile Include="Models\google.cs" />
+    <Compile Include="Models\GoogleReCaptcha.cs" />
+    <Compile Include="Models\Member.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MemberRole.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Orders.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Order_Detail.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Reply.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Reply_Emotion.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Reply_Report.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Report.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Seller.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShoppingCart.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShortMessage.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SubCategories.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Subscribes.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketCategory.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketGroupDetail.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketGroups.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketQRCodes.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Tickets.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketSysModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TicketSysModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketSysModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketSysModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TicketSysModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TicketTimes.cs">
+      <DependentUpon>TicketSysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\CActivity.cs" />
+    <Compile Include="Service\MailService.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndActivity.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndActivityDetail.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndActivityDetailModel.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndActivityReason.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndActivityTimes.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndMain.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndMainArticle.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndOrderDetail.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndOrders.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndTicketGroupDetail.cs" />
+    <Compile Include="ViewModel\BackEnd\CBackEndTicketGroupList.cs" />
+    <Compile Include="ViewModel\CBussMember.cs" />
+    <Compile Include="ViewModel\CBussRegister.cs" />
+    <Compile Include="ViewModel\CMember.cs" />
+    <Compile Include="ViewModel\CSeller.cs" />
+    <Compile Include="ViewModel\QBussMember.cs" />
+    <Compile Include="ViewModel\QMember.cs" />
+    <Compile Include="ViewModel\VMActivityDetail.cs" />
+    <Compile Include="ViewModel\VMActivityList.cs" />
+    <Compile Include="ViewModel\VMOrderDetailByTicketGroup.cs" />
+    <Compile Include="ViewModel\VMReport.cs" />
+    <Compile Include="ViewModel\VMTicketGroupsDetail.cs" />
+    <Compile Include="ViewModel\VMTicketGroupsList.cs" />
+    <Compile Include="ViewModel\VMUpdateTicketGroup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <None Include="packages.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Activity\ActivityList.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Activity\GetActivityPages.cshtml" />
+    <Content Include="Views\Activity\GetActivitySubDetailPage.cshtml" />
+    <Content Include="Views\Activity\GetActivityCommentPage.cshtml" />
+    <Content Include="Views\Activity\ActivityDetail.cshtml" />
+    <Content Include="Views\Login\BussEdit.cshtml" />
+    <Content Include="Views\Login\BussRegister.cshtml" />
+    <Content Include="Views\Login\Login.cshtml" />
+    <Content Include="Views\Login\MemberEdit.cshtml" />
+    <Content Include="Views\Login\Register.cshtml" />
+    <Content Include="Views\Activity\ShoppingCartList.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Activity\FinishPay.cshtml" />
+    <Content Include="Views\Activity\UpLoadActivity.cshtml" />
+    <Content Include="Views\Activity\AddPriceAndUnitsInStock.cshtml" />
+    <Content Include="Views\Login\EmailValidate.cshtml" />
+    <Content Include="Views\Forum\About.cshtml" />
+    <Content Include="Views\Forum\Add_article.cshtml" />
+    <Content Include="Views\Forum\Contact.cshtml" />
+    <Content Include="Views\Forum\Edit_article.cshtml" />
+    <Content Include="Views\Forum\forum_content.cshtml" />
+    <Content Include="Views\Forum\forum_homepage.cshtml" />
+    <Content Include="Views\Forum\forum_mainblock.cshtml" />
+    <Content Include="Views\Forum\forum_reply.cshtml" />
+    <Content Include="Views\Forum\Index.cshtml" />
+    <Content Include="Views\Shared\_ForumLayout.cshtml" />
+    <Content Include="Views\BackEndActivity\ActivityDetail.cshtml" />
+    <Content Include="Views\BackEndActivity\ActivityMaintain.cshtml" />
+    <Content Include="Views\BackEndOrder\OrderQuery.cshtml" />
+    <Content Include="Views\Shared\_BackEndLayoutPage.cshtml" />
+    <Content Include="Views\BackEndMember\MemberList.cshtml" />
+    <Content Include="Views\Activity\EditActivity.cshtml" />
+    <Content Include="Views\TicketGroups\GetTicketGroupsPages.cshtml" />
+    <Content Include="Views\TicketGroups\TicketGroupsDetail.cshtml" />
+    <Content Include="Views\TicketGroups\TicketGroupsList.cshtml" />
+    <Content Include="Views\Activity\OrderDetailByOrderId.cshtml" />
+    <Content Include="Views\Forum\SearchArticle.cshtml" />
+    <Content Include="Views\SellerCenter\GetQueryResult.cshtml" />
+    <Content Include="Views\SellerCenter\GetUploadPage.cshtml" />
+    <Content Include="Views\SellerCenter\ManagementCenter.cshtml" />
+    <Content Include="Views\Shared\_BackSellerLayout.cshtml" />
+    <Content Include="Views\Login\Forget.cshtml" />
+    <Content Include="Views\Login\getActivityFavouriteByMemberId.cshtml" />
+    <Content Include="Views\Login\getShortMassageByMemberId.cshtml" />
+    <Content Include="Views\Login\PasswordValidate.cshtml" />
+    <Content Include="Views\Activity\OrderDetailByTicketGroup.cshtml" />
+    <Content Include="Views\Activity\ProductNotFound.cshtml" />
+    <Content Include="Views\Activity\ZeroActivity.cshtml" />
+    <Content Include="Views\Activity\UploadTicketGroup.cshtml" />
+    <Content Include="Views\Activity\CustomerSupport.cshtml" />
+    <Content Include="Views\BackEndArticle\ArticleList.cshtml" />
+    <Content Include="Views\BackEndTicketGroup\TicketGroupDetail.cshtml" />
+    <Content Include="Views\BackEndTicketGroup\TicketGroupMaintain.cshtml" />
+    <Content Include="Views\Forum\forum_Activity.cshtml" />
+    <Content Include="Views\Forum\GetActivityPages.cshtml" />
+    <Content Include="Views\Forum\GetActivitySubDetailPage.cshtml" />
+    <Content Include="Views\Login\getOrderbyMemberId.cshtml" />
+    <Content Include="Views\SellerCenter\PackageCenter.cshtml" />
+    <Content Include="Views\SellerCenter\PackageCenterM.cshtml" />
+    <Content Include="Views\BackEndComment\CommentList.cshtml" />
+    <Content Include="Views\BackEndMain\BackEndIndex.cshtml" />
+    <Content Include="Views\Activity\UpDateTicketGroup.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Scripts\Activity\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49949</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44350/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>此專案參考這部電腦上所缺少的 NuGet 套件。請啟用 NuGet 套件還原，以下載該套件。如需詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的檔案是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

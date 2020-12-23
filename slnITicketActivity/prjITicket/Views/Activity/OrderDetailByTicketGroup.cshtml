@@ -1,0 +1,275 @@
+﻿@using prjITicket.ViewModel;
+@using prjITicket.Models;
+@using Newtonsoft.Json;
+@model VMOrderDetailByTicketGroup
+@{
+    ViewBag.Title = "套票訂單";
+}
+<script>
+    let maxPoint = 0;
+        $(function () {
+            //沒有必要在訂單畫面再顯示小的購物車,所以關掉
+            $("#dropDownShoppingCart").remove();
+            //讀取城市資料到下拉框
+            loadDataToSelCity();
+            //城市有變化就動態變更區下拉框的內容
+            $("#selCity").change(function () {
+                loadDataToSelDistrictByCityId(this.value);
+            });
+            //區有變化變更郵編
+            $("#selDistrict").change(function () {
+                loadDataToPostalCode(this.value);
+            });
+            //表單提交之前讀取折抵點數
+            $("#frmInfo").submit(function () {
+                let point = parseInt($("#displayPoint").html());
+                $("#txtSendPoint").val(point);
+            });
+        });
+        //把城市資訊塞入下拉框
+    function loadDataToSelCity() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCity")",
+            success: function (result) {
+                $("#selCity").html("<option value='' style='display:none'>請選擇</option>");
+                let cities = JSON.parse(result);
+                for (let city of cities) {
+                    let opt = $("<option></option>");
+                    opt.html(city.CityName);
+                    opt.val(city.CityID);
+                    $("#selCity").append(opt);
+                }
+            }
+        });
+    }
+    //根據城市讀取區資訊的函數
+    function loadDataToSelDistrictByCityId(cityId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getDistrictsByCityId")",
+            data: { cityId: cityId },
+            success: function (result) {
+                $("#selDistrict").html("<option value='' style='display:none'>請選擇</option>");
+                let districts = JSON.parse(result);
+                for (let district of districts) {
+                    let opt = $("<option></option>");
+                    opt.html(district.DistrictName);
+                    opt.val(district.DistrictId);
+                    $("#selDistrict").append(opt);
+                }
+            }
+        });
+    }
+    //根據區讀取郵遞區號
+        function loadDataToPostalCode(districtId) {
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("getPostCodeByDistrictId")",
+                data: { districtId: districtId },
+                success: function (result) {
+                    $("#postal-code").val(result);
+                }
+            });
+        }
+        //點數確定按鈕按下去的函數
+        function setPoint(totalPrice) {
+            let newPoint = $("#txtPoint").val();
+            if (newPoint > maxPoint) {
+                newPoint = maxPoint;
+                $("#txtPoint").val(maxPoint);
+            }
+            if (newPoint < 0) {
+                newPoint = 0;
+                $("#txtPoint").val(0);
+            }
+            $("#displayPoint").html(newPoint + "點");
+            $("#actualPrice").html(`$ ${totalPrice-newPoint}`);
+        }
+</script>
+<div class="container mt-5">
+    <div class="h1 text-center">
+        <strong>ITicket購票網 訂單確認</strong>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 col-md">
+            <div class="alert alert-success alert-rounded text-center" role="alert">1.訂單資料</div>
+        </div>
+        <div class="col-12 col-md">
+            <div class="alert alert-light alert-rounded text-center" role="alert">2.金流付款</div>
+        </div>
+        <div class="col-12 col-md">
+            <div class="alert alert-light alert-rounded text-center" role="alert">3.訂單完成</div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <div class="accordion" id="accordionExample">
+                <div class="card card-bottom">
+                    <div class="card-header  d-flex justify-content-between" id="headingOne">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                            顯示訂單細節
+                        </button>
+                        <div class="h3 d-inline-block mt-2">
+                            <strong id="totalPrice"><!--塞入總價格--></strong>
+                        </div>
+                    </div>
+                </div>
+                <div id="collapseOne" class="collapse show " aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <table class="table table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th style="width:100px"></th>
+                                <th> 商品名稱</th>
+                                <th>票種</th>
+                                <th>場次</th>
+                                <th>數量</th>
+                                <th class="text-right" width="120">小計</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shoppingCartDetail">
+                            @{
+                                int totalPrice = 0;
+                                foreach (Tickets ticket in Model.Tickets)
+                                {
+                                    int subTotal = (int)Math.Round(ticket.Price * (1 - Model.Discount), 0) * Model.Quantity;
+                                    totalPrice += subTotal;
+                                    <tr data-ticketid="@ticket.TicketID">
+                                        <td class="align-middle">
+                                            <div class="card p-1 card-bottom">
+                                                <img src="@Url.Content("~/images/Activity/"+ticket.Activity.Picture)" style="width:90px">
+                                            </div>
+                                        </td>
+                                        <td class="align-middle ">@ticket.Activity.ActivityName</td>
+                                        <td class="align-middle ">@ticket.TicketCategory.TicketCategoryName</td>
+                                        <td class="align-middle ">@ticket.TicketTimes.TicketTime.ToString("yyyy/MM/dd HH:mm")</td>
+                                        <td class="align-middle">@Model.Quantity 件</td>
+                                        <td class="align-middle text-right">$@subTotal</td>
+                                    </tr>
+                                }
+                                int maxPoint = Model.MaxPoint;
+                                int halfTotal = totalPrice / 2;
+                                maxPoint = maxPoint > halfTotal ? halfTotal : maxPoint;
+                            }
+                            <tr class="text-right">
+                                <td colspan="5">
+                                    <strong>合計</strong>
+                                </td>
+                                <td>
+                                    <strong>$ @totalPrice</strong>
+                                </td>
+                            </tr>
+                            <tr class="text-right">
+                                <td colspan="5"><strong>點數</strong></td>
+                                <td>
+                                    <button class="dropdown-toggle" style="border:none;background-color:white" type="button" id="dropdownPoint"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-donate"></i> <strong id="displayPoint">0點</strong>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownPoint" style="max-width:500px">
+                                        <h5 style="text-align:center;color:red">最多折抵:@(maxPoint)點</h5>
+                                        <div class="form-inline">
+                                            <div class="form-group mx-sm-3 m-2">
+                                                <input id="txtPoint" type="number" value="0" min="0" max="@maxPoint" style="width:100px"
+                                                       class="form-control" id="inputPassword2" placeholder="點數">
+                                            </div>
+                                            <input onclick="setPoint(@totalPrice)" type="button" class="btn btn-primary m-2" value="確定" />
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-right">
+                                <td colspan="5">
+                                    <strong>應付</strong>
+                                </td>
+                                <td>
+                                    <strong id="actualPrice">$ @totalPrice</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <script>
+                $("#totalPrice").html("$ @totalPrice");
+                maxPoint = @maxPoint;
+            </script>
+            <div class="card text-center my-5 border-0">
+                <div class="card-header border-0">
+                    <div class="h3 mt-1"> 訂購人資訊 </div>
+                </div>
+                <form action="@Url.Action("GoToPayTicketGroup")" id="frmInfo" method="post" class="needs-validation" novalidate>
+                    <!--藏輸入的點數,折扣,數量,票-->
+                    <input type="hidden" id="txtSendPoint" name="point" value="0" />
+                    <input type="hidden" name="quantity" value="@Model.Quantity" />
+                    <input type="hidden" name="discount" value="@Model.Discount" />
+                    <input type="hidden" name="ticketIds" value="@JsonConvert.SerializeObject(Model.Tickets.Select(t=>t.TicketID).ToArray())" />
+                    <div class="form-row text-left mt-3">
+                        <div class="form-group col-md-6">
+                            <label for="name">姓名</label>
+                            <input type="text" class="form-control " name="name" id="name" placeholder="姓名" required>
+                            <div class="invalid-feedback">請填寫姓名</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="mail">Email</label>
+                            <input type="email" class="form-control" name="email" id="mail" placeholder="Email" required>
+                            <div class="invalid-feedback">請填寫Email</div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label for="selCity">城市</label>
+                            <select id="selCity" class="form-control" required>
+                                <!--動態塞入城市-->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="selDistrict">區</label>
+                            <select name="districtId" id="selDistrict" class="form-control" required>
+                                <option value="">請選擇</option>
+                                <!--根據城市動態塞入區-->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="postal-code">郵遞區號</label>
+                            <input type="text" disabled class="form-control" id="postal-code" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="address">地址</label>
+                        <input name="address" type="text" class="form-control" id="address" placeholder="xxx路xxx號" required>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <a href="@Url.Action("TicketGroupsList","TicketGroups")" class="btn btn-secondary mr-2">返回</a>
+                        <button type="submit" class="btn btn-primary">確認付款</button>
+                    </div>
+                </form>
+
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+</div>

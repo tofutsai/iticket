@@ -1,0 +1,11 @@
+﻿<img style="width:1000px;display:block;margin:50px auto" src="@Url.Content("~/images/Activity/DefaultImg/ProductNotFound.png")">
+<h2 style="text-align:center"><span id="timer">6</span>秒之後自動跳轉</h2>
+<script>
+    let count = 6;
+    window.setInterval(function () {
+        if (count == 0) {
+            window.location = "@Url.Action("Index","Home")";
+        }
+        $("#timer").html(count--);
+    }, 1000);
+</script>

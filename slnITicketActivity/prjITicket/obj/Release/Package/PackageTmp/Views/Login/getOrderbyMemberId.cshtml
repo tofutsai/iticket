@@ -1,0 +1,138 @@
+﻿@using prjITicket.Models;
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<prjITicket.Models.Orders>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+
+@if (Model.Count() == 0)
+{<div class="row">
+        <div style="margin:0px auto">
+            <h3><strong>目前暫無訂單</strong></h3>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                會員姓名
+            </th>
+            <th>
+                會員地址
+            </th>
+            <th>
+                訂單狀態
+            </th>
+            <th>
+                訂單號碼
+            </th>
+            <th>
+                訂單日期
+            </th>
+            <th>
+                QR Code
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+                    @if (item.OrderStatus == true)
+                    {
+                        @:<p>已付款</p>
+                    }
+                    else
+                    {
+                        @:<p style="color:red">未付款</p>
+
+
+                    }
+                </td>
+                <td>
+                    @item.OrderGuid
+                </td>
+                <td>
+                    @item.OrderDate.ToString("yyyy-MM-dd")
+                </td>
+                <td style="text-align: center; vertical-align: middle;">
+                    @if (item.OrderStatus == false)
+                    {
+                        @:<a type="button" class="btn btn-danger" href="@Url.Action("OrderDetailByOrderId","Activity",new { orderId=item.OrderID})">前往付款</a>
+                    }
+                    else
+                    {
+
+                        @:<a href="javascript:;" class="showqrCode" data-orderid="@item.OrderID" data-toggle="modal" data-target="#exampleModal" @*onclick="showQRCode()"*@><i class="fas fa-qrcode" style="font-size:40px;"></i></a>
+
+
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+@*會員訂單管理Ajax*@
+@Html.PagedListPager(Model, page=>Url.Action("getOrderbyMemberId", new {memberId=ViewBag.MemberId, page = page}),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new AjaxOptions()
+        {
+            InsertionMode = InsertionMode.Replace,
+            UpdateTargetId = "form1div"
+        }
+        ))
+
+<script>
+    @*function showQRCode(orderDetailId) {
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("ShowQRCode","Activity")",
+            data: { orderDetailId: orderDetailId },
+            success: function (result) {
+                let content = "";
+                let qrCodes = JSON.parse(result);
+                for (let qrCode of qrCodes.QRCodes) {
+                    let showStr = '<div class="row justify-content-center">' +
+                        '<div class="col-md-10 text-center">' +
+                        `<img src="data:img/png;base64,${qrCode}">` +
+                        `<h3>${qrCodes.ActivityName}</h3>` +
+                        `<p>${qrCodes.TicketCategoryName} ${qrCodes.Time}</p>` +
+                        '</div>' +
+                        '</div>';
+                    content += showStr;
+                    //$("#dialogshow").append(content);
+                }
+                $("#dialogshow").html(content);
+            }
+        })
+    }
+
+    function getorderDetailId(orderid) {
+        $.ajax({
+            type: 'post',
+            url: "@Url.Action("getQRCode")",
+            data: { orderid: orderid },
+            success: function (result) {
+                console.log(result);
+                let qrCodes = JSON.parse(result);
+                let orderDetailIds = qrCodes.orderDetailIds;
+                console.log(orderDetailIds);
+                for (let orderDetailId in orderDetailIds) {
+                    console.log(orderDetailIds[orderDetailId])
+                    showQRCode(orderDetailIds[orderDetailId]);
+                }
+
+            }
+        });
+    }*@
+</script>

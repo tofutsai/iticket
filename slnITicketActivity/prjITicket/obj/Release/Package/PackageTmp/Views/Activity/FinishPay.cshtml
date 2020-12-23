@@ -1,0 +1,149 @@
+﻿@using prjITicket.Models
+@model Orders
+@{
+    ViewBag.Title = "付款成功";
+}
+<script>
+    function showQRCode(orderDetailId) {
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("ShowQRCode")",
+            data: { orderDetailId: orderDetailId },
+            success: function (result) {
+                let content = "";
+                let qrCodes = JSON.parse(result);
+                for (let qrCode of qrCodes.QRCodes) {
+                    let showStr = '<div class="row justify-content-center">'+
+                        '<div class="col-md-10 text-center">' +
+                        `<img src="data:img/png;base64,${qrCode}">`+
+                        `<h3>${qrCodes.ActivityName}</h3>`+
+                        `<p>${qrCodes.TicketCategoryName} ${qrCodes.Time}</p>`+
+                        '</div>'+
+                        '</div>';
+                    content += showStr;
+                }
+                $("#dialogContent").html(content);
+            }
+        })
+    }
+</script>
+<div class="container mt-5">
+    <div class="h1 text-center">
+        <strong>ITicket購票網 訂單完成</strong>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-10 text-center">
+            <div class="alert alert-success alert-rounded " role="alert">3.訂單完成</div>
+            <div class="h4">購買資訊</div>
+            <table class="table table-sm my-4">
+                <thead>
+                    <tr>
+                        <th width="100"></th>
+                        <th>QRCode</th>
+                        <th>商品名稱</th>
+                        <th>票種</th>
+                        <th>場次</th>
+                        <th>數量</th>
+                        <th class="text-center" width="120">小計</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int totalPrice = 0;
+                        foreach (Order_Detail od in Model.Order_Detail)
+                        {
+                            int subTotal = (int)Math.Round(od.Tickets.Price * (1 - od.Discount), 0) * od.Quantity;
+                            totalPrice += subTotal;
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="card p-1 card-bottom">
+                                        <img src="@Url.Content("~/images/Activity/"+od.Tickets.Activity.Picture)" alt="..." width="80">
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <a onclick="showQRCode(@od.OrderDetailID)" class="fas fa-qrcode" data-toggle="modal" data-target="#exampleModal" style="font-size:35px" href="javascript:;"></a>
+                                </td>
+                                <td class="align-middle ">@od.Tickets.Activity.ActivityName</td>
+                                <td class="align-middle ">@od.Tickets.TicketCategory.TicketCategoryName</td>
+                                <td class="align-middle ">@od.Tickets.TicketTimes.TicketTime.ToString("yyyy/MM/dd HH:mm")</td>
+                                <td class="align-middle">@od.Quantity 件</td>
+                                <td class="align-middle text-right">$@subTotal</td>
+                            </tr>
+                        }
+                    }
+                    <tr class="text-right">
+                        <td colspan="6">
+                            <strong>合計</strong>
+                        </td>
+                        <td>
+                            <strong>$ @totalPrice</strong>
+                        </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="6">
+                            <strong>折抵點數</strong>
+                        </td>
+                        <td>
+                            <strong>@(Model.PayPoint)點</strong>
+                        </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="6">
+                            <strong>實付</strong>
+                        </td>
+                        <td>
+                            <strong>$ @(totalPrice-Model.PayPoint)</strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="h4 mt-5">個人資料</div>
+            <table class="table  mt-3 text-left">
+                <tbody>
+                    <tr>
+                        <th width="200">Email</th>
+                        <td>@Model.Email</td>
+                    </tr>
+                    <tr>
+                        <th>姓名</th>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <th>會員電話</th>
+                        <td>@Model.Member.Phone</td>
+                    </tr>
+                    <tr>
+                        <th>地址</th>
+                        <td>
+                            @Model.Address
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center mt-4 my-4">
+                <a href="@Url.Action("ActivityList","Activity")" class="btn btn-primary px-5">回首頁</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 彈框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">QRCode</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="dialogContent" class="modal-body">
+                <!--動態塞二維碼-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

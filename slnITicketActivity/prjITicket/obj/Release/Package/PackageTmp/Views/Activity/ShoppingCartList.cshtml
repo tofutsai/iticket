@@ -1,0 +1,410 @@
+﻿@using prjITicket.Models
+@{
+    ViewBag.Title = "購物車";
+    int maxPoint = ViewBag.MaxPoint;
+}
+    <style>
+        #countMinus,#countPlus:hover{
+            text-decoration:none;
+        }
+    </style>
+    <script>
+        //紀錄玩家持有的最大點數
+        let maxPoint = @maxPoint;
+        //紀錄該網頁當前的點數
+        let point = 0;
+        $(function () {
+            //沒有必要在購物車畫面再顯示小的購物車,所以關掉
+            $("#dropDownShoppingCart").remove();
+            //網頁一打開就讀取購物車資料
+            getShoppingCartDetail();
+            //讀取城市資料到下拉框
+            loadDataToSelCity();
+            //城市有變化就動態變更區下拉框的內容
+            $("#selCity").change(function () {
+                loadDataToSelDistrictByCityId(this.value);
+            });
+            //區有變化變更郵編
+            $("#selDistrict").change(function () {
+                loadDataToPostalCode(this.value);
+            });
+            //表單提交之前讀取折抵點數
+            $("#frmInfo").submit(function () {
+                let point = parseInt($("#displayPoint").html());
+                $("#txtSendPoint").val(point);
+            });
+        });
+        //Ajax伺服器請求獲得購物車資料
+        function getShoppingCartDetail() {
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("GetShoppingCart")",
+                success: function (result) {
+                    if (result == "noShoppingCart") {
+                        //購物車是空的時候畫面的處理
+                        let showNoItem = "<tr>" +
+                            "<td colspan='7'>" +
+                            "<p style='color:#D26900;font-weight:bold;font-size:40px;text-align:center'>" +
+                            "購物車是空的" +
+                            "</p>" +
+                            "<div style='text-align:center'>" +
+                            "<img style='width:200px' src='/images/Activity/NoiItemInCart.png'>"+
+                            "</div>" +
+                            "<p style='text-align:center'>" +
+                            "<a href='@Url.Action("ActivityList","Activity")' class='btn btn-primary'>去購物</a>"+
+                            "</p>"+
+                            "</td>" +
+                            "</tr>";
+                        $("#shoppingCartDetail").html(showNoItem);
+                        //表頭的totalPrice改成0
+                        $("#totalPrice").html(`$ 0`);
+                    }
+                    else {
+                        putShoppingCartJsonToDetailList(result);
+                    }
+                }
+            });
+        }
+        //把抓到的購物車Json顯示在畫面上
+        function putShoppingCartJsonToDetailList(json) {
+            let shoppingCart = JSON.parse(json);
+            let totalPrice = 0;
+            $("#shoppingCartDetail").empty();
+            for (let item of shoppingCart) {
+                totalPrice = totalPrice+item.Price * item.Quantity;
+                let showStr = '<tr>' +
+                    '<td class="align-middle">' +
+                    `<a href="javascript:;" onclick="deleteShoppingCartDetail(${item.TicketID})" class="text-dark" ><i class="far fa-trash-alt mr-3"></i></a>` +
+                    '</td>' +
+                    '<td class="align-middle">' +
+                    '<div class="card p-1 card-bottom">' +
+                    `<img src="/images/Activity/${item.Picture}" alt="404NotFound" width="80">` +
+                    '</div>' +
+                    '</td>' +
+                    `<td class="align-middle ">${item.ActivityName}</td>` +
+                    `<td class="align-middle ">${item.TicketCategoryName}</td>` +
+                    `<td class="align-middle ">${item.Time}</td>` +
+                    '<td class="align-middle">' +
+                    `<a href="javascript:;" onclick=shoppingCartItemCountMinus(${item.TicketID}) id="countMinus">` +
+                    '<i class="fas fa-minus-square text-muted"></i>' +
+                    '</a>' +
+                    `<span id="count" style="font-family:Consolas">${item.Quantity > 9 ? item.Quantity : (' ' + item.Quantity)}</span>` +
+                    `<a href="javascript:;" onclick="shoppingCartItemCountPlus(${item.TicketID})" id="countPlus">` +
+                    '<i class="fas fa-plus-square text-muted"></i>' +
+                    '</a>' +
+                    '</td>' +
+                    `<td class="align-middle text-right" >$${item.Price * item.Quantity}</td>` +
+                    '</tr>';
+                $("#shoppingCartDetail").append($(showStr));
+            }  
+            //最大點數不可超過totalPrice
+            halfPrice = Math.floor(totalPrice / 2);
+            maxPoint = @maxPoint > halfPrice ? halfPrice : @maxPoint;
+            point = point > halfPrice ? halfPrice : point;
+            let showTotal =
+                '<tr class="text-right">' +
+                '<td colspan="6"><strong>合計</strong></td>' +
+                `<td><strong>$ ${totalPrice}</strong></td>` +
+                '</tr>' +
+                '<tr class="text-right">' +
+                '<td colspan="6"><strong>點數</strong></td>' +
+                '<td>' +
+                '<button class="dropdown-toggle" style="border:none;background-color:white" type="button" id="dropdownPoint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                `<i class="fas fa-donate"></i> <strong id="displayPoint">${point}點</strong>`+
+                '</button>'+
+                '<div class="dropdown-menu" aria-labelledby="dropdownPoint" style="max-width:500px">' +
+                `<h5 style="text-align:center;color:red">最多折抵:${maxPoint}點</h5>`+
+                    '<div class="form-inline">'+
+                        '<div class="form-group mx-sm-3 m-2">'+
+                            `<input id="txtPoint" type="number" value="${point}" min="0" max="${maxPoint}" style="width:100px" class="form-control" id="inputPassword2" placeholder="點數">`+
+                        '</div>'+
+                            `<input onclick="setPoint(${totalPrice})" type="button" class="btn btn-primary m-2" value="確定"/>`+
+                    '</div>'+
+                '</div>'+
+                '</td>'+
+                '</tr>' +
+                '<tr class="text-right">' +
+                '<td colspan="6"><strong>應付</strong></td>' +
+                `<td><strong id="actualPrice">$ ${totalPrice-point}</strong></td>` +
+                '</tr>';
+            $("#shoppingCartDetail").append($(showTotal));
+            //表頭的totalPrice也要一起改掉
+            $("#totalPrice").html(`$ ${totalPrice}`);           
+        }
+        //刪除購物車條目的方法(詳細畫面)
+        function deleteShoppingCartDetail(ticketId) {
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("DeleteShoppingCartItem")",
+                data: { ticketId: ticketId },
+                success: function (result) {
+                    if (result == "noShoppingCart") {
+                        //購物車是空的時候畫面的處理
+                        let showNoItem = "<tr>" +
+                            "<td colspan='7'>" +
+                            "<p style='color:#D26900;font-weight:bold;font-size:40px;text-align:center'>" +
+                            "購物車是空的" +
+                            "</p>" +
+                            "<div style='text-align:center'>" +
+                            "<img style='width:200px' src='/images/Activity/NoiItemInCart.png'>" +
+                            "</div>" +
+                            "<p style='text-align:center'>" +
+                            "<a href='@Url.Action("ActivityList","Activity")' class='btn btn-primary'>去購物</a>"+
+                            "</p>" +
+                            "</td>" +
+                            "</tr>";
+                        $("#shoppingCartDetail").html(showNoItem);
+                        //表頭的totalPrice改成0
+                        $("#totalPrice").html(`$ 0`);
+                    }
+                    else {
+                        putShoppingCartJsonToDetailList(result);
+                    }
+                }
+            });
+        }
+        //按減號會調用的減少條目數量的函數
+        function shoppingCartItemCountMinus(ticketId) {
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("ShoppingCartItemCountMinus")",
+                data: { ticketId: ticketId },
+                success: function (result) {
+                    switch (result) {
+                        case "noShoppingCart":
+                            alert("購物車已不存在"); //todo測試O不OK
+                            location.href = "@Url.Action("ActivityList")";
+                            break;
+                        case "overEdge":
+                            alert("不能再減少了"); //OK
+                            break;
+                        case "overCount":
+                            alert("超過最大庫存量,已經修改數量為最大庫存量"); //OK
+                            getShoppingCartDetail();
+                            break;
+                        case "outOfStock":
+                            alert("商品已經售完,已刪除此購物車條目");
+                            getShoppingCartDetail();
+                            break;
+                        default:
+                            putShoppingCartJsonToDetailList(result);  //OK
+                            break;
+                    }
+                }
+            });
+        }
+        //按加號會調用的增加條目數量的函數
+        function shoppingCartItemCountPlus(ticketId) {
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("ShoppingCartItemCountPlus")",
+                data: { ticketId: ticketId },
+                success: function (result) {
+                    switch (result) {
+                        case "noShoppingCart":
+                            alert("購物車已不存在"); //todo測試O不OK
+                            location.href = "@Url.Action("ActivityList")";
+                            break;
+                        case "overEdge":
+                            alert("不能再增加了");  //OK
+                            break;
+                        case "overCount":
+                            alert("超過最大庫存量,已經修改數量為最大庫存量"); //OK
+                            getShoppingCartDetail();
+                            break;
+                        case "outOfStock":
+                            alert("商品已經售完,已刪除此購物車條目");  //OK
+                            getShoppingCartDetail();
+                            break;
+                        default:
+                            putShoppingCartJsonToDetailList(result); //OK
+                            break;
+                    }
+                }
+            });
+        }
+        //把城市資訊塞入下拉框
+    function loadDataToSelCity() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCity")",
+            success: function (result) {
+                $("#selCity").html("<option value='' style='display:none'>請選擇</option>");
+                let cities = JSON.parse(result);
+                for (let city of cities) {
+                    let opt = $("<option></option>");
+                    opt.html(city.CityName);
+                    opt.val(city.CityID);
+                    $("#selCity").append(opt);
+                }
+            }
+        });
+    }
+    //根據城市讀取區資訊的函數
+    function loadDataToSelDistrictByCityId(cityId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getDistrictsByCityId")",
+            data: { cityId: cityId },
+            success: function (result) {
+                $("#selDistrict").html("<option value='' style='display:none'>請選擇</option>");
+                let districts = JSON.parse(result);
+                for (let district of districts) {
+                    let opt = $("<option></option>");
+                    opt.html(district.DistrictName);
+                    opt.val(district.DistrictId);
+                    $("#selDistrict").append(opt);
+                }
+            }
+        });
+    }
+    //根據區讀取郵遞區號
+        function loadDataToPostalCode(districtId) {
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("getPostCodeByDistrictId")",
+                data: { districtId: districtId },
+                success: function (result) {
+                    $("#postal-code").val(result);
+                }
+            });
+        }  
+        //點數確定按鈕按下去的函數
+        function setPoint(totalPrice) {
+            let newPoint = $("#txtPoint").val();
+            if (newPoint > maxPoint) {
+                newPoint = maxPoint;
+                $("#txtPoint").val(maxPoint);
+            }
+            if (newPoint < 0) {
+                newPoint = 0;
+                $("#txtPoint").val(0);
+            }
+            point = newPoint;
+            $("#displayPoint").html(point + "點");
+            $("#actualPrice").html(`$ ${totalPrice-point}`);
+        }
+</script>
+<div class="container mt-5">
+    <div class="h1 text-center"><strong>ITicket購票網 訂單確認</strong></div>
+    <div class="row mt-3">
+        <div class="col-12 col-md">
+            <div class="alert alert-success alert-rounded text-center" role="alert">1.輸入訂單資料</div>
+        </div>
+        <div class="col-12 col-md">
+            <div class="alert alert-light alert-rounded text-center" role="alert">2.金流付款</div>
+        </div>
+        <div class="col-12 col-md">
+            <div class="alert alert-light alert-rounded text-center" role="alert">3.訂單完成</div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <div class="accordion" id="accordionExample">
+                <div class="card card-bottom">
+                    <div class="card-header  d-flex justify-content-between" id="headingOne">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                            顯示購物車細節
+                        </button>
+                        <div class="h3 d-inline-block mt-2">
+                            <strong id="totalPrice"><!--動態塞入總價格--></strong>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="collapseOne" class="collapse show " aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th width="20"></th>
+                                <th width="100"></th>
+                                <th> 商品名稱</th>
+                                <th>票種</th>
+                                <th>場次</th>
+                                <th>數量</th>
+                                <th class="text-center" width="120">小計</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shoppingCartDetail">
+                            <!--動態塞入購物車資料-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card text-center my-5 border-0">
+                <div class="card-header border-0">
+                    <div class="h3 mt-1"> 訂購人資訊 </div>
+                </div>
+                <form action="@Url.Action("GoToPay")" id="frmInfo" method="post" class="needs-validation" novalidate>
+                    <!--藏輸入的點數-->
+                    <input type="hidden" id="txtSendPoint" name="point" value="0"/>
+                    <div class="form-row text-left mt-3">
+                        <div class="form-group col-md-6">
+                            <label for="name">姓名</label>
+                            <input type="text" class="form-control " name="name" id="name" placeholder="姓名" required>
+                            <div class="invalid-feedback">請填寫姓名</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="mail">Email</label>
+                            <input type="email" class="form-control" name="email" id="mail" placeholder="Email" required>
+                            <div class="invalid-feedback">請填寫Email</div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label for="selCity">城市</label>
+                            <select id="selCity" class="form-control" required>
+                                <!--動態塞入城市-->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="selDistrict">區</label>
+                            <select name="districtId" id="selDistrict" class="form-control" required>
+                                <option value="">請選擇</option>
+                                <!--根據城市動態塞入區-->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="postal-code">郵遞區號</label>
+                            <input type="text" disabled class="form-control" id="postal-code" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="address">地址</label>
+                        <input name="address" type="text" class="form-control" id="address" placeholder="xxx路xxx號" required>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <a href="@Url.Action("ActivityList","Activity")" class="btn btn-secondary mr-2">繼續選購</a>
+                        <button type="submit" class="btn btn-primary">確認付款</button>
+                    </div>
+                </form>
+
+                <script>
+                     // Example starter JavaScript for disabling form submissions if there are invalid fields
+                     (function () {
+                         'use strict';
+                         window.addEventListener('load', function () {
+                             // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                             var forms = document.getElementsByClassName('needs-validation');
+                             // Loop over them and prevent submission
+                             var validation = Array.prototype.filter.call(forms, function (form) {
+                                 form.addEventListener('submit', function (event) {
+                                     if (form.checkValidity() === false) {
+                                         event.preventDefault();
+                                         event.stopPropagation();
+                                     }                                    
+                                     form.classList.add('was-validated');
+                                 }, false);
+                             });
+                         }, false);
+                     })();
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+</div>

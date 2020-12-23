@@ -1,0 +1,202 @@
+﻿@model IEnumerable<prjITicket.Models.Categories>
+@{
+    Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+    ViewBag.Title = "評論管理";
+}
+
+<!-- 1. nav -->
+<nav class="fixed-top p-2" style="z-index: 1500; top: 0; left: 260px;">
+    <form id="ctrlForm" class="form-inline d-inline">
+        <select id="ctrlCate" name="Cate" class="form-control mr-sm-2" style="width: 115px; cursor:pointer;">
+            <option value="0">所有分類</option>
+            @{
+                foreach (var cate in Model)
+                {
+                    <option value="@cate.CategoryID">@cate.CategoryName</option>
+                }
+            }
+        </select>
+        <select id="ctrlSubCate" name="SubCate" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+        </select>
+        <select id="ctrlDate" name="Date" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+            <option value="0" selected>不限時間</option>
+            <option value="1">24小時以內</option>
+            <option value="7">7天以內</option>
+            <option value="30">1個月以內</option>
+            <option value="90">3個月以內</option>
+        </select>
+        <select id="ctrlReport" name="Report" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+            <option value="0" selected>所有評論</option>
+            <option value="1">檢舉數 &#x2265; 1</option>
+            <option value="5">檢舉數 &#x2265; 5</option>
+            <option value="10">檢舉數 &#x2265; 10</option>
+            <option value="15">檢舉數 &#x2265; 15</option>
+            <option value="20">檢舉數 &#x2265; 20</option>
+        </select>
+        <select id="ctrlShowBan" name="ShowBan" class="form-control mr-sm-2" style="width: 100px; cursor:pointer;">
+            <option value="0">未隱藏</option>
+            <option value="1">所有</option>
+        </select>
+        <input id="searchbox" class="form-control mr-sm-2" type="search" placeholder="搜尋活動或作者" aria-label="Search">
+        <!-- hidden -->
+        <input type="hidden" id="fPageCurrent" name="PageCurrent" value="1">
+        <input type="hidden" id="fPageSize" name="PageSize" value="10">
+        <input type="hidden" id="fKeyword" name="Keyword" value="">
+        <input type="hidden" id="fSort" name="Sort" value="1">
+    </form>
+    <div id="isHandle" class="spinner-border text-warning align-middle d-none" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</nav>
+
+<!-- 2. header -->
+<header>
+    <h1 class="mt-4">評論管理</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/BackEndMain/BackEndIndex">後台</a></li>
+        <li class="breadcrumb-item active">評論管理</li>
+    </ol>
+</header>
+
+<!-- 3. main -->
+<main class="card">
+    <div class="card-header sticky-top" style="z-index: 500; top: 55px; background-color: #f7f7f7;">
+        <i class="fas fa-table mr-2"></i>評論管理
+        <div class="form-check d-inline mx-1">
+            <input type="radio" id="ctrlSort1" name="ctrlSort" value="1" class="form-check-input" style="cursor: pointer;" checked>
+            <label class="form-check-label d-inline text-primary" for="ctrlSort1" style="cursor: pointer;">日期排序</label>
+        </div>
+        <div class="form-check d-inline mx-1">
+            <input type="radio" id="ctrlSort2" name="ctrlSort" value="2" class="form-check-input" style="cursor: pointer;">
+            <label class="form-check-label d-inline text-primary" for="ctrlSort2" style="cursor: pointer;">檢舉數排序</label>
+        </div>
+        <span id="ctrlHint" class="text-success mx-2"></span>
+    </div>
+    <div class="card-body">
+        <!-- row top -->
+        <div class="row mb-1">
+            <div class="col-4">
+                每頁顯示
+                <select id="pageAmount" class="custom-select-sm" style="cursor: pointer">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 筆資料
+            </div>
+            <div class="col-8">
+                <nav id="pageTop" class="float-right"></nav>
+            </div>
+        </div>
+        <!-- table -->
+        <table class="table table-bordered" style="font-size: 90%; width: 100%; table-layout: fixed">
+            <thead>
+                <tr>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 4%;">
+                        <i class="far fa-dot-circle"></i>
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 15%;">
+                        <i class="fas fa-user mr-1"></i> 作者
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 21%;">
+                        <i class="fas fa-network-wired mr-1"></i> 活動
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 21%;">
+                        <i class="fas fa-star-half-alt mr-1"></i> 評分
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 19%;">
+                        <i class="fas fa-clock mr-1"></i> 日期
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 10%;">
+                        <i class="fas fa-eye-slash mr-1"></i> 隱藏
+                    </th>
+                    <th class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; width: 10%;">
+                        <i class="fas fa-flag mr-1"></i> 檢舉數
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+        </table>
+        <!-- row bottom -->
+        <div class="row mt-1">
+            <div class="col-4">
+                <span id="pageMessage"></span>
+            </div>
+            <div class="col-8">
+                <nav id="pageBottom" class="float-right"></nav>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- AjaxBox -->
+<div id="AjaxBox" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="z-index: 1600">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content text-white bg-dark">
+            <!-- modal-header -->
+            <div class="modal-header">
+                <h5 class="modal-title">評論管理</h5>
+                <button id="AjaxBoxDemo" class="btn btn-outline-info ml-3">Demo</button>
+                <button class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <!-- modal-body -->
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag1-tab" class="nav-link active" data-toggle="tab" href="#AjaxBoxTag1" aria-controls="AjaxBoxTag1" aria-selected="true">
+                            評論資訊
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag2-tab" class="nav-link" data-toggle="tab" href="#AjaxBoxTag2" aria-controls="AjaxBoxTag2" aria-selected="false">
+                            會員資料
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag3-tab" class="nav-link" data-toggle="tab" href="#AjaxBoxTag3" aria-controls="AjaxBoxTag3" aria-selected="false">
+                            商家資料
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag4-tab" class="nav-link" data-toggle="tab" href="#AjaxBoxTag4" aria-controls="AjaxBoxTag4" aria-selected="false">
+                            停權紀錄
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="AjaxBoxTag5-tab" class="nav-link d-none" data-toggle="tab" href="#AjaxBoxTag5" aria-controls="AjaxBoxTag5" aria-selected="false">
+                            評論管理
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="AjaxBoxTag1" class="tab-pane fade show active" aria-labelledby="AjaxBoxTag1-tab"></div>
+                    <div id="AjaxBoxTag2" class="tab-pane fade" aria-labelledby="AjaxBoxTag2-tab"></div>
+                    <div id="AjaxBoxTag3" class="tab-pane fade" aria-labelledby="AjaxBoxTag3-tab"></div>
+                    <div id="AjaxBoxTag4" class="tab-pane fade" aria-labelledby="AjaxBoxTag4-tab"></div>
+                    <div id="AjaxBoxTag5" class="tab-pane fade" aria-labelledby="AjaxBoxTag5-tab"></div>
+                </div>
+            </div>
+            <!-- modal-footer -->
+            <div class="modal-footer">
+                <button id="Cancel" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times mr-1"></i> 取消</button>
+                <button id="SearchAuthor" class="btn btn-info"><i class="fas fa-search mr-1"></i> 查詢作者所有評論</button>
+                <button id="BanComment" class="btn btn-danger"><i class="fas fa-skull-crossbones mr-1"></i> 我覺得不行 (隱藏評論)</button>
+                <button id="DismissComment" class="btn btn-success"><i class="fas fa-ankh mr-1"></i> 我覺得還可以 (解除隱藏評論)</button>
+                <button id="Confirm" class="btn btn-primary d-none"><i class="fas fa-sync mr-1"></i> 以管理者身份執行</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"
+        integrity="sha512-kp7YHLxuJDJcOzStgd6vtpxr4ZU9kjn77e6dBsivSz+pUuAuMlE2UTdKB7jjsWT84qbS8kdCWHPETnP/ctrFsA=="
+        crossorigin="anonymous"></script>
+<script src="~/Content/BackEnd/js/BackEndFactory.jsx" type="text/babel"></script>
+<script src="~/Content/BackEnd/js/BackEndComment.jsx" type="text/babel"></script>
+<script src="~/Content/BackEnd/js/BackEndDemoDemo.jsx" type="text/babel"></script>

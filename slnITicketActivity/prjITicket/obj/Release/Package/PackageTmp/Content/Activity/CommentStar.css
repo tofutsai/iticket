@@ -1,0 +1,15 @@
+﻿#commentStars {
+    list-style: none;
+    overflow: auto;
+    padding-left:0;
+}
+
+#commentStars li {
+    float: left;
+}
+.commentStar {
+    position: relative;
+}
+.commentStar img{
+    width:40px;
+}

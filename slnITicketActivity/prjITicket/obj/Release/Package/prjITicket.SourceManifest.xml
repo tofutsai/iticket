@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="D:\LearnPrograming\資策會\期末專題\正在進行中的專案\slnITicketActivity\prjITicket\obj\Release\Package\PackageTmp" />
+  <setAcl path="D:\LearnPrograming\資策會\期末專題\正在進行中的專案\slnITicketActivity\prjITicket\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="D:\LearnPrograming\資策會\期末專題\正在進行中的專案\slnITicketActivity\prjITicket\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+</sitemanifest>

@@ -1,0 +1,123 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@*@model IEnumerable<prjITicket.Models.Activity>*@
+@model IPagedList<prjITicket.Models.Activity>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+@{
+    int count = 0;
+}
+<table class="table table-info">
+    <tr class="text-center">
+        <th style="width:70px;">
+            序號
+        </th>
+        <th style="width:110px;">
+            活動名稱
+        </th>
+        <th style="width:70px;">
+            庫存
+        </th>
+        <th style="width:90px;">
+            地區
+        </th>
+
+        <th style="width:140px;">
+            地址
+        </th>
+        <th style="width:350px;">
+            照片
+        </th>
+
+        <th style="width:90px;">
+            類別
+        </th>
+        <th style="width:300px;">
+            短描述
+        </th>
+
+        <th>
+            狀態
+        </th>
+
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        count++;
+        <tr class="table-warning text-center">
+            <td>
+                @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tickets.FirstOrDefault().UnitsInStock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Districts.DistrictName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                <img style="width:300px" src="@Url.Content("~/images/Activity/"+item.Picture)" alt="Alternate Text" />
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.SubCategories.SubCategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hostwords)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivityStatus.ActivityStatusName)
+            </td>
+
+            <td>
+                <a href="@Url.Action("EditActivity","Activity",new { activityId=item.ActivityID})" class="btn btn-success">修改</a>                
+                    @if (item.ActivityStatusID == 0)
+                    {
+                        <a href="javascript:;" class="btn btn-primary">正在審核</a>
+                    }
+                    else if (item.ActivityStatusID == 1)
+                    {
+                        <a id="btnUpDown@(item.ActivityID)" href="javascript:;" onclick="upDownActivity(@item.ActivityID)" class="btn btn-danger">下架</a>
+                    }
+                    else
+                    {
+                        <a id="btnUpDown@(item.ActivityID)" href="javascript:;" onclick="upDownActivity(@item.ActivityID)" class="btn btn-success">上架</a>
+                    }
+            </td>
+        </tr>
+    }
+</table>
+    @Html.PagedListPager(Model, page => Url.Action("GetQueryResult", new { page = page, txtQuery=ViewBag.Keyword }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new AjaxOptions()
+                {
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "QResult"
+                }
+                 ))
+
+<script>
+    function upDownActivity(activityId) {
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("UpDownActivity","Activity")",
+            data: { activityId: activityId },
+            success: function (result) {
+                if (result == "0") {
+                    $(`#btnUpDown${activityId}`).replaceWith('<a href="javascript:;" class="btn btn-primary">正在審核</a>');
+                }
+                else if (result == "2") {
+                    $(`#btnUpDown${activityId}`).replaceWith(`<a id="btnUpDown${activityId}" href="javascript:;" onclick="upDownActivity(${activityId})" class="btn btn-success">上架</a>`);
+                }
+            }
+        });
+    }
+</script>

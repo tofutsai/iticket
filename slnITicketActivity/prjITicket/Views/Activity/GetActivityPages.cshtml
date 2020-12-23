@@ -1,0 +1,160 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using prjITicket.Models;
+@model IPagedList<Activity>
+<div class="row">
+    @foreach (Activity activity in Model)
+    {
+        //循環讀取活動資料並塞入網頁
+        <div class="activityListItem col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                @*<a href="javascript:;" onclick="getActivitySubDetailPage(@activity.ActivityID)"><img class="card-img-top" src="@Url.Content("~/images/Activity/"+activity.Picture)" alt=""></a>*@
+                <!---->
+                <a href="javascript:;" style="position:relative" onclick="getActivitySubDetailPage(@activity.ActivityID)">
+                    <img class="card-img-top" src="@Url.Content("~/images/Activity/"+activity.Picture)" alt="">
+                    <div onclick="addToFav(@activity.ActivityID,this)" class="addToFavourite">
+                        @{ 
+                            bool isFavourite = false;
+                            if (Session[CDictionary.SK_Logined_Member] != null)
+                            {
+                                int memberId = (Session[CDictionary.SK_Logined_Member] as Member).MemberID;
+                                ActivityFavourite activityFavourite = activity.ActivityFavourite.FirstOrDefault(af => af.MemberId == memberId);
+                                if (activityFavourite != null)
+                                {
+                                    isFavourite = true;
+                                }
+                            }
+                        }
+                        <i style="color:@(isFavourite?"#46A3FF":"white")" class='fas fa-briefcase'></i>
+                        <span>@(isFavourite?"取消收藏":"加入收藏")</span>
+                    </div>
+                </a>
+                <!---->
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="javascript:;" onclick="getActivitySubDetailPage(@activity.ActivityID)">@activity.ActivityName</a>
+                    </h4>
+                    <!--下面顯示價格,如果沒有票,就顯示無價格;有票就顯示最便宜的,如果有折扣,就顯示原價與折扣價,否則只顯示原價-->
+                    <div class="mb-1 d-flex justify-content-end align-items-end">
+                        @{
+                            if (activity.Tickets.Count() == 0)
+                            {
+                                <div class="h4 ml-auto mb-0">暫無價格</div>
+                            }
+                            else
+                            {
+                                Tickets cheapestTicket = activity.Tickets.OrderBy(t => t.Price * (1 - t.Discount)).FirstOrDefault();
+                                if (cheapestTicket.Discount != 0)
+                                {
+                                    <del id="ticketPrice" class="text-muted">TWD @cheapestTicket.Price</del>
+                                }
+                                <div class="h4 ml-auto mb-0">
+                                    <small class="text-muted">TWD</small> @(Math.Round(cheapestTicket.Price*(1-cheapestTicket.Discount),0))
+                                </div>
+                            }
+                        }
+                    </div>
+                    <p class="card-text">@activity.Hostwords</p>
+                </div>
+                <div class="card-footer d-flex justify-content-end align-items-end">
+                    <span id="@activity.ActivityID" class="text-warning" style="font-size:20px">
+                        @{
+                            //判斷該活動的平均評價並顯示在網頁
+                            if (activity.Comment.Count() == 0)
+                            {
+                                @:暫無評價
+                                <script>document.getElementById("@activity.ActivityID").className="text-mute"</script>
+                            }
+                            else
+                            {
+                                int score = (int)Math.Round(activity.Comment.Average(c => c.CommentScore), 0);
+                                for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= score)
+                                    {
+                                        @:&#9733;
+                                    }
+                                    else
+                                    {
+                                        @:&#9734;
+                                    }
+                                }
+                            }
+                        }
+                    </span>
+                    <span class="text-muted ml-auto my-auto font-weight-bold" style="font-size:15px">
+                        <!--這裏塞活動的市和區-->
+                        @activity.Districts.Cities.CityName@activity.Districts.DistrictName
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- /.row -->
+<!--分頁部分,用Ajax-->
+@if (ViewBag.ActionName == "GetActivityPages")
+{
+    @Html.PagedListPager(Model, page => Url.Action("GetActivityPages", new { currentPage = page, orderMode = ViewBag.OrderMode,minPrice=ViewBag.MinPrice,maxPrice=ViewBag.MaxPrice,priceFilter=ViewBag.PriceFilter }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+        new AjaxOptions() { OnBegin = "returnToActivityListTop", OnComplete = "savePageHistory", InsertionMode = InsertionMode.Replace, UpdateTargetId = "showActivities" }
+        )
+    )
+}
+else if (ViewBag.ActionName == "GetActivityPagesByKeyword")
+{
+    @Html.PagedListPager(Model, page => Url.Action("GetActivityPagesByKeyword", new { keyword = ViewBag.Keyword, currentPage = page, orderMode = ViewBag.OrderMode, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, priceFilter = ViewBag.PriceFilter }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+        new AjaxOptions() { OnBegin = "returnToActivityListTop", OnComplete = "savePageHistory", InsertionMode = InsertionMode.Replace, UpdateTargetId = "showActivities" }
+        )
+    )
+}
+else if (ViewBag.ActionName == "GetActivityPagesByCategoryId")
+{
+    @Html.PagedListPager(Model, page => Url.Action("GetActivityPagesByCategoryId", new { categoryId = ViewBag.CategoryId, currentPage = page, orderMode = ViewBag.OrderMode, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, priceFilter = ViewBag.PriceFilter }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+        new AjaxOptions() { OnBegin = "returnToActivityListTop", OnComplete = "savePageHistory", InsertionMode = InsertionMode.Replace, UpdateTargetId = "showActivities" }
+        )
+    )
+}
+else if (ViewBag.ActionName == "GetActivityPagesBySubCategoryId")
+{
+    @Html.PagedListPager(Model, page => Url.Action("GetActivityPagesBySubCategoryId", new { subCategoryId = ViewBag.SubCategoryId, currentPage = page, orderMode = ViewBag.OrderMode, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, priceFilter = ViewBag.PriceFilter }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+        new AjaxOptions() { OnBegin = "returnToActivityListTop", OnComplete = "savePageHistory", InsertionMode = InsertionMode.Replace, UpdateTargetId = "showActivities" }
+        )
+    )
+}
+else if (ViewBag.ActionName == "GetActivityPagesByDistrictId")
+{
+    @Html.PagedListPager(Model, page => Url.Action("GetActivityPagesByDistrictId", new { districtId = ViewBag.DistrictId, currentPage = page, orderMode = ViewBag.OrderMode, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, priceFilter = ViewBag.PriceFilter }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions() { MaximumPageNumbersToDisplay = 5 },
+        new AjaxOptions() { OnBegin= "returnToActivityListTop", OnComplete = "savePageHistory", InsertionMode = InsertionMode.Replace, UpdateTargetId = "showActivities" }
+        )
+    )
+}
+<script>
+    //換頁時抓到頁碼pushstate到歷史紀錄,並回到錨點部分
+    function savePageHistory() {
+        //紀錄hash
+        let hash = window.location.hash.substring(1);
+        let newPage = $(".pagination .active").children().eq(0).html();
+        if (hash == "") {
+            hash = `action=all&orderMode=scoredown&page=`;
+        }
+        else {
+            hash = hash.slice(0, hash.length - 1);
+        }
+        saveHistory(hash + newPage);
+    }
+    function returnToActivityListTop() {
+        //回到錨點
+        let position = $("#btnGroupOrderMode").offset().top - 70;
+        $("html,body").animate({ scrollTop: position + "px" }, 200);
+    }
+</script>

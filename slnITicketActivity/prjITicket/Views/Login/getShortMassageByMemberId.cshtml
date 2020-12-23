@@ -1,0 +1,126 @@
+﻿@using prjITicket.Models;
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<prjITicket.Models.ShortMessage>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+    table {
+        min-width: 100%;
+    }
+
+    th {
+        min-width: 140px;
+        text-align: center;
+    }
+
+    td {
+        min-width: 100px;
+    }
+
+    .table-container {
+        overflow: auto;
+        /*display: block;*/
+    }
+</style>
+@if (Model.Count() == 0)
+{<div class="row">
+        <div style="margin:0px auto">
+            <h3><strong>目前暫無訊息</strong></h3>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-container">
+        <table class="table">
+            <tr>
+                <th>
+                    iTicket後台訊息
+                </th>
+                <th>
+                    訊息內容
+                </th>
+                <th>
+
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="text-align:center;">
+                        系統管理員
+                    </td>
+                    <td>
+                        @item.MessageContent
+                    </td>
+                    <td style="text-align:center;">
+                        <button data-messageId="@item.ShortMessageID" data-memberId="@item.MemberID" class="btn btn-danger btn-sm rounded-0 mr-auto deleteMessage" type="button" data-toggle="tooltip" data-placement="top" title="刪除"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+}
+@Html.PagedListPager(Model, page => Url.Action("getShortMassageByMemberId", new { MemberId = ViewBag.MemberId, page = page }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new AjaxOptions {
+            InsertionMode = InsertionMode.Replace,
+            UpdateTargetId = "form1div"
+        }
+        ))
+
+<script>
+    //sweet alert刪除訊息
+    function deleteMessage(memberId, shortmessageId) {
+        swal({
+            title: "確定刪除訊息嗎?",
+            text: "",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "取消",
+                    value: "取消",
+                    visible: true
+                },
+                confirm: {
+                    text: "確定",
+                    value: "確定",
+                    visible: true
+                }
+            },
+            dangerMode: true,
+        }).then((value) => {
+            if (value == "確定") {
+                deleteShortmessage(memberId, shortmessageId);
+                swal("刪除成功", {
+                    icon: "success",
+                });
+                //執行訊息圈圈數字ajax
+                changeShortMessageNumber();
+            }
+        });
+    }
+
+    function deleteShortmessage(memberId, shortmessageId) {
+        $.ajax({
+            type: 'post',
+            url: "@Url.Action("deleteShortmessage")",
+            data: {
+                memberId: memberId,
+                shortmessageId: shortmessageId
+            },
+            success: function (result) {
+                console.log(result);
+                //執行load短訊息ajax
+                loadShortMessageByMemberId();
+            }
+        });
+    }
+
+
+ 
+</script>

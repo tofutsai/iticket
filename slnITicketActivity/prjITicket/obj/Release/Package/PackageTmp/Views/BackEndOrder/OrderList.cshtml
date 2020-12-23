@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "OrderList";
+}
+
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+<script src="~/Content/demo/datatables-demo.js"></script>
+
+
+<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+<h1 class="mt-4">訂單明細</h1>
+<div class="container-fluid">
+    <h1 class="mt-4"></h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            後台
+            @*<a href="index.html">活動相關功能管理</a>*@
+        </li>
+        <li class="breadcrumb-item active">
+            <a href="@Url.Action("OrderQuery", "BackEndOrder")">訂單查詢</a>
+
+        </li>
+        <li class="breadcrumb-item active">
+            訂單明細
+        </li>
+    </ol>
+
+
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <div>
+                <h5>訂單編號：iTicket0001</h5>
+                <h5>訂購人：王曉明	</h5>
+                <h5>聯絡電話：0988777666</h5>
+                <h5>email信箱：Ben@gmail.com</h5>
+            </div>
+            <div class="card mb-4">
+
+            </div>
+
+            <table class="table table-bordered" id="dataTable" style="width:100%" cellspacing="0">
+
+                <thead>
+                    <tr>
+                        <th>序號</th>
+                        <th>活動名稱</th>
+                        <th>活動日期</th>
+                        <th>活動地點</th>
+                        <th>票區</th>
+                        <th>票種</th>
+                        <th>票價</th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>序號</th>
+                        <th>活動名稱</th>
+                        <th>活動日期</th>
+                        <th>活動地點</th>
+                        <th>票區</th>
+                        <th>票種</th>
+                        <th>票價</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @{
+
+                        for (int i = 0; i < 6; i++)
+                        {
+                            @:
+                            <tr>
+                                <td>
+                                    @(i + 1)
+                                </td>
+                                <td>Xpark都會型水生公園門票</td>
+                                <td>2020/10/10 18:00 ~ 2099/12/31 23:59</td>
+                                <td>桃園青埔-Xpark</td>
+                                <td>一般票</td>
+                                <td>全票</td>
+                                <td>300</td>
+
+                            </tr>
+
+                        }
+                        for (int i = 6; i < 15; i++)
+                        {
+                            @:
+                            <tr>
+                                <td>
+                                    @(i + 1)
+                                </td>
+                                <td>Xpark都會型水生公園門票</td>
+                                <td>2020/10/10 18:00 ~ 2099/12/31 23:59</td>
+                                <td>桃園青埔-Xpark</td>
+                                <td>一般票</td>
+                                <td>學生票</td>
+                                <td>200</td>
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+

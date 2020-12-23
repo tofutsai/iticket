@@ -1,0 +1,176 @@
+﻿@{ Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+                ViewBag.Title = "會員管理"; }
+
+<h1 class="mt-4">會員管理</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="/BackEndMain/BackEndIndex">後台</a></li>
+    <li class="breadcrumb-item active">會員管理</li>
+</ol>
+
+<div id="ctrlBtn" class="mb-4 pt-2 pl-4 sticky-top" style="z-index: 1500; max-height: 46px;">
+    <button type="button" id="ctrlBtn0" class="btn btn-outline-primary mr-2"><i class="far fa-bell"></i> 系統通知</button>
+    <button type="button" id="ctrlBtnA" class="btn btn-outline-secondary mr-2"><i class="fas fa-user-friends"></i> 所有</button>
+    <button type="button" id="ctrlBtn1" class="btn btn-outline-secondary mr-2"><i class="fas fa-store"></i> 商家</button>
+    <button type="button" id="ctrlBtn2" class="btn btn-outline-secondary mr-2"><i class="fas fa-user"></i> 普通</button>
+    <button type="button" id="ctrlBtn3" class="btn btn-outline-secondary mr-2"><i class="fas fa-question-circle"></i> 未驗證</button>
+    <button type="button" id="ctrlBtn4" class="btn btn-outline-secondary mr-2"><i class="fas fa-ban"></i> 停權會員</button>
+    <form id="ctrlForm" class="form-inline d-inline">
+        <input id="searchbox" class="form-control mr-sm-2" type="search" placeholder="請輸入關鍵字" aria-label="Search">
+        <input type="hidden" id="fRoleId" name="RoleId" value="9">
+        <input type="hidden" id="fPageCurrent" name="PageCurrent" value="1">
+        <input type="hidden" id="fPageSize" name="PageSize" value="10">
+        <input type="hidden" id="fKeyword" name="Keyword" value="">
+        <input type="hidden" id="fSortRule" name="SortRule" value="0">
+        <input type="hidden" id="fNonVerify" name="NonVerify" value="0">
+    </form>
+</div>
+
+<div class="card">
+    <div id="cardHeader" class="card-header sticky-top" style="z-index: 500; top: 55px; background-color: #f7f7f7;">
+        <i class="fas fa-address-card mr-1"></i>會員管理
+        <span id="ctrlHint" class="text-success mx-2"></span>
+        <button type="button" id="ctrlBtn5" class="btn btn-outline-info d-none border-0 align-text-top" style="font-size: 0.9rem; padding: 1px 3px">&times; 重設排序</button>
+        <button type="button" id="ctrlBtn6" class="btn btn-outline-warning d-none ml-2 border-0 align-text-top" style="font-size: 0.9rem; padding: 1px 3px">&#x2610; 未審核商家</button>
+        <button type="button" id="ctrlBtn7" class="btn btn-outline-primary border-0 align-text-top float-right" style="font-size: 0.9rem; padding: 1px 3px">&#x261e; 前往商家審核</button>
+    </div>
+    <div id="cardBody" class="card-body">
+        <div class="row mb-1">
+            <div class="col-4">
+                每頁顯示
+                <select id="pageAmount" class="custom-select-sm" style="cursor: pointer">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 筆資料
+            </div>
+            <div class="col-8">
+                <nav class="float-right" aria-label="...">
+                    <ul id="pageTop" class="pagination">
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="thePrev()">上一頁</a>
+                        </li>
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="theNext()">下一頁</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <table class="table table-bordered" style="font-size: 95%; width: 100%; table-layout: fixed">
+            <thead id="ListHead">
+                <tr>
+                    <th id="ListHead0" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 4%;">
+                        <i class="far fa-bell"></i>
+                    </th>
+                    <th id="ListHead1" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 15%;">
+                        <i class="fas fa-envelope mr-1"></i>Email
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="ListHead2" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-user-edit mr-1"></i>暱稱
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="ListHead3" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-user mr-1"></i>姓名
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="ListHead4" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 12%;">
+                        <i class="fas fa-mobile-alt mr-1"></i>電話
+                        <span class="float-right"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th id="ListHead5" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; width: 15%;">
+                        <i class="fas fa-user-shield mr-1"></i>會員權限
+                    </th>
+                    <th id="ListHead6" class="sticky-top px-2" style="z-index: 300; top: 103px; background-color: #eee; width: 30%;">
+                        <i class="fas fa-user-cog mr-1"></i>會員權限設定
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="ListBody"></tbody>
+        </table>
+
+        <div class="row mt-1">
+            <div class="col-4">
+                <span id="pageMessage"></span>
+            </div>
+            <div class="col-8">
+                <nav class="float-right" aria-label="...">
+                    <ul id="pageBottom" class="pagination">
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="thePrev()">上一頁</a>
+                        </li>
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="theNext()">下一頁</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AjaxBox -->
+<div id="AjaxBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjaxBox" aria-hidden="true" style="z-index: 1600;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white bg-dark">
+                <h5 id="AjaxBoxTitle" class="modal-title"></h5>
+                <button id="AjaxBoxDemo" type="button" class="btn btn-outline-info btn-sm ml-2">Demo</button>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <div id="AjaxBoxBody" class="modal-body text-white bg-dark">
+
+            </div>
+            <div class="modal-footer text-white bg-dark">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button id="OK" type="button" class="btn btn-primary">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AjaxDetail -->
+<div id="AjaxDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjaxBox" aria-hidden="true" style="z-index: 1600;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white bg-dark">
+                <h5 class="modal-title">會員資料查詢</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body text-white bg-dark">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="member-tab" data-toggle="tab" href="#member" role="tab" aria-controls="member" aria-selected="true">會員資料</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="seller-tab" data-toggle="tab" href="#seller" role="tab" aria-controls="seller" aria-selected="false">商家資料</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="banlist-tab" data-toggle="tab" href="#banlist" role="tab" aria-controls="banlist" aria-selected="false">停權紀錄</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="member" role="tabpanel" aria-labelledby="member-tab"></div>
+                    <div class="tab-pane fade" id="seller" role="tabpanel" aria-labelledby="seller-tab"></div>
+                    <div class="tab-pane fade" id="banlist" role="tabpanel" aria-labelledby="banlist-tab"></div>
+                </div>
+            </div>
+            <div class="modal-footer text-white bg-dark">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button id="DK" type="button" class="btn btn-primary">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Content/BackEnd/js/BackEndMember01.js"></script>
+<script src="~/Content/BackEnd/js/BackEndMember02.js"></script>
+<script src="~/Content/BackEnd/js/BackEndDemoMAC.js"></script>

@@ -1,0 +1,59 @@
+﻿@model prjITicket.ViewModel.QMember
+@{
+    ViewBag.Title = "忘記密碼";
+
+}
+@*sweetalert*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<div style="width:300px;margin-left:250px">
+    <h2 style="margin-left:20px">忘記密碼</h2>
+    <form method="POST" class="register-form" id="login-form">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @*<label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>*@
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @placeholder = "你的Email",id= "youremail" } })
+        </div>
+        <div class="form-group">
+            <input style="width:183px" type="button" name="btnSet" id="btnSet" class="form-submit" value="重新設定密碼" />
+        </div>
+    </form>
+    <a href="#" class="btn btn-secondary" id="testemail">Demo:email</a>
+</div>
+<script>
+    $("#testemail").click(function () {
+        $("#youremail").val("iticketshopping1@gmail.com");        
+    });
+
+    $("#btnSet").click(function () {
+        $.ajax({
+            url: '@Url.Action("Forget1")',
+            type: 'POST',
+            data: $("#login-form").serialize(),
+            success: function (data) {
+                if (data == "無此帳號") {
+                    swal({
+                        title: "無此帳號",
+                        icon: "error",
+                        button: "確定",
+                    });
+                }
+                else
+                {
+                    swal({
+                        title: "送出成功",
+                        icon: "success",
+                        button: "確定!",
+                    }).then(x => {
+                        window.close();
+                    });
+
+
+                }
+
+
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,415 @@
+﻿@using prjITicket.Models;
+@using prjITicket.ViewModel
+@model VMReport
+@{
+    ViewBag.Title = "forum_content";
+    int count = 0;
+    Member member = Session[CDictionary.SK_Logined_Member] as Member;
+
+}
+
+<link href="~/Content/Forum_use/forumcontent.css" rel="stylesheet" />
+<link href="~/Content/Forum_use/css/styles.css" rel="stylesheet" />
+@*SweetAlert彈框*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="container">
+    @* 彈出視窗:Modal *@
+    <div class="modal fade" id="UploadImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">活動資訊</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="showActivity" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="button" class="btn btn-primary" id="ButtonCrop" data-dismiss="modal" value="Save the Crop Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Post Content Column -->
+        <div class="col-lg-9">
+            <!-- Title -->
+
+            <h1 class="mt-4">@Model.Article.ArticleTitle</h1>
+            <!-- Author -->
+            <p class="lead">
+                by
+                @Html.ActionLink(Model.Article.Member.Name, "forum_mainblock", "Forum", new { searchText = Model.Article.Member.Name })
+
+            </p>
+            <hr>
+            <!-- Date/Time -->
+            <p>Posted on @Model.Article.Date</p>
+            <hr>
+            <!-- Post Content -->
+
+            <div id="content" style="width:auto; height:auto;">
+
+
+
+            </div>
+
+            <hr />
+            <div class="col-xs-2">
+                @if (member != null && Model.Article.Article_Emotion.Where(n => n.ActionId == 1 && n.MemberId == member.MemberID && n.ArticleId == Model.Article.ArticleID).Any())
+                {
+                    <button class="gpclick" id="actionlike_a" onclick="likeBtn_a()">👍</button>
+                }
+                else
+                {
+                    <button class="gp" id="actionlike_a" onclick="likeBtn_a()">👍</button>
+                }
+                <label style="margin-right:20px" id="goodpoint">@Model.Article.Article_Emotion.Where(n => n.ActionId == 1 && n.ArticleId == Model.Article.ArticleID).Count()</label>
+
+                @if (member != null && Model.Article.Article_Emotion.Where(n => n.ActionId == 2 && n.MemberId == member.MemberID && n.ArticleId == Model.Article.ArticleID).Any())
+                {
+                    <button class="bpclick" id="actiondislike_a" onclick="dislikeBtn_a()">👎</button>
+                }
+                else
+                {
+                    <button class="bp" id="actiondislike_a" onclick="dislikeBtn_a()">👎</button>
+                }
+                <label style="margin-right:20px" id="badpoint">@Model.Article.Article_Emotion.Where(n => n.ActionId == 2 && n.ArticleId == Model.Article.ArticleID).Count()</label>
+                <div style="float:right;right:0px">
+                    <button class="w3-button w3-black" onclick="document.getElementById('Modal').style.display = 'block';">檢舉</button>
+                </div>
+            </div>
+
+            <hr />
+            <!--檢舉按鈕跳出浮動視窗⬇⬇⬇-->
+            <div style="display:none" id="Modal" class="w3-modal w3-animate-opacity">
+                <div class="w3-modal-content">
+                    <header class="w3-container w3-teal">
+                        <span onclick="document.getElementById('Modal').style.display = 'none';" class="w3-button w3-display-topright">&times;</span>
+                        <h3>檢舉留言</h3>
+                    </header>
+                    <div class="w3-container">
+                        <br />
+                        <span>請選擇檢舉理由：</span>
+                        <select id="articleReportReason">
+                            <option value="#">請選擇理由</option>
+                            @foreach (var q in Model.Report)
+                            {
+
+                                <option value="@q.ReportId">@q.ReportReason</option>
+
+                            }
+                        </select>
+                        <p style=" margin-top:3px;font-size:12px;color:darkgray">
+                            人身攻擊、侵犯個人隱私、著作權限當事人檢舉。
+                            惡意檢舉，經查證屬實將依站規處分。.
+                        </p>
+                    </div>
+                    <footer class="w3-container w3-teal">
+                        <div style="margin:5px 0px;" class="float-right">
+                            <button class="w3-button w3-black" type="button" onclick="document.getElementById('Modal').style.display = 'none';">取消</button>
+                            <button class="w3-button w3-pale-green" type="button" onclick="reportReason_article()">確定</button>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+            <div id="ajaxshowActivity">
+
+            </div>
+            <!-- Comments Form -->
+            <div class="card my-4">
+                <h5 class="card-header">留言區:</h5>
+                <div class="card-body">
+                    <div class="form-group">
+                        <textarea id="editor" class="form-control" name="editorshow"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="replysql">Submit</button>
+                </div>
+            </div>
+            <div id="ajaxdemoshow">
+
+            </div>
+        </div>
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-3">
+
+            <!-- Categories Widget -->
+            <div class="card my-3 發文者資訊及操作區欄位">
+                <h5 class="card-header">發文者資訊</h5>
+                <img src="/images/Login/Upload/@Model.Article.Member.Icon" style="height:200px;" onerror="this.src='/images/Login/Layout/bar.png'">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="#">@Model.Article.Member.NickName</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Side Widget -->
+            @if (member != null && (Model.Article.MemberID == member.MemberID || member.MemberRoleId == 4))
+            {
+                <div class="card my-3 發文者資訊及操作區欄位">
+                    <h5 class="card-header" style="background-color:coral">管理員/發文者才能看到的文章操作區</h5>
+                    <div class="card-body">
+                        @Html.ActionLink("編輯", "Edit_article", "Forum", new { articleID = Model.Article.ArticleID }, null)
+                        @Html.ActionLink("刪除", "Delete", "Forum", new { articleID = Model.Article.ArticleID }, null)
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- /.row -->
+    <button type="button" id="BackTop" class="toTop-arrow"></button>
+</div>
+<script src="~/Content/Forum_use/build/ckeditor.js"></script>
+<script>
+    class MyUploadAdapter {
+        // According to the document we need a constructor first
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        // start upload methods
+        upload() {
+            return new Promise((resolve, reject) => {
+                // 使用 FileReader() 物件讀取檔案
+                const reader = this.reader = new window.FileReader();
+                // 觸發 load 事件後，resolve 丟回物件完成 Promise
+                reader.addEventListener('load', () => {
+                    resolve({ default: reader.result });
+                });
+
+                // 觸發錯誤事件，以 reject 丟回 Promise 失敗原因
+                reader.addEventListener('error', err => {
+                    reject(err);
+                });
+                // 觸發 abort 事件時，以 reject() ，使 Promise 失敗
+                reader.addEventListener('abort', () => {
+                    reject();
+                });
+
+                // 告訴 FileReader 物件用 url 格式讀取，用於設定 img.src 性質
+                this.loader.file.then(file => {
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        // start abort()
+        abort() {
+            //  觸發 FileReader abort 事件
+            this.reader.abort();
+        }
+    }
+
+
+    function MyAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => { return new MyUploadAdapter(loader) };
+    };
+
+    let editor;
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            extraPlugins: [MyAdapterPlugin],
+        })
+        .then(neweditor => {
+            //把編輯器的參考存起來
+            editor = neweditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+
+    $("#replysql").click(function () {
+        let rpcontent = editor.getData();
+        let articleID = @Model.Article.ArticleID;
+         if (rpcontent == "") {
+             swal("留言失敗", "請輸入留言", "error");
+         }
+         else {
+             $.ajax({
+                 type: "post",
+                 url: "@Url.Action("forum_content")",
+                 data: { content: rpcontent, articleID: articleID },
+                 success: function (data) {
+                     if (data != "成功") {
+                         swal(data, "", "error")
+                         if (data != "您已被停權！無法操作此功能")
+                         setTimeout(function () { window.location.href = '@(Url.Action("Login", "Login"))';},1500)
+                     }
+                     else {
+                         swal("留言成功", "", "success");
+                         $("#ajaxdemoshow").empty().load("/Forum/forum_reply?articleID=@Model.Article.ArticleID");
+                        editor.setData('');
+                        }
+                        }
+                        });
+                        }
+
+                        });
+                        refreshTime()
+                        function refreshTime() {
+                        $("#ajaxdemoshow").empty().load("/Forum/forum_reply?articleID=@Model.Article.ArticleID")
+                        $("#ajaxshowActivity").empty().load("/Forum/forum_Activity?articleID=@Model.Article.ArticleID")
+                        }
+                        setInterval("refreshTime()", 300000);
+                        $("#content").html(`@Html.Raw(Model.Article.ArticleContent)`);
+
+
+
+
+
+                        function reportReason_article() {
+                        let reportId = $('#articleReportReason').val();
+
+                        if (reportId === '#') {
+                            swal("檢舉不成功", "社會在走，理由要有！", "error")
+                        }
+                        else {
+                        $.ajax({
+                        type: "post",
+                        url: "@Url.Action("Article_Report")",
+                        data: {
+                        ReportID: reportId, ArticleID: @Model.Article.ArticleID},
+                        success: function (data) {
+                        if (data != "成功") {
+                            swal(data, "", "error")
+                            setTimeout(function () { window.location.href = '@(Url.Action("Login", "Login"))';},1500)
+
+                        } else {
+                        document.getElementById('Modal').style.display = 'none';
+                            swal("檢舉成功","", "success")
+                        }
+                        }
+                        });
+                        }
+                        }
+
+                        function likeBtn_a()
+                        {
+                        let likebtn = document.getElementById('actionlike_a');
+                        let dislikebtn = document.getElementById('actiondislike_a');
+                        let ActionId = 1;
+                            if (dislikebtn.className == 'bpclick') {
+                                swal( "此篇留言你已點了不喜歡", "","warning")
+
+                        }
+                        else {
+                        if (likebtn.className == 'gp') {
+                        likebtn.className = 'gpclick';
+
+                        $.ajax({
+                        type: "post",
+                        url: "@Url.Action("Article_EmotionAction")",
+                        data: { ArticleID:@Model.Article.ArticleID, ActionID: ActionId },
+                        success: function (data) {
+                        if (data != "成功") {
+                            swal(data, "", "error")
+                         setTimeout(function () { window.location.href = '@(Url.Action("Login", "Login"))';},1500)
+                        } else {
+                        $("#goodpoint").text(parseInt($("#goodpoint").text()) + 1);
+                        }
+                        },
+                        error: function (data) {
+                        }
+                        });
+                        }
+                        else {
+                        likebtn.className = 'gp';
+                        $.ajax({
+                        type: "post",
+                        url: "@Url.Action("Article_EmotionAction_Cancel")",
+                        data: { ArticleID: @Model.Article.ArticleID},
+                        success: function (data) {
+                        $("#goodpoint").text(parseInt($("#goodpoint").text()) - 1);
+                        },
+                        error: function (data) {
+                        }
+                        });
+                        }
+                        }
+                        }
+                        function dislikeBtn_a() {
+                        let likebtn = document.getElementById('actionlike_a');
+                        let dislikebtn = document.getElementById('actiondislike_a');
+                        let ActionId = 2;
+                        if (likebtn.className == 'gpclick') {
+                            swal( "此篇留言你已點了喜歡","", "warning")
+                        }
+                        else {
+                        if (dislikebtn.className == 'bp') {
+                        dislikebtn.className = 'bpclick';
+
+                        $.ajax({
+                        type: "post",
+                        url: "@Url.Action("Article_EmotionAction")",
+                        data: { ArticleID:@Model.Article.ArticleID, ActionID: ActionId },
+                        success: function (data) {
+                        if (data != "成功") {
+                            swal(data, "", "error")
+                         setTimeout(function () { window.location.href = '@(Url.Action("Login", "Login"))';},1500)
+                        } else {
+                        $("#badpoint").text(parseInt($("#badpoint").text()) + 1);
+                        }
+                        },
+                        error: function (data) {
+                        }
+                        });
+                        }
+                        else {
+                        dislikebtn.className = 'bp';
+                        $.ajax({
+                        type: "post",
+                        url: "@Url.Action("Article_EmotionAction_Cancel")",
+                        data: { ArticleID: @Model.Article.ArticleID},
+                        success: function (data) {
+                        $("#badpoint").text(parseInt($("#badpoint").text()) - 1);
+                        },
+                        error: function (data) {
+                        }
+                        });
+                        }
+                        }
+                        }
+                        $(function () {
+                        $('#BackTop').click(function () {
+                        $('html,body').animate({ scrollTop: 0 }, 333);
+                        });
+                        $(window).scroll(function () {
+                        if ($(this).scrollTop() > 300) {
+                        $('#BackTop').fadeIn(222);
+                        } else {
+                        $('#BackTop').stop().fadeOut(222);
+                        }
+                        }).scroll();
+                        });
+
+                        //獲得活動的次詳細頁
+                        function getActivitySubDetailPage(activityId) {
+                        $.ajax({
+                        type: "get",
+                        url: "@Url.Action("GetActivitySubDetailPage")",
+                        data: { activityId: activityId },
+                        success: function (result) {
+                        $("#showActivity").html(result);
+                        $("#activityListPageRight").hide(0, "swing", function () {
+                        $(document).scrollTop(0);
+                        });
+                        }
+                        });
+                        }
+
+                        function reply_quote(replyId, rpname) {
+                        let rpcontent = document.getElementById("replyshow_content_" + replyId);
+                        editor.setData("<strong>" + rpcontent.innerHTML + "-" + rpname + "</strong><br />");
+
+                        }
+</script>

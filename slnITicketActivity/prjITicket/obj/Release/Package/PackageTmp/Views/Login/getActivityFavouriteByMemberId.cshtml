@@ -1,0 +1,144 @@
+﻿@using prjITicket.Models;
+@using prjITicket.ViewModel;
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<prjITicket.Models.ActivityFavourite>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+@*SweetAlert彈框*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="row">
+    @if (Model.Count() == 0)
+    {
+        <div style="margin:0px auto">
+            <h3><strong>目前暫無收藏</strong></h3>
+        </div>
+    }
+    @foreach (ActivityFavourite favourite in Model)
+    {
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <a href="~/Activity/ActivityDetail?activityId=@favourite.Activity.ActivityID"><img class="card-img-top" src="@Url.Content("~/images/Activity/"+favourite.Activity.Picture)" alt=""></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="~/Activity/ActivityDetail?activityId=@favourite.Activity.ActivityID" onclick="getActivitySubDetailPage(@favourite.Activity.ActivityID)">@favourite.Activity.ActivityName</a>
+                    </h4>
+                    <!--下面顯示價格,如果沒有票,就顯示無價格;有票就顯示最便宜的,如果有折扣,就顯示原價與折扣價,否則只顯示原價-->
+                    <div class="mb-1 d-flex justify-content-end align-items-end">
+                        @{
+                            if (favourite.Activity.Tickets.Count == 0)
+                            {
+                                <div class="h4 ml-auto mb-0">暫無價格</div>
+                            }
+                            else
+                            {
+                                Tickets cheapestTicket = favourite.Activity.Tickets.OrderBy(t => t.Price * (1 - t.Discount)).FirstOrDefault();
+                                if (cheapestTicket.Discount != 0)
+                                {
+                                    <del id="ticketPrice" class="text-muted">TWD @cheapestTicket.Price</del>
+                                }
+                                <div class="h4 ml-auto mb-0">
+                                    <small class="text-muted">TWD</small>@Math.Round(cheapestTicket.Price * (1 - cheapestTicket.Discount), 0))
+                                </div>
+                            }
+                        }
+                    </div>
+                    <p class="card-text">@favourite.Activity.Hostwords</p>
+                </div>
+                <div class="card-footer d-flex justify-content-end align-items-end" style="padding:12px 0px;">
+                    <span id="@favourite.Activity.ActivityID" class="text-warning" style="font-size:20px">
+                        @{
+                            //判斷該活動的平均評價並顯示在網頁
+                            if (favourite.Activity.Comment.Count() == 0)
+                            {
+                                @:暫無評價
+                                <script>document.getElementById("@favourite.Activity.ActivityID").className="text-mute"</script>
+                            }
+                            else
+                            {
+                                int score = (int)Math.Round(favourite.Activity.Comment.Average(c => c.CommentScore), 0);
+                                for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= score)
+                                    {
+                                        @:&#9733;
+                                    }
+                                    else
+                                    {
+                                        @:&#9734;
+                                    }
+                                }
+                            }
+                        }
+                    </span>
+                    <span class="text-muted ml-auto mr-auto my-auto font-weight-bold" style="font-size:15px">
+                        <!--這裏塞活動的市和區-->
+                        @favourite.Activity.Districts.Cities.CityName@favourite.Activity.Districts.DistrictName
+                    </span>
+                    <button data-activityId="@favourite.ActivityId" data-memberId="@favourite.MemberId" class="btn btn-danger btn-sm rounded-0 mr-auto delete" type="button" data-toggle="tooltip" data-placement="top" title="刪除"><i class="fa fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@*會員收藏管理分頁Ajax*@
+@Html.PagedListPager(Model, page =>Url.Action("getActivityFavouriteByMemberId", new {memberId=ViewBag.MemberId, page=page }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new AjaxOptions{
+            InsertionMode = InsertionMode.Replace,
+            UpdateTargetId = "form1div"
+        }
+        ))
+
+<script>
+  
+    //sweet alert刪除收藏活動
+    function deletefavourite(memberId, activityId) {
+        swal({
+            title: "確定刪除收藏嗎?",
+            text: "",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "取消",
+                    value: "取消",
+                    visible: true
+                },
+                confirm: {
+                    text: "確定",
+                    value: "確定",
+                    visible: true
+                }
+            },
+            dangerMode: true,
+        }).then((value) => {
+                
+            if (value=="確定") {
+                    deleteActivityFavourite(memberId, activityId);
+                    swal("刪除成功", {
+                        icon: "success",
+                    });
+                    //執行收藏refrash ajax
+                    loadActivityFavouriteByMemberId(memberId);
+                    //執行收藏圈圈數字ajax
+                    changeActivityFavouriteByMemberId(memberId);
+                }
+                
+            });
+    }
+    
+    function deleteActivityFavourite(memberId, activityId) {
+        
+        $.ajax({
+            type: 'post',
+            url: "@Url.Action("deleteActivityFavouriteByActivityId")",
+            data: {
+                memberId: memberId,
+                activityId: activityId
+                },
+            success: function (result) {
+                console.log(result);
+            }
+
+        });
+    }
+</script>

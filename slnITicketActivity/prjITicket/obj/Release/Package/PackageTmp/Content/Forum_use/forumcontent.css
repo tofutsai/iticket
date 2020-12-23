@@ -1,0 +1,268 @@
+﻿
+
+#content .image img {
+    max-width: 700px;
+}
+
+.reply_Profile {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+}
+
+
+.發文者資訊及操作區欄位 {
+    box-shadow: 4px 3px 9px #D0D0D0
+}
+
+.reply_css {
+    padding-top: 10px;
+    margin-top: 50px;
+    transition: all 0.2s;
+    border-radius: 16px;
+}
+
+    .reply_css:hover {
+        box-shadow: 6px 6px 9px #D0D0D0;
+        border-radius: 16px
+    }
+
+
+.emotion {
+    border: none;
+    background-color: inherit;
+    padding: 8px 28px;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+    display: inline-block;
+    /*float: left;*/
+    transition: all 0.2s;
+}
+
+    .emotion:hover {
+        background: #eee;
+    }
+
+.success {
+    color: green;
+}
+
+.info {
+    color: dodgerblue;
+}
+
+.warning {
+    color: orange;
+}
+
+.danger {
+    color: red;
+}
+
+.default {
+    margin-top:2px;
+    margin-bottom:2px;
+    color: black;
+}
+.defaultclick {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    color: white;
+    background-color: black;
+}
+
+.gp {
+    border: solid 2px orange;
+    height: 40px;
+    width: 40px;
+    background-color: inherit;
+    margin-right: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 50% 50%;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.5s;
+    color: orange;
+    background-color: white;
+}
+
+    .gp:hover {
+        color: white;
+        background-color: orange;
+    }
+
+.gpclick {
+    border: solid 2px orange;
+    height: 40px;
+    width: 40px;
+    background-color: inherit;
+    margin-right: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 50% 50%;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.5s;
+    color: white;
+    background-color: orange;
+}
+
+.bp {
+    border: solid 2px gray;
+    height: 40px;
+    width: 40px;
+    background-color: inherit;
+    margin-right: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 50% 50%;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.5s;
+    color: gray;
+    background-color: white;
+}
+
+    .bp:hover {
+        color: white;
+        background-color: gray;
+    }
+
+.bpclick {
+    border: solid 2px gray;
+    height: 40px;
+    width: 40px;
+    background-color: inherit;
+    margin-right: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 50% 50%;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.5s;
+    color: white;
+    background-color: gray;
+}
+
+
+.toTop-arrow {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 33%;
+    opacity: 0.6;
+    background: #000;
+    cursor: pointer;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: none;
+}
+
+    .toTop-arrow::before, .toTop-arrow::after {
+        width: 18px;
+        height: 5px;
+        border-radius: 3px;
+        background: #f90;
+        position: absolute;
+        content: "";
+    }
+
+    .toTop-arrow::before {
+        transform: rotate(-45deg) translate(0, -50%);
+        left: 0.5rem;
+    }
+
+    .toTop-arrow::after {
+        transform: rotate(45deg) translate(0, -50%);
+        right: 0.5rem;
+    }
+
+    .toTop-arrow:focus {
+        outline: none;
+    }
+
+
+/* 48px */
+.toTop-arrow {
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 33%;
+    opacity: 0.6;
+    background: #000;
+    cursor: pointer;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: none;
+}
+
+    .toTop-arrow::before, .toTop-arrow::after {
+        width: 25px;
+        height: 6px;
+        border-radius: 3px;
+        background: #f90;
+        position: absolute;
+        content: "";
+    }
+
+    .toTop-arrow::before {
+        transform: rotate(-45deg) translate(0, -50%);
+        left: 0.42rem;
+    }
+
+    .toTop-arrow::after {
+        transform: rotate(45deg) translate(0, -50%);
+        right: 0.42rem;
+    }
+
+    .toTop-arrow:focus {
+        outline: none;
+    }
+
+/* 56px */
+.toTop-arrow {
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 33%;
+    opacity: 0.6;
+    background: #000;
+    cursor: pointer;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: none;
+}
+
+    .toTop-arrow::before, .toTop-arrow::after {
+        width: 31px;
+        height: 7px;
+        border-radius: 3px;
+        background: #f90;
+        position: absolute;
+        content: "";
+    }
+
+    .toTop-arrow::before {
+        transform: rotate(-45deg) translate(0, -50%);
+        left: 0.4rem;
+    }
+
+    .toTop-arrow::after {
+        transform: rotate(45deg) translate(0, -50%);
+        right: 0.4rem;
+    }
+
+    .toTop-arrow:focus {
+        outline: none;
+    }

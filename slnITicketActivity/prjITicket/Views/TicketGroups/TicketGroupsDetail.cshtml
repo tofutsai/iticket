@@ -1,0 +1,265 @@
+﻿@using prjITicket.ViewModel;
+@using prjITicket.Models;
+@model VMTicketGroupsDetail
+@{
+    ViewBag.Title = "套票詳細資訊";
+}
+    <script>
+
+    $(function () {
+        //選擇票種的下拉框一更改觸發此方法
+        $(".selTicketCategory").change(function () {
+            let ticketCategoryId = this.value;
+            let ticketTimeId = $(this).parent().next().find("select").val();
+            getPrice(ticketCategoryId, ticketTimeId, this);
+        });
+        //選擇場次的下拉框一更改觸發此方法
+        $(".selTicketTime").change(function () {
+            let ticketCategoryId = $(this).parent().prev().find("select").val();
+            let ticketTimeId = this.value;
+            getPrice(ticketCategoryId, ticketTimeId, this);
+        });
+        //按下付款要執行的動作
+        $("#frmGoToPay").submit(function () {
+            let tickets = [];
+            $("#shoppingCartDetail tr").each(function (i, e) {
+                let ticketCategoryId = $(e).find(".selTicketCategory").val();
+                let ticketTimeId = $(e).find(".selTicketTime").val();
+                tickets.push(new Ticket(ticketCategoryId, ticketTimeId));
+            });
+            let discount = @Model.ticketGroupDetails[0].TicketGroups.TicketGroupDiscount;
+            let quantity = $("#shoppingCartDetail tr").eq(0).find(".txtCount").html();
+            tickets = JSON.stringify(tickets);
+            $("input[name='Discount']").val(discount);
+            $("input[name='Quantity']").val(quantity);
+            $("input[name='Tickets']").val(tickets);
+        });
+        //ticket物件
+        function Ticket(ticketCategoryId, ticketTimeId) {
+            this.TicketCategoryId = ticketCategoryId||-1;
+            this.TicketTimeId = ticketTimeId||-1;
+        }
+    });
+    //tobeadd票種和場次更改時會用到的方法
+    function getPrice(ticketCategoryId, ticketTimeId, element) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("getTicketPrice")",
+            data: { ticketCategoryId: ticketCategoryId, ticketTimeId: ticketTimeId },
+            success: function (result) {
+                if (result == "暫無提供") {
+                    $(element).parent().siblings().eq(4).html("暫無提供");
+                    checkButton();
+                }
+                else if (result == "已售完") {
+                    $(element).parent().siblings().eq(4).html("已售完");
+                    checkButton();
+                }
+                else {
+                    //let ticketGroupDiscount = $("#lblDiscount").html();
+                    //console.log(ticketGroupDiscount);
+                    //let ticket = JSON.parse(result);
+                    //price = ticket.Price * (1 - ticketGroupDiscount);
+                    //price = Math.round(price);
+                    ////console.log(ticket.UnitsInStock);
+                    //$(element).parent().siblings().eq(4).html(price);
+                    ////把數量的欄位都改為1
+                    //$("#shoppingCartDetail tr").each(function (i, e) {
+                    //    let $span = $(e).find("span");
+                    //    $span.html(1);
+                    //});
+                    //checkButton();
+                    if (typeof $("#lblDiscount").html() !== "undefined") {
+                        let ticketGroupDiscount = $("#lblDiscount").html();
+                        console.log(ticketGroupDiscount);
+                        let ticket = JSON.parse(result);
+                        price = ticket.Price * (1 - ticketGroupDiscount);
+                        price = Math.round(price);
+                        //console.log(ticket.UnitsInStock);
+                        $(element).parent().siblings().eq(4).html(price);
+                        //把數量的欄位都改為1
+                        $("#shoppingCartDetail tr").each(function (i, e) {
+                            let $span = $(e).find("span");
+                            $span.html(1);
+                        });
+                        checkButton();
+                    }
+                    else {
+                        console.log($("#lblDiscount").html());
+                        alert("無此票券");
+                        window.location.reload();
+                    }
+                }
+            }
+        });
+    }
+    //tobeadd檢查是否要啟用或停用購買按鈕、及數量加減號
+    function checkButton() {
+        let conditions = [];
+        $("#shoppingCartDetail tr").each(function (i, e) {
+            let pricename = $(e).children().eq(5).html();
+            conditions.push(pricename);
+        });
+
+        if (conditions.includes("暫無提供") || conditions.includes("已售完")) {
+            $("#btnAddToCar").attr("disabled", "disabled");
+            $(".btnMinus").removeAttr("onclick");
+            $(".btnPlus").removeAttr("onclick");
+        }
+        else {
+            $("#btnAddToCar").removeAttr("disabled");
+            $(".btnMinus").attr("onclick","countMinus()");
+            $(".btnPlus").attr("onclick", "countPlus()");
+        }
+    }
+    //tobeadd按下數量加號
+    function countPlus() {
+        let flag = true;
+        //用陣列儲存尚未更改前的數量和價格
+        let info = [];
+        $("#shoppingCartDetail tr").each(function (i, e) {
+            let $span = $(e).find("span");
+            let trCount = $span.html();
+            let price = $(e).children().eq(5).html();
+            info.push({ count: trCount,price:price });
+        });
+        $("#shoppingCartDetail tr").each(function (i, e) {
+            let ticketCategoryId = $(e).children().eq(2).find("select").val();
+            //console.log(ticketCategoryId);
+            let ticketTimeId = $(e).children().eq(3).find("select").val();
+            //console.log(ticketTimeId);
+            let $span = $(e).find("span");
+            let trCount = $span.html();
+            let price = $(e).children().eq(5).html();
+            //console.log(trCount);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("isTicketsStillInStock")",
+                data: { ticketCategoryId: ticketCategoryId, ticketTimeId: ticketTimeId, trCount: trCount },
+                success: function (result) {
+                    if (result == "已售完") {
+                        alert("已售完");
+                        flag = false;
+                        $("#shoppingCartDetail tr").each(function (ind, ele) {
+                            let $span2 = $(ele).find("span");
+                            $span2.html(info[ind].count);
+                            let $price2 = $(ele).children().eq(5);
+                            $price2.html(info[ind].price);
+                        });
+                    }
+                    else {
+                        if (i == $("#shoppingCartDetail tr").length - 1 && flag) {
+                            $("#shoppingCartDetail tr").each(function (ind, ele) {
+                                let $span2 = $(ele).find("span");
+                                $span2.html(parseInt($span2.html()) + 1);
+                                let $price2 = $(ele).children().eq(5);
+                                let trPrice2 = $price2.html();
+                                trPrice2 /= ($span2.html() - 1);
+                                $price2.html(trPrice2 * $span2.html());
+                            });
+                        }
+
+                    }
+                }
+            });
+        });
+    }
+    //tobeadd按下數量減號
+    function countMinus() {
+        $("#shoppingCartDetail tr").each(function (i, e) {
+            let $span = $(e).find("span");
+            let trCount = $span.html();
+            if (--trCount > 0) {
+                $span.html(trCount);
+                let $price = $(e).children().eq(5);
+                let trPrice = $price.html();
+                trPrice /= (trCount + 1);
+                $price.html(trPrice * trCount);
+            }
+
+        });
+    }
+    </script>
+
+<h2>@ViewBag.TicketGroupName</h2>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="accordion" id="accordionExample">
+            <div id="collapseOne" class="collapse show " aria-labelledby="headingOne" data-parent="#accordionExample">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th width="100">商品照片</th>
+                            <th>商品名稱</th>
+                            <th>票種</th>
+                            <th>場次</th>
+                            <th>數量</th>
+                            <th class="text-center">價格</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shoppingCartDetail">
+                        @foreach (TicketGroupDetail groupdetail in Model.ticketGroupDetails)
+                        {
+                            List<TicketCategory> categories = Model.ticketCategory.Where(tc => tc.ActivityId == groupdetail.ActivityId).ToList();
+                            List<TicketTimes> times = Model.ticketTimes.Where(tt => tt.ActivityId == groupdetail.ActivityId).ToList();
+                            <tr>
+                                <td>
+                                    <div class="card p-1 card-img-bottom">
+                                        <img src="~/images/Activity/@groupdetail.Activity.Picture" alt="404NotFound" width="80" />
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    @groupdetail.Activity.ActivityName
+                                </td>
+                                <td class="align-middle">
+                                    <select class="selTicketCategory">
+                                        @foreach (TicketCategory tc in categories)
+                                        {
+                                            <option value="@tc.TicketCategoryId">
+                                                @tc.TicketCategoryName
+                                            </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td class="align-middle">
+                                    <select class="selTicketTime">
+                                        @foreach (TicketTimes tt in times)
+                                        {
+                                            <option value="@tt.TicketTimeId">
+                                                @tt.TicketTime.ToString("yyyy/MM/dd HH:mm")
+                                            </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td class="align-middle">
+                                    <a class="btnMinus" href="javascript:;" onclick="countMinus()"><i class="fas fa-minus-square text-muted"></i></a>
+                                    <span class="txtCount" style="font-family:Consolas">1</span>
+                                    <a class="btnPlus" href="javascript:;" onclick="countPlus()"><i class="fas fa-plus-square text-muted"></i></a>
+                                </td>
+                                <td class="align-middle text-center">
+                                    @if (categories.Count() != 0 && times.Count() != 0)
+                                    {
+                                        @(Math.Round(groupdetail.Activity.Tickets.FirstOrDefault(t => t.TicketCategory.TicketCategoryId == categories[0].TicketCategoryId && times[0].TicketTimeId == t.TicketTimeId).Price * (1 - groupdetail.TicketGroups.TicketGroupDiscount), 0))
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @foreach (TicketGroupDetail groupdetail in Model.ticketGroupDetails)
+                {
+                    <label id="lblDiscount" style="display: none">@groupdetail.TicketGroups.TicketGroupDiscount</label>
+                }
+                <div class="mt-3 d-flex justify-content-end">
+                    <form id="frmGoToPay" action="@Url.Action("OrderDetailByTicketGroup","Activity")" method="post">
+                        <input type="hidden" name="Discount" />
+                        <input type="hidden" name="Quantity" />
+                        <input type="hidden" name="Tickets" />
+                        <input type="submit" class="btn btn-primary" value="購買">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

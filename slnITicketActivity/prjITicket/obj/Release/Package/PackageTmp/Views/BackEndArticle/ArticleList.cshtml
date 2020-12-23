@@ -1,0 +1,195 @@
+﻿@model IEnumerable<prjITicket.Models.ArticleCategories>
+@{ Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+                ViewBag.Title = "留言板管理"; }
+
+<h1 class="mt-4">留言板管理</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="/BackEndMain/BackEndIndex">後台</a></li>
+    <li class="breadcrumb-item active">留言板管理</li>
+</ol>
+
+<div id="ctrlBtn" class="mb-4 pt-2 pl-4 sticky-top" style="z-index: 1500; max-height: 46px;">
+    <form id="ctrlForm" class="form-inline d-inline">
+        <select id="ctrlCate" name="Cate" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+            <option value="0" selected>所有分類</option>
+            @{ foreach (var cate in Model)
+                            {
+                <option value="@cate.ArticleCategoryID">@cate.ArticleCategoryName</option> } }
+        </select>
+        <select id="ctrlDate" name="Date" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+            <option value="0" selected>不限時間</option>
+            <option value="1">24小時以內</option>
+            <option value="7">7天以內</option>
+            <option value="30">1個月以內</option>
+            <option value="90">3個月以內</option>
+        </select>
+        <select id="ctrlReport" name="Report" class="form-control mr-sm-2" style="width: 135px; cursor:pointer;">
+            <option value="0" selected>所有留言</option>
+            <option value="1">檢舉數 &#x2265; 1</option>
+            <option value="5">檢舉數 &#x2265; 5</option>
+            <option value="10">檢舉數 &#x2265; 10</option>
+            <option value="15">檢舉數 &#x2265; 15</option>
+            <option value="20">檢舉數 &#x2265; 20</option>
+        </select>
+        <button type="button" id="ctrlBtnA" class="btn btn-outline-secondary mr-2"><i class="fas fa-newspaper"></i> 文章</button>
+        <button type="button" id="ctrlBtnR" class="btn btn-outline-secondary mr-2"><i class="fas fa-reply"></i> 回覆</button>
+        <input id="searchbox" class="form-control mr-sm-2" type="search" placeholder="搜尋標題或作者" aria-label="Search">
+        <input type="hidden" id="fType" name="Type" value="A">
+        <input type="hidden" id="fPageCurrent" name="PageCurrent" value="1">
+        <input type="hidden" id="fPageSize" name="PageSize" value="10">
+        <input type="hidden" id="fKeyword" name="Keyword" value="">
+        <input type="hidden" id="fAuthorSearch" name="AuthorSearch" value="0">
+    </form>
+</div>
+
+<div class="card">
+    <div id="cardHeader" class="card-header sticky-top" style="z-index: 500; top: 55px; background-color: #f7f7f7;">
+        <i class="fas fa-table mr-1"></i>留言板管理
+        <span id="ctrlHint" class="text-success mx-2"></span>
+        <button type="button" id="ctrlBtnC" class="btn btn-outline-info d-none border-0 align-text-top" style="font-size: 0.9rem; padding: 1px 3px"></button>
+    </div>
+    <div id="cardBody" class="card-body">
+        <div class="row mb-1">
+            <div class="col-4">
+                每頁顯示
+                <select id="pageAmount" class="custom-select-sm" style="cursor: pointer">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 筆資料
+            </div>
+            <div class="col-8">
+                <nav class="float-right" aria-label="...">
+                    <ul id="pageTop" class="pagination">
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="thePrev()">上一頁</a>
+                        </li>
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="theNext()">下一頁</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <table class="table table-bordered" style="font-size: 90%; width: 100%; table-layout: fixed">
+            <thead id="ListHead">
+                <tr>
+                    <th id="ListHead0" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 25%;">
+                        <i class="fas fa-image mr-1"></i>圖片
+                    </th>
+                    <th id="ListHead1" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 20%;">
+                        <i class="fas fa-pen mr-1"></i> 文章
+                    </th>
+                    <th id="ListHead2" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 15%;">
+                        <i class="fas fa-user mr-1"></i> 作者
+                    </th>
+                    <th id="ListHead3" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 10%;">
+                        <i class="fas fa-table mr-1"></i> 分類
+                    </th>
+                    <th id="ListHead4" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 20%;">
+                        <i class="fas fa-clock mr-1"></i> 日期
+                    </th>
+                    <th id="ListHead5" class="sticky-top" style="z-index: 300; top: 103px; background-color: #eee; cursor: pointer; width: 10%;">
+                        <i class="fas fa-flag mr-1"></i> 檢舉數
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="ListBody"></tbody>
+        </table>
+
+        <div class="row mt-1">
+            <div class="col-4">
+                <span id="pageMessage"></span>
+            </div>
+            <div class="col-8">
+                <nav class="float-right" aria-label="...">
+                    <ul id="pageBottom" class="pagination">
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="thePrev()">上一頁</a>
+                        </li>
+                        <li class="default page-item">
+                            <a class="page-link" href="javascript:" onclick="theNext()">下一頁</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Article Management -->
+<div id="ArticleManagement" class="m-0 p-2 d-none rounded" style="position: sticky; bottom: 0; background-color: aquamarine;">
+    <button type="button" id="ArticleManagementDelete" class="btn btn-warning btn-sm ml-4"></button>
+    <button type="button" id="ArticleManagementDeleteBan" class="btn btn-danger btn-sm mx-4"></button>
+    原文連結: <a id="ArticleManagementUrl" href="#" target="_blank" class="text-decoration-none"></a>
+    <div class="float-right">
+        <button type="button" id="ArticleManagementSearch" class="btn btn-info btn-sm mx-4">查詢作者</button>
+        <span id="ArticleManagementFlag" class="mr-4"></span>
+    </div>
+</div>
+
+<!-- AjaxBox -->
+<div id="AjaxBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjaxBox" aria-hidden="true" style="z-index: 1600;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white bg-dark">
+                <h5 id="AjaxBoxTitle" class="modal-title"></h5>
+                <button id="AjaxBoxDemo" type="button" class="btn btn-outline-info btn-sm ml-2">Demo</button>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <div id="AjaxBoxBody" class="modal-body text-white bg-dark">
+
+            </div>
+            <div class="modal-footer text-white bg-dark">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button id="OK" type="button" class="btn btn-primary">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AjaxDetail -->
+<div id="AjaxDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjaxBox" aria-hidden="true" style="z-index: 1600;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white bg-dark">
+                <h5 class="modal-title">會員資料查詢</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body text-white bg-dark">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="member-tab" data-toggle="tab" href="#member" role="tab" aria-controls="member" aria-selected="true">會員資料</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="seller-tab" data-toggle="tab" href="#seller" role="tab" aria-controls="seller" aria-selected="false">商家資料</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="banlist-tab" data-toggle="tab" href="#banlist" role="tab" aria-controls="banlist" aria-selected="false">停權紀錄</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="member" role="tabpanel" aria-labelledby="member-tab"></div>
+                    <div class="tab-pane fade" id="seller" role="tabpanel" aria-labelledby="seller-tab"></div>
+                    <div class="tab-pane fade" id="banlist" role="tabpanel" aria-labelledby="banlist-tab"></div>
+                </div>
+            </div>
+            <div class="modal-footer text-white bg-dark">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button id="DK" type="button" class="btn btn-primary">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Content/BackEnd/js/BackEndArticle01.js"></script>
+<script src="~/Content/BackEnd/js/BackEndArticle02.js"></script>
+<script src="~/Content/BackEnd/js/BackEndDemoMAC.js"></script>

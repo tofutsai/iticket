@@ -1,0 +1,478 @@
+﻿@using prjITicket.Models;
+@model Activity
+@{
+    ViewBag.Title = "修改活動";
+}
+<!--引用html編輯器-->
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+<!--引用圖片裁減器-->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet"></link>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.css" rel="stylesheet"></link>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style>
+    body {
+        background-color: #F0F0F0;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="h1 card-header border-0 text-center col-md-10">
+            <strong>修改活動</strong>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-10 text-center">
+            <!---->
+            <div class="card my-4 shadow">
+                <h3 class="card-header bg-primary text-white">活動基本資料</h3>
+                <div class="card-body">
+                    <div class="form-row text-left mt-3">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="txtActivityName">活動名稱</label>
+                            <input type="text" value="@Model.ActivityName" class="form-control" maxlength="15" id="txtActivityName" placeholder="(15個字以內)">
+                            <div id="activityNameTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selCity">城市</label>
+                            <select id="selCity" class="form-control">
+                                <!--動態塞入城市-->
+                            </select>
+                            <div id="districtTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selDistrict">區</label>
+                            <select id="selDistrict" class="form-control">
+                                <option value="-1">請選擇</option>
+                                <!--根據城市動態塞入區-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtAddress">地址</label>
+                            <input value="@Model.Address" type="text" class="form-control" id="txtAddress" placeholder="xxx路xxx號">
+                            <div id="addressTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold">iframe地圖</label>
+                            <textarea id="txtMap" class="form-control">@Model.Map</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-4 shadow">
+                <h3 class="card-header bg-success text-white">活動描述資料</h3>
+                <div class="card-body">
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selCategory">大分類</label>
+                            <select id="selCategory" class="form-control">
+                                <!--動態塞入大分類-->
+                            </select>
+                            <div id="subcategoryTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="selSubCategory">小分類</label>
+                            <select id="selSubcategory" class="form-control">
+                                <option value="-1">請選擇</option>
+                                <!--根據大分類動態塞入小分類-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtHostwords">短描述</label>
+                            <textarea id="txtHostwords" maxlength="80" placeholder="(顯示在活動列表卡片內的內容,80字以內)" class="form-control">@Model.Hostwords</textarea>
+                            <div id="hostwordsTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                    <div class="form-row text-left">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="txtDescription">長描述</label>
+                            <textarea id="txtDescription" placeholder="(顯示在詳細資料頁的長描述)" class="form-control">@Model.Description</textarea>
+                            <div id="descriptionTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+            <!--html編輯器-->
+            <div id="divInformation" class="form-row text-left">
+                <div class="form-group col-md-12">
+                    <label class="font-weight-bold" style="font-size:20px">上傳活動詳細資料</label>
+                    <div style="width:100%">
+                        <div id="editor">
+                            @Html.Raw(Model.Information)
+                        </div>
+                    </div>
+                    <div id="informationTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                </div>
+            </div>
+            <!--/.html編輯器-->
+            <div class="form-row text-left mt-3">
+                <div class="form-group col-md-12">
+                    <label class="font-weight-bold" style="font-size:20px">上傳活動標題圖片</label>
+                    <label class="btn btn-info">
+                        <input id="upload_img" style="display:none;" type="file" accept="image/*"><i class="fa fa-photo"></i> 上傳圖片
+                    </label>
+                    <div id="oldImg" style="display:none;"></div>
+                    <div id="newImg" style="background-image:url('/images/Activity/@Model.Picture');margin-right:auto;margin-left:auto;border:1px solid black;width:700px;height:400px"></div>
+                    <div id="pictureTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+                </div>
+            </div>
+            <div class="mt-3 d-flex justify-content-center">
+                <button type="button" id="btnSubmit" class="btn btn-primary">儲存</button>
+            </div>
+            <!---->
+        </div>
+    </div>
+</div>
+<script>
+    //紀錄當前頁面的活動名稱
+    let activityNameNow = "@Model.ActivityName";
+    //讀取大類資料到下拉框
+    loadDataToSelCategory();
+    //大類有變化就動態變更小類下拉框的內容
+    $("#selCategory").change(function () {
+        loadDataToSelSubcategoryByCategoryId(this.value);
+    });
+    //把大類資訊塞入下拉框的函數
+    function loadDataToSelCategory() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCategory")",
+            success: function (result) {
+                $("#selCategory").html("<option style='display:none' value='-1'>請選擇</option>");
+                let categories = JSON.parse(result);
+                for (let category of categories) {
+                    let opt = $("<option></option>");
+                    if (category.CategoryID ==@Model.SubCategories.CategoryId) {
+                        opt.prop("selected", true);
+                        loadDataToSelSubcategoryByCategoryId(category.CategoryID,@Model.SubCategoryId);                       
+                    }
+                    opt.html(category.CategoryName);
+                    opt.val(category.CategoryID);
+                    $("#selCategory").append(opt);
+                }
+            }
+        });
+    }
+    //根據大類讀取小類資訊的函數
+    function loadDataToSelSubcategoryByCategoryId(categoryId,subcategoryId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getSubcategoriesByCategoryId")",
+            data: { categoryId: categoryId },
+            success: function (result) {
+                $("#selSubcategory").html("<option style='display:none' value='-1'>請選擇</option>");
+                let subcategories = JSON.parse(result);
+                for (let subcategory of subcategories) {
+                    let opt = $("<option></option>");
+                    opt.html(subcategory.SubCategoryName);
+                    opt.val(subcategory.SubCategoryId);
+                    $("#selSubcategory").append(opt);
+                }
+                //網頁剛load的時候會執行下面的程式碼
+                if (subcategoryId) {
+                    $(`#selSubcategory option[value=${subcategoryId}]`).prop("selected", true);
+                }
+            }
+        });
+    }
+    //讀取城市資料到下拉框
+    loadDataToSelCity();
+    //城市有變化就動態變更區下拉框的內容
+    $("#selCity").change(function () {
+        loadDataToSelDistrictByCityId(this.value);
+    });
+    //把城市資訊塞入下拉框
+    function loadDataToSelCity() {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getAllCity")",
+            success: function (result) {
+                $("#selCity").html("<option style='display:none' value='-1'>請選擇</option>");
+                let cities = JSON.parse(result);
+                for (let city of cities) {
+                    let opt = $("<option></option>");
+                    if (city.CityID ==@Model.Districts.CityId) {
+                        opt.prop("selected", true);
+                        loadDataToSelDistrictByCityId(city.CityID,@Model.DistrictId);
+                    }
+                    opt.html(city.CityName);
+                    opt.val(city.CityID);
+                    $("#selCity").append(opt);
+                }
+            }
+        });
+    }
+    //根據城市讀取區資訊的函數
+    function loadDataToSelDistrictByCityId(cityId,districtId) {
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("getDistrictsByCityId")",
+            data: { cityId: cityId },
+            success: function (result) {
+                $("#selDistrict").html("<option style='display:none' value='-1'>請選擇</option>");
+                let districts = JSON.parse(result);
+                for (let district of districts) {
+                    let opt = $("<option></option>");
+                    opt.html(district.DistrictName);
+                    opt.val(district.DistrictId);
+                    $("#selDistrict").append(opt);
+                }
+                //網頁一開始會執行下面這段,讓district下拉框停在正確的地方
+                if (districtId) {
+                    $(`#selDistrict option[value=${districtId}]`).prop("selected", true);
+                }
+            }
+        });
+    }         
+    //輸入活動名稱時驗證db裡面是否有一樣名字的活動
+    let isActivityNameAvailible = true;
+    $("#txtActivityName").on("input", function () {
+        isActivityNameAvailible = false;
+        let tipMsg = $(this).next();
+        let activityName = this.value;
+        if (activityName == activityNameNow) {
+            tipMsg.html("活動名稱可以使用").css({ color: "green" });
+            isActivityNameAvailible = true;
+            return;
+        }
+        if (activityName == "") {
+            tipMsg.html("不能是空值").css({ color: "red" });
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "@Url.Action("CheckActivityName")",
+            data: { activityName: activityName },
+            success: function (result) {
+                if (result == "OK") {
+                    tipMsg.html("活動名稱可以使用").css({ color: "green" });
+                    isActivityNameAvailible = true;
+                }
+                else {
+                    tipMsg.html("活動名稱已經被使用過").css({ color: "red" });
+                }
+            }
+        })
+    });
+    //按上傳產品要發生的事件
+    $("#btnSubmit").click(function () {
+        //抓出所有基本資料
+        let avtivityName = $("#txtActivityName").val();
+        let districtId = $("#selDistrict").val();
+        let address = $("#txtAddress").val();
+        let map = $("#txtMap").val();
+        let subcategoryId = $("#selSubcategory").val();
+        let hostwords = $("#txtHostwords").val();
+        let description = $("#txtDescription").val();      
+        //抓出html編輯器的資料
+        let information = editor.getData();
+        //抓出裁減好的圖片的base64字串
+        let pictureBase64 = "";
+        if (hasChangePicture) {
+            pictureBase64 = $("#newImg>img").attr("src");
+        }
+        //前端資料驗證,只要有1項不過關,flag就會變成false
+        let scrollPosition = $("body").height() - $(window).height();
+        let checkDataOK = true;
+        if (!isActivityNameAvailible) {
+            scrollPosition = ($("#activityNameTip").offset().top - 150) < scrollPosition ? ($("#activityNameTip").offset().top - 150) : scrollPosition;
+            if (!avtivityName)
+                $("#activityNameTip").html("必須輸入活動名字");
+            checkDataOK = false;
+        }
+        if (districtId == -1) {
+            scrollPosition = ($("#districtTip").offset().top - 150) < scrollPosition ? ($("#districtTip").offset().top - 150) : scrollPosition;
+            $("#districtTip").html("必須選擇");
+            checkDataOK = false;
+        }
+        if (!address) {
+            scrollPosition = ($("#addressTip").offset().top - 150) < scrollPosition ? ($("#addressTip").offset().top - 150) : scrollPosition;
+            $("#addressTip").html("必須輸入地址");
+            checkDataOK = false;
+        }
+        if (subcategoryId == -1) {
+            scrollPosition = ($("#subcategoryTip").offset().top - 150) < scrollPosition ? ($("#subcategoryTip").offset().top - 150) : scrollPosition;
+            $("#subcategoryTip").html("必須選擇");
+            checkDataOK = false;
+        }
+        if (!hostwords) {
+            scrollPosition = ($("#hostwordsTip").offset().top - 200) < scrollPosition ? ($("#hostwordsTip").offset().top - 200) : scrollPosition;
+            $("#hostwordsTip").html("不可是空值");
+            checkDataOK = false;
+        }
+        if (!description) {
+            scrollPosition = ($("#descriptionTip").offset().top - 200) < scrollPosition ? ($("#descriptionTip").offset().top - 200) : scrollPosition;
+            $("#descriptionTip").html("不可是空值");
+            checkDataOK = false;
+        }        
+        if (!information) {
+            scrollPosition = ($("#informationTip").offset().top - 150) < scrollPosition ? ($("#informationTip").offset().top - 150) : scrollPosition;
+            $("#informationTip").html("不能是空值");
+            checkDataOK = false;
+        }       
+        if (!checkDataOK) {
+            $("html,body").animate({ scrollTop: scrollPosition + "px" }, 150);
+            return;
+        }
+        //驗證通過,就開始Ajax傳送資料
+        let activityData = {
+            activityId:@Model.ActivityID,
+            activityName: avtivityName,
+            districtId: districtId,
+            address: address,
+            map: map,
+            subcategoryId: subcategoryId,
+            hostwords: hostwords,
+            description: description,            
+            information: information,
+            picture: pictureBase64
+        }
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("UpdateActivity")",
+            data: activityData,
+            success: function (result) {
+                //todo測試
+                if (result == "loginOverTime") {
+                    alert("登陸已超時,重新登錄");
+                    location.href = "@Url.Action("Login","Login")";
+                }
+                else if (result == "sameActivityName") {
+                    alert("活動名稱已經被使用過");
+                    $("#activityNameTip").html("活動名稱已經被使用過");
+                }
+                else if (result == "error") {
+                    alert("後台出現錯誤,修改失敗");
+                }
+                else {
+                    alert("修改活動成功,等待審核");
+                    activityNameNow = avtivityName;
+                }
+            }
+        });
+    });
+    //每個輸入框有輸入就清空提示消息
+    $("#selCity,#selDistrict").change(function () {
+        $("#districtTip").html("");
+    });
+    $("#selCategory,#selSubcategory").change(function () {
+        $("#subcategoryTip").html("");
+    });
+    $("#txtAddress,#txtHostwords,#txtDescription").on("input", function () {
+        $(this).parent().find(".invalid-feedback").html("");
+    })
+    $("#divInformation").keydown(function () {
+        $("#informationTip").html("");
+    });
+    ////////////////////////////////////////////////////////////
+    //html編輯器的代碼
+    let editor;
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(neweditor => {
+            //把編輯器的參考存起來
+            editor = neweditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        //獲得html編輯器的內容用:editor.getData()
+    //圖片裁減器的代碼
+    let hasChangePicture = false;
+    (function ($) {
+        var width_crop = 700, // 圖片裁切寬度 px 值
+            height_crop = 400, // 圖片裁切高度 px 值
+            type_crop = "square", // 裁切形狀: square 為方形, circle 為圓形
+            width_preview = 800, // 預覽區塊寬度 px 值
+            height_preview = 500, // 預覽區塊高度 px 值
+            compress_ratio = 0.85, // 圖片壓縮比例 0~1
+            type_img = "jpg", // 圖檔格式 jpeg png webp
+            oldImg = new Image(),
+            myCrop, file, oldImgDataUrl;
+
+        // 裁切初始參數設定
+        myCrop = $("#oldImg").croppie({
+            viewport: { // 裁切區塊
+                width: width_crop,
+                height: height_crop,
+                type: type_crop
+            },
+            boundary: { // 預覽區塊
+                width: width_preview,
+                height: height_preview
+            }
+        });
+
+        function readFile(input) {
+            if (input.files && input.files[0]) {
+                file = input.files[0];
+            } else {
+                return;
+            }
+
+            if (file.type.indexOf("image") == 0) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    oldImgDataUrl = e.target.result;
+                    oldImg.src = oldImgDataUrl; // 載入 oldImg 取得圖片資訊
+                    myCrop.croppie("bind", {
+                        url: oldImgDataUrl
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("您上傳的不是圖檔！");
+            }
+        }
+
+        function displayCropImg(src) {
+            var html = "<img src='" + src + "' />";
+            $("#newImg").html(html);
+        }
+
+        $("#upload_img").on("change", function () {
+            if (this.files[0] == null) return;
+            readFile(this);  //把圖片塞入編輯框
+            initWindowPosition(); //彈出對話方塊供編輯
+        });
+        function initWindowPosition() {
+            $("#oldImg").dialog({
+                modal: true,
+                //設定對話方塊有一個按鈕叫做裁剪圖片
+                buttons: {
+                    "裁剪圖片": function () {
+                        //裁減圖片就清空提示訊息
+                        $("#pictureTip").html("");
+                        myCrop.croppie("result", {
+                            type: "base64",
+                            quality: compress_ratio
+                        }).then(function (src) {
+                            //src的結果會是base64字串,"data:image/png;base64,......"
+                            //可直接當url給img標籤,也可供上傳伺服器供儲存成檔案
+                            displayCropImg(src); //show出新裁剪好的圖片
+                            hasChangePicture = true;
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                width: 1000,
+                close: function () {
+                    let uploadimg = document.getElementById("upload_img");
+                    //對話方塊關閉時,把input[type="file"]標籤的內容清空
+                    //否則下次選擇相同圖片時不會觸法onchange事件然後出bug壞掉
+                    uploadimg.value = "";
+                }
+            });
+        }
+    })(jQuery);
+</script>

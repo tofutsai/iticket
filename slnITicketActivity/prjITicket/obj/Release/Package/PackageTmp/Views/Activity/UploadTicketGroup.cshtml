@@ -1,0 +1,145 @@
+﻿@using prjITicket.Models;
+@model List<Activity>
+@{
+    ViewBag.Title = "上傳活動套票";
+}
+<script>
+    $(function () {
+        let groupNameCheck = false;
+        //活動卡片按下選擇會發生的事
+        $("#activities .btn").click(function () {
+            $("#activityTip").html("");
+            let selected = $(this).data("selected") ? 0 : 1;
+            $(this).data("selected", selected);
+            if (selected) {
+                $(this).closest(".card").css({ backgroundColor: "#ACD6FF" });
+                $(this).html("取消");
+                $(this).removeClass("btn-primary").addClass("btn-danger");
+            }
+            else {
+                $(this).closest(".card").css({ backgroundColor: "#ffffff" });
+                $(this).html("選擇");
+                $(this).removeClass("btn-danger").addClass("btn-primary");
+            }
+        });
+        //按下上傳會發生的事
+        $("#btnSubmit").click(function () {
+            let ticketGroupName = $("#ticketGroupName").val().trim();
+            let discount = $("#discount").val();
+            let activityIds = [];
+            $("#activities .btn").each(function (i, e) {
+                if ($(e).data("selected")) {
+                    activityIds.push($(e).data("activityid"));
+                }
+            });
+            //驗證輸入資料的合法性
+            let dataAvailible = true;
+            if (ticketGroupName == "") {
+                $("#ticketGroupNameTip").html("套票名稱不准是空值"); //OK
+                dataAvailible = false;
+            }
+            else if (!groupNameCheck) {
+                $("#ticketGroupNameTip").html("該名稱已經被使用過"); //OK
+                dataAvailible = false;
+            }
+            if (discount == "") {
+                $("#discountTip").html("折扣不准是空值"); //OK
+                dataAvailible = false;
+            }
+            else if (discount == 0) {
+                $("#discountTip").html("套票必須有折扣"); //OK
+                dataAvailible = false;
+            }
+            else if(discount>0.9||discount<0){
+                $("#discountTip").html("折扣必須介於0與0.9之間");  //OK
+                dataAvailible = false;
+            }
+            if (activityIds.length <2) {
+                $("#activityTip").html("至少要選擇2個活動才能組成套票"); //OK
+                dataAvailible = false;
+            }
+            if (!dataAvailible) {
+                return;
+            }
+            //驗證成功,就傳送資料到後端塞入db    
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("AddTicketGroup")",
+                data: { ticketGroupName: ticketGroupName, discount: discount, activityIds: activityIds },
+                success: function (result) {
+                    if (result == "OK") {
+                        alert("上傳成功");
+                        window.location.reload();
+                    }
+                    else {
+                        alert(`後台發生錯誤,上傳失敗:${result}`);
+                    }
+                }
+            });            
+        });
+        //套票名稱輸入時檢查輸入的套票名稱是否可用
+        $("#ticketGroupName").on("input", function () {
+            groupNameCheck = false;
+            let groupName = this.value.trim();
+            $("#ticketGroupNameTip").html("");
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("CheckTicketGroupNameAvailible","Activity")",
+                data: { ticketGroupName: groupName },
+                success: function (result) {  
+                    if (result == "false") {
+                        $("#ticketGroupNameTip").html("該名稱已經被使用過");
+                        groupNameCheck = false;
+                    }
+                    else {
+                        groupNameCheck = true;
+                    }
+                }
+            });
+        });
+        //輸入折扣時清空錯誤資訊
+        $("#discount").on("input", function () {
+            $("#discountTip").html("");
+        });
+    });
+</script>
+<div class="row justify-content-center mt-3">
+    <div class="col-md-12 text-center">
+        <div class="form-row text-left mt-3">
+            <div class="form-group col-md-6">
+                <label class="font-weight-bold" for="ticketGroupName">套票名稱</label>
+                <input type="text" class="form-control" maxlength="15" id="ticketGroupName" placeholder="15字以內">
+                <div id="ticketGroupNameTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+            </div>
+            <div class="form-group col-md-2">
+                <label class="font-weight-bold" for="">折扣</label>
+                <input id="discount" type="number" step="0.05" min="0" max="0.9" class="form-control" />
+                <div id="discountTip" style="height:10px;line-height:10px" class="invalid-feedback d-block"></div>
+            </div>
+        </div>
+        <div class="form-row align-items-center">            
+            <input type="button" id="btnSubmit" style="margin-left:10px" class="btn btn-success" value="上傳套票" />                           
+            <span id="activityTip" style="color:red;margin-left:20px"></span>
+        </div>
+    </div>
+</div>
+<h4 class="mt-4">選擇要加入套票的活動</h4>
+<div class="row" id="activities">
+    @foreach (Activity activity in Model)
+    {
+        <div class="col-sm-6">
+            <div class="card mt-2">
+                <div class="card-body row">
+                    <div class="col-md-5">
+                        <img src="@Url.Content("~/images/Activity/"+activity.Picture)" style="width:210px" />
+                    </div>
+                    <div class="col-md-7">
+                        <h5 class="card-title font-weight-bold">@activity.ActivityName</h5>
+                        <p class="card-text font-weight-bolder">庫存量:@activity.Tickets.Sum(t => t.UnitsInStock)&nbsp;&nbsp;&nbsp;銷售量:@activity.Tickets.Sum(t => t.Order_Detail.Sum(od => od.Quantity))</p>
+                        <a href="javascript:;" data-selected="0" data-activityid="@activity.ActivityID" class="btn btn-primary float-right">選擇</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

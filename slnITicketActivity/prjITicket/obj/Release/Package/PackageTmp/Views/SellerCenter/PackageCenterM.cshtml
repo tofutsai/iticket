@@ -1,0 +1,40 @@
+﻿@model IEnumerable<prjITicket.Models.TicketGroups>
+
+@{
+    ViewBag.Title = "PackageCenter";
+    int count = 0;
+    Layout = "~/Views/Shared/_BackSellerLayout.cshtml";
+}
+
+<div>
+    <div class="form-inline sticky-top" style="z-index:1500;margin-bottom:10px;">
+        <div class="col-md-offset-0 col-md-10 ">
+            <input type="text" id="txtQuery" name="txtQuery" style="margin-top:10px;margin-left:-12px;" />
+            <input id="Query" type="button" value="查詢" class="btn btn-secondary" />
+            <a style="margin-left:20px;" href="@Url.Action("UploadTicketGroup","Activity")" class="btn btn-success">新增套票</a>
+        </div>
+    </div>
+</div>
+<div id="QResult">
+
+</div>
+
+
+<script>
+    $(function () {
+        getPage();
+    $("#Query").click(function () {
+        getPage();
+    });
+});
+    function getPage() {
+        $.ajax({
+                    type: "get",
+                    url: `@Url.Action("PackageCenter", "SellerCenter")?txtQuery=${$("#txtQuery").val()}`,
+                    success: function (result) {
+                        $("#QResult").html(result);
+                    }
+        });
+    }
+
+</script>

@@ -1,0 +1,210 @@
+﻿@using BackEnd.ViewModel
+@model List<BackEnd.ViewModel.CBackEndActivity>
+@{
+    /**/
+
+    Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+
+    ViewBag.Title = "ActivityMaintain";
+}
+<!--Sweet Alert CDN-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<h1 class="mt-4">活動列表</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("BackEndIndex","BackEndMain")">後台</a></li>
+    <li class="breadcrumb-item active">活動列表</a>
+    </li>
+</ol>
+
+
+<div class="container-fluid">
+
+    @using (Html.BeginForm())
+    {
+
+        <!--查詢條件-->
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">
+                    查詢條件
+
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">活動名稱</span>
+                    </div>
+                    <input type="text" id="txt_ActivityName" autocomplete="off" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">商家名稱</span>
+                    </div>
+                    <input type="text" id="txt_CompanyName" autocomplete="off" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default" style="margin-right:1%">活動狀態</span>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="ckbox0" value="0" checked>
+                        <label class="form-check-label" for="ckbox0" id="label0">未審核</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="ckbox1" value="1">
+                        <label class="form-check-label" for="ckbox1" id="label1">上架</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="ckbox2" value="2">
+                        <label class="form-check-label" for="ckbox2" id="label2">下架</label>
+                    </div>
+                    <button type="button" class="btn btn-outline-light" id="iddemo">Demo</button>
+
+                </div>
+                <button type="button" id="btn_search" class="btn btn-primary" style="width:100%"><i class="fas fa-search"></i> 查詢</button>
+            </div>
+        </div>
+
+    }
+    <!--中間一條沒有意義的線-->
+    <div class="card mb-4">
+    </div>
+    <!--查詢結果-->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="ActivityTable" style="width:100%;font-size:14px" cellspacing="0"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        function dataTablesSettings() {
+            var dataTablesSettings = {
+                searching: false, //關閉search filter功能
+                scrollCollapse: true,
+
+                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "All"]],
+                autoWidth: false,
+                language: {
+                    //"info": "", // 表格左下角显示的文字
+                    paginate: {
+                        previous: "上一頁",
+                        next: "下一頁"
+                    },
+                    sProcessing: "處理中…",
+                    sInfo: "顯示第 _START_ 至 _END_ 筆, 共 _TOTAL_ 筆",
+                    sInfoEmpty: "顯示第 0 至 0 筆, 共 0 筆",
+                    lengthMenu: "顯示 _MENU_ 項結果",
+                    zeroRecords: "沒有符合的結果",
+                },
+                ajax: {
+                    type: "post",
+                    url: "/api/WebApi/getActivity",
+                    dataSrc: "",
+                    dataType: "JSON",
+                    data: {
+
+                        StatusID0: $("#ckbox0").prop("checked") ? $("#ckbox0").val() : null,
+                        StatusID1: $("#ckbox1").prop("checked") ? $("#ckbox1").val() : null,
+                        StatusID2: $("#ckbox2").prop("checked") ? $("#ckbox2").val() : null,
+                        CompanyName: $("#txt_CompanyName").val(),
+                        ActivityName: $("#txt_ActivityName").val()
+
+                    },
+                },
+                //設置是否透過Server端處理分頁、排序、過濾處理機制模式，
+                //也就是決定這三者功能是否給Server端處理好在回傳給前端顯示，或全都給Client端去做處理，
+                //參數值有true/false。
+                //簡單來說，就是讓前端處理分頁的功能
+                serverSide: false,
+
+                //指定Server端的資料行繫結名稱
+                columns: [
+                    {
+                        "title": "商家名稱",
+                        "data": "CompanyName",
+                    },
+                    {
+                        "title": "活動名稱",
+                        "data": "ActivityName",
+                    },
+                    {
+                        "title": "活動地點",
+                        "data": "ActivityAddress",
+                    },
+                    {
+                        "title": "活動狀態",
+                        "data": "StatusName",
+                    },
+                    {
+                        "title": " ",
+                        "data": "ActivityID",
+                        "render": function (data, type, row, meta) {
+                            if (row.StatusID == 0) {
+                                return data = '<a class="btn btn-info btn-sm" data-id='
+                                    + data
+                                    + ' href="/BackEndActivity/ActivityDetail/' +
+                                    data
+                                    + '"><i class="far fa-edit"></i> 審核 </a>';
+                            } else {
+                                return data = '<a class="btn btn-info btn-sm" data-id='
+                                    + data
+                                    + ' href="/BackEndActivity/ActivityDetail/' +
+                                    data
+                                    + '"><i class="fas fa-search"></i> 詳細 </a>';
+                            }
+                        }
+                    }
+                ],
+                fnServerParams: function (aoData) {
+                    aoData._rand = Math.random();
+                },
+                fnDrawCallback: function () {
+
+                }
+            }
+
+            return dataTablesSettings;
+        }
+
+        var table = $("#ActivityTable").dataTable(dataTablesSettings());
+
+        $("#btn_search").click(function () {
+            //搜尋就設置參數，刪掉datatable重新再建一個
+            if (!$("#ckbox0").prop("checked") && !$("#ckbox1").prop("checked") && !$("#ckbox2").prop("checked")) {
+                errorMessage();
+                table.fnDestroy(false);
+                table = $("#ActivityTable").dataTable(dataTablesSettings());
+                table.fnPageChange(0);
+
+            }
+            else {
+
+                table.fnDestroy(false);
+                table = $("#ActivityTable").dataTable(dataTablesSettings());
+
+                //搜尋後跳轉到第一頁
+                table.fnPageChange(0);
+            }
+        });
+    });
+
+    function errorMessage() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '至少需選擇一種活動狀態',
+        })
+    }
+
+    $("#iddemo").click(function () {
+        $("#txt_ActivityName").val("冰雪")
+        $("#ckbox0").prop("checked", false)
+        $("#ckbox1").prop("checked",true)
+    })
+</script>

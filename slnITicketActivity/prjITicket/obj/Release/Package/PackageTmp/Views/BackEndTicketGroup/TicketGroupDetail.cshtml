@@ -1,0 +1,398 @@
+﻿@using prjITicket.ViewModel.BackEnd
+@model prjITicket.ViewModel.BackEnd.CBackEndTicketGroupDetail
+@{
+    Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+    ViewBag.Title = "TicketGroupDetail";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@{
+    if (!Model.List.TicketGroupStatus)
+    {
+        <h1 class="mt-4">套票審核</h1>
+    }
+    else
+    {
+        <h1 class="mt-4">套票檢視</h1>
+    }
+}
+<style>
+
+    .spanActivity {
+        cursor: pointer;
+        color: #007bff;
+    }
+
+        .spanActivity:hover {
+            color: #0000E3;
+            text-decoration: underline;
+        }
+</style>
+<input id="hiddenTicketGroupID" type="hidden" value="@Model.List.TicketGroupID">
+<input id="hiddenSellerID" type="hidden" value="@Html.DisplayFor(model => model.List.Seller.SellerID)">
+<input id="hiddenTicketGroupName" type="hidden" value="@Model.List.TicketGroupName" />
+<input id="hiddenStatus" type="hidden" value="@Model.List.TicketGroupStatus.ToString()">
+
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("BackEndIndex","BackEndMain")">後台</a>
+    </li>
+
+    <li class="breadcrumb-item active">
+        <a href="@Url.Action("TicketGroupMaintain", "BackEndTicketGroup")">套票列表</a>
+    </li>
+    @{
+        if (Model.List.TicketGroupStatus == false)
+        {
+            <li class="breadcrumb-item active">套票審核</li>
+        }
+        else
+        {
+            <li class="breadcrumb-item active">套票檢視</li>
+
+        }
+    }
+</ol>
+<div class="container-fluid">
+    <div class="card mb-4">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="ActivityDetailTable" style="width:100%;font-size:14px" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td>@Html.DisplayNameFor(m => m.List.TicketGroupID)</td>
+                        <td id="idActivityID">
+                            @Html.DisplayFor(model => model.List.TicketGroupID)
+                        </td>
+                    </tr>
+                    <tr id="idTicketGroupName">
+                        <td>@Html.DisplayNameFor(m => m.List.TicketGroupName)</td>
+                        <td>
+                            @Html.DisplayFor(model => model.List.TicketGroupName)
+                        </td>
+                    </tr>
+                    <tr id="idCompanyName">
+                        <td>@Html.DisplayNameFor(m => m.List.CompanyName)</td>
+                        <td>
+                            @Html.DisplayFor(model => model.List.CompanyName)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@Html.DisplayNameFor(m => m.List.TicketGroupDiscount)</td>
+                        @{
+                            double discount = decimal.ToDouble(Model.List.TicketGroupDiscount);
+                            string result = ((1 - discount) * 10).ToString() + "折";
+                            <td style="width:80%" colspan="2">@result </td>
+
+                        }
+
+                    </tr>
+                    <tr id="idActivityName">
+                        <td>套票內容</td>
+                        <td>
+                            <div style="max-height:190px;overflow : auto">
+                                @{
+                                    foreach (var a in Model.activity)
+                                    {
+
+                                        <label class="text-justify">
+                                            活動名稱：@a.ActivityName
+                                        </label>
+                                        <span class="spanActivity" onclick="activity(@a.ActivityID)">
+                                            (場次時間)
+                                        </span>
+                                        <label> / 活動地點：@a.Address</label>
+                                        <span class="hand-point-right">
+                                            <a href="/BackEndActivity/ActivityDetail/@a.ActivityID" target="_blank">  <i class="far fa-hand-point-right"></i>查看詳細活動資訊</a>
+                                        </span>
+                                        <hr />
+                                    }
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    @{
+                        //Switcher
+                        if (!Model.List.TicketGroupStatus)
+                        {
+                            <tr id="trActivityStatus">
+                                <td>套票審核</td>
+                                <td>
+                                    <div>
+                                        <div class="mid" style="position:relative">
+                                            <label class="rocker rocker-small">
+                                                <input type="checkbox" id="switcher" checked>
+                                                <span class="switch-left" id="idSwitcherYes">Yes</span>
+                                                <span class="switch-right" id="idSwitcherNo">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>活動狀態</td>
+                                <td style="width:80%">
+                                    已上架
+                                </td>
+                            </tr>
+                        }
+                    }
+                    <tr id="idtrHidden" style="display: none;">
+                        <td>審核未通過原因</td>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input clsFailedReason" type="checkbox" id="idckbox_name" value="套票名稱">
+                                <label class="form-check-label" for="idckbox_name">套票名稱</label>
+                                <textarea class="form-control clsFailedMessage" rows="2" style="margin-top:5px ; display:none ; font-size:14px ; font-family:微軟正黑體" id="idtext_name"></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input clsFailedReason" type="checkbox" id="idckbox_discount" value="套票折扣">
+                                <label class="form-check-label" for="idckbox_discount">套票折扣</label>
+                                <textarea class="form-control clsFailedMessage" rows="2" style="margin-top:5px ; display:none ; font-size:14px ; font-family:微軟正黑體" id="idtext_discount"></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input clsFailedReason" type="checkbox" id="idckbox_Content" value="套票內容">
+                                <label class="form-check-label" for="idckbox_Content">套票內容</label>
+                                <textarea class="form-control clsFailedMessage" rows="2" style="margin-top:5px ; display:none ; font-size:14px ; font-family:微軟正黑體" id="idtext_content"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <center>
+                    @{
+                        if (!Model.List.TicketGroupStatus)
+                        {
+                            <a class="btn btn-secondary" href="/BackEndTicketGroup/TicketGroupMaintain">返回</a>
+                            <button class="btn btn-info" onclick="submit()">送出</button>
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary" href="/BackEndTicketGroup/TicketGroupMaintain">返回</a>
+                        }
+                    }
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function submit() {
+
+        const btnCheck = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary ',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        if ($("#switcher").prop("checked")) {
+            btnCheck.fire({
+                title: '是否確定要審核通過?',
+                text: "提醒：審核通過套票即上架",
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '再想想',
+                confirmButtonText: '是',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //點擊"是"的BUTTON
+                    $.ajax({
+                        url: `/api/WebApi/updateTicketGroupStatus`,
+                        type: "PUT",
+                        data: {
+                            TicketGroupID: $("#hiddenTicketGroupID").val(),
+                            Status: true
+                        },
+                        success: function (data) {
+                            //跳出修改成功的訊息
+                            btnCheck.fire(
+                                '審核通過',
+                                '套票已審核通過並上架',
+                                'success'
+                            ).then((result2) => {
+                                if (result2.isConfirmed) {
+                                    location.href = "/BackEndTicketGroup/TicketGroupMaintain";
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            btnCheck.fire(
+                                'Error',
+                                xhr,
+                                'error'
+                            )
+                        }
+                    });
+
+                }
+            })
+        }
+
+        else {
+            //Switcher切換到no
+
+            //設定為true通過
+            let flag = false;
+
+            $(".clsFailedReason").each(function () {
+                if ($(this).prop("checked")) {
+                    //有勾checkbox
+                    flag = true;
+
+                    if ($(this).next().next().val() == "") {
+                        flag = false;
+                        return false;
+                    }
+                }
+
+            })
+
+            if (!flag) {
+                Swal.fire({
+                    title: '必須選擇並填寫審核未通過的原因',
+                    text: "沒有填寫原因商家會不知道要改什麼",
+                    icon: 'warning',
+                    confirmButtonText: '好吧'
+                })
+                return;
+            }
+
+            btnCheck.fire({
+                title: '是否確定審核未通過?',
+                text: "提醒：審核未通過套票不會上架",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '是',
+                cancelButtonText: '我再看一下',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //點擊"是"的BUTTON
+                    $.ajax({
+                        url: `/api/WebApi/TicketGroupNoPassMessage`,
+                        type: "Post",
+                        data: {
+                            SellerID: $("#hiddenSellerID").val(),
+                            Message: "【套票名稱：" + $("#hiddenTicketGroupName").val() + "】- "
+                                + $(".clsFailedReason").map(function () {
+                                    return $(this).prop("checked") ? "[" + $(this).val() + "]" + $(this).next().next().val() : null;
+                                }).get().join("  ")
+                        },
+                        success: function (data) {
+                            //跳出審核未通過的訊息
+                            btnCheck.fire(
+                                '已通知商家',
+                                '活動審核未通過並已通知商家',
+                                'success'
+                            ).then((result2) => {
+                                if (result2.isConfirmed) {
+                                    location.href = "/BackEndTicketGroup/TicketGroupMaintain";
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            btnCheck.fire(
+                                'Error',
+                                xhr,
+                                'error'
+                            )
+                        }
+                    });
+
+                }
+            })
+        }
+
+    }
+
+</script>
+<script>
+
+    $("#switcher").click(function () {
+        //console.log($("#switcher").prop("checked"));
+        if ($("#switcher").prop("checked")) {
+            $("#idtrHidden").css("display", "none")
+        } else {
+            $("#idtrHidden").css("display", "table-row")
+        }
+    })
+
+
+    $(".clsFailedReason").map(function () {
+        $(this).click(function () {
+            if ($(this).prop("checked")) {
+                $(this).next().next().show();
+            } else {
+                $(this).next().next().css("display", "none")
+            }
+        })
+
+    })
+
+    function activity(activityID) {
+        let ActivityTitle = `<label style="font-size:20px">活動編號：[${activityID}] </label>`;
+        let Activityhtml = `
+                    <input type="text" value="${activityID}" hidden>
+
+                    <div class="table-responsive" style="font-size:14px">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                        <th>場次時間</th>
+                        {data}
+                            </table>
+                    </div>`;
+
+        $.ajax({
+            url: `/api/WebApi/getTicketTimes`,
+            type: "post",
+            data: {
+                ActivityID: activityID
+            },
+            success: function (data) {
+                let times = data.map((item, index) => {
+                    return "<tr><td>" + new Date(item).Format("yyyy-MM-dd hh:mm") + "</td></tr>"
+                }).join("")
+
+                let timetable = Activityhtml.replace("{data}", times);
+                Swal.fire({
+                    title: ActivityTitle,
+                    width: 500,
+                    html: timetable,
+                    confirmButtonText: "關閉",
+                    showCloseButton: true,
+                });
+            },
+            error: function (xhr) {
+                Swal.fire(
+                    'Error',
+                    xhr,
+                    'error'
+                )
+            }
+        });
+
+    }
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds() //秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+</script>
+
+

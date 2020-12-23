@@ -1,0 +1,370 @@
+﻿@model prjITicket.ViewModel.VMforum_mainblock
+@using prjITicket.ViewModel;
+@using prjITicket.Models
+@{
+    Member member = Session[CDictionary.SK_Logined_Member] as Member;
+    ViewBag.Title = "Edit_article";
+}
+<link href="~/Content/Forum_use/forumcontent.css" rel="stylesheet" />
+<link href="~/Content/Forum_use/css/styles.css" rel="stylesheet" />
+<style>
+    #ImgAreaSelect img:not(.img2) {
+        max-width: 700px;
+    }
+
+    .ck-editor__main {
+        height: 290px;
+        overflow: scroll;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <!-- Post Content Column -->
+        <div class="col-lg-9">
+            <!-- Title -->
+            <h1 class="mt-4">Real Post</h1>
+            <div class="card my-lg-n5">
+                <h5 class="toast-header">編輯文章</h5>
+                <div class="my-4">
+                    <input style="margin-top:10px;margin-bottom:10px;" type="text" class="form-control" placeholder="Default input" name="ArticleTitle" id="articleTitle" value="@Model.Article.First().ArticleTitle" />
+                </div>
+                <div class="toast-body">
+                    <select style="width:auto">
+                        <option value="0">選擇討論版</option>
+                        @foreach (var item in Model.ArticleCategories)
+                        {
+                            <option value="0">
+                                @item.ArticleCategoryName
+                            </option>
+                        }
+                    </select>
+
+                    <label class="btn btn-primary my-2" for="UploadPhoto">
+                        <input id="UploadPhoto" accept=".png, .jpg, .jpeg" type="file" data-toggle="modal" data-target="#UploadImage" style="display:none" />
+                        <svg width="1.0625em" height="1em" viewBox="0 0 17 16" class="bi bi-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 0 0-1 1v9l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094L15.002 9.5V3a1 1 0 0 0-1-1zm-12-1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm4 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                        </svg>
+                        選擇封面圖片(accept: .png, .jpg, .jpeg)
+                    </label>
+                    <hr />
+                    @* 是不是給他一個不限大小的裁剪區比較乾脆? *@
+                    @*置中？*@
+                    <div id="ImgAreaSelect">
+                        剪裁圖片區
+                        <div id="Panel1" class="my-4">
+                            <img id="Image3" src="@Model.Article.First().Picture" onerror="this.src='/Content/Forum_use/ImageStore/1144.jpg'" />
+                        </div>
+                        <hr />
+                        @* 彈出視窗:Modal *@
+                        <div class="modal fade" id="UploadImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>預覽圖片</p>
+                                        <div align="center">
+                                            <div style="width: 700px; height: 200px;">
+                                                <div style="float: left; position: relative; overflow: hidden; width: 600px; height: 200px;">
+                                                    <img id="Image2" class="img2" alt="Thumbnail Preview" />
+                                                </div>
+                                            </div>
+                                            <hr />
+
+
+                                            <p>框選圖片：</p>
+                                            <img id="Image1" style="float: left; margin-right: 10px;" alt="Create Thumbnail" />
+                                        </div>
+                                        <form>
+                                            <input type="hidden" id="x1" name="x1" value="" runat="server" />
+                                            <input type="hidden" id="y1" name="y1" value="" runat="server" />
+                                            <input type="Hidden" id="x2" name="x2" value="" runat="server" />
+                                            <input type="hidden" id="y2" name="y2" value="" runat="server" />
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <input type="button" class="btn btn-primary" id="ButtonCrop" data-dismiss="modal" value="Save the Crop Image" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="width:auto;height:auto;">
+                        <textarea id="editor" name="ArticleContent" rows="5">
+                            @Model.Article.First().ArticleContent
+                        </textarea>
+                    </div>
+                    <div>
+                        @if (member.MemberRoleId == 2)
+                        {
+                            <div class="input-group my-4">
+                                <button style="width:300%" id="forSeller" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">加入商品</button>
+                            </div>
+                        }
+                    </div>
+                    @* 彈出視窗:Modal *@
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+
+                                    @foreach (var item in Model.activities)
+                                    {
+                                        <button class="emotion default" id="@item.ActivityID" onclick="AddActivity(this)">@item.ActivityName</button>
+                                    }
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <input type="button" class="btn btn-primary" id="ButtonCrop" data-dismiss="modal" value="Save the Crop Image" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <!-- Comments Form -->
+            <!-- Single Comment -->
+
+        </div>
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-3">
+            <!-- Search Widget -->
+            <div class="input-group my-4">
+                <button style="width:300%" id="btnSubmit" class="btn btn-primary">送出</button>
+            </div>
+            <!-- Categories Widget -->
+            <!-- Side Widget -->
+
+        </div>
+    </div>
+    <!-- /.row -->
+</div>
+<script src="~/Content/Forum_use/build/ckeditor.js"></script>
+<script src="~/Content/Forum_use/css/jquery.imgareaselect.min.js"></script>
+<link href="~/Content/Forum_use/css/imgareaselect-default.css" rel="stylesheet" />
+<script>
+    var Activity = [];
+    function AddActivity(result) {
+        let x = document.getElementById(result.id);
+        
+        if (x.className == "emotion default") {
+            x.className = "emotion defaultclick";
+            Activity.push(result.id);
+        } else {
+            x.className = "emotion default";
+            Activity = Activity.filter(function (item) {
+                return item != x.id;
+            })
+        }
+    }
+        var imgFile;
+    $(document).ready(function () {
+        $('img#Image1').imgAreaSelect(
+            {
+                handles: false,
+                aspectRatio: '3:1',
+                onSelectChange: preview,
+                instance: true
+            });
+
+        $('#ButtonCrop').click(function () {
+            SaveCropEventHandler();
+        });
+    })
+    $("#UploadPhoto").change(function () {
+        if (this.files && this.files[0]) {
+            var file = $("#UploadPhoto")[0].files[0];
+            var objectURL = URL.createObjectURL(file);
+            $('img#Image1').attr('src', objectURL);
+            $('img#Image2').attr('src', objectURL);
+            // 生成一个文件读取的对象
+            // base64码
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                imgFile = ev.target.result;
+                console.log(imgFile);
+            }
+            //发起异步读取文件请求，读取结果为data:url的字符串形式，
+            reader.readAsDataURL(this.files[0]);
+            }
+    });
+    var imgWidth;
+    function preview(img, selection) {
+        var scaleX = 600 / selection.width;
+        var scaleY = 200 / selection.height;
+
+        var img = new Image();
+        img.src = $('#Image1').attr('src');
+        var pic_real_width = img.width;
+        imgWidth = img.width;
+        var pic_real_height = img.height;
+        if (img.width > 700) {
+            pic_real_width = 700;
+            pic_real_height = img.height / (img.width / 700);
+        }
+
+        $('#Image2').css({
+            width: Math.round(scaleX * pic_real_width) + 'px',
+            height: Math.round(scaleY * pic_real_height) + 'px',
+            marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px',
+            marginTop: '-' + Math.round(scaleY * selection.y1) + 'px'
+        });
+        $('input[name="x1"]').val(selection.x1);
+        $('input[name="y1"]').val(selection.y1);
+        $('input[name="x2"]').val(selection.x2);
+        $('input[name="y2"]').val(selection.y2);
+
+    }
+    var picPath = null;
+    function SaveCropEventHandler()
+{
+    var x1 = $('input[name="x1"]').val();
+    var x2 = $('input[name="x2"]').val();
+    var y1 = $('input[name="y1"]').val();
+    var y2 = $('input[name="y2"]').val();
+
+    if (x1.length == 0 && x2.length == 0 && y1.length == 0 && y2.length == 0)
+    {
+        alert('請選擇裁剪區域');
+        return false;
+    }
+    else
+    {
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("CropImage", "Forum")',
+            data: { id: imgFile, x1: x1, x2: x2, y1: y1, y2: y2, imgWidth: imgWidth },//$('#UploadImage_ID')
+            dataType: 'json',
+            async: false,
+            cache: false,
+            success: function (result)
+            {
+                if (result)
+                {
+                    if (result.result != 'OK')
+                    {
+                        alert(result.msg);
+                        window.location.href = '@Url.Action("Crop", "Home")' + '?id=' + $('#UploadImage_ID').val();
+                    }
+                    else
+                    {
+                        alert('裁剪完成');
+                        $('img#Image3').attr('src', result.CropImage);
+                        $('img#Image3').show();
+                        picPath = result.CropImage;
+                        $('img#Image1').imgAreaSelect({ hide: true });//好莫名其妙的東西喔！
+
+                    }
+                    return false;
+                }
+            }
+        });
+    }
+}
+
+    //???
+
+    class MyUploadAdapter {
+        // According to the document we need a constructor first
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+    // start upload methods
+    upload() {
+        return new Promise((resolve, reject) => {
+            // 使用 FileReader() 物件讀取檔案
+            const reader = this.reader = new window.FileReader();
+            // 觸發 load 事件後，resolve 丟回物件完成 Promise
+            reader.addEventListener('load', () => {
+                resolve({ default: reader.result });
+            });
+
+            // 觸發錯誤事件，以 reject 丟回 Promise 失敗原因
+            reader.addEventListener('error', err => {
+                reject(err);
+            });
+            // 觸發 abort 事件時，以 reject() ，使 Promise 失敗
+            reader.addEventListener('abort', () => {
+                reject();
+            });
+
+            // 告訴 FileReader 物件用 url 格式讀取，用於設定 img.src 性質
+            this.loader.file.then(file => {
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+
+    // start abort()
+    abort() {
+        //  觸發 FileReader abort 事件
+        this.reader.abort();
+    }
+}
+
+
+    function MyAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => { return new MyUploadAdapter(loader) };
+    };
+
+     let editor;
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            extraPlugins: [MyAdapterPlugin ],
+        })
+        .then(neweditor => {
+            //把編輯器的參考存起來
+            editor = neweditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    $("#btnShow").click(function () {
+        let content = editor.getData();
+        $("#showContent").html(content);
+    });
+    $("#btnSubmit").click(function(){
+        let title = $("#articleTitle").val();
+        let content = editor.getData();
+        let ArticleID = @Model.Article.First().ArticleID;
+         $.ajax({
+        type: "post",
+             url: "@Url.Action("Edit_article")",
+             data: { title: title, content: content, ArticleID: ArticleID, picPath: picPath, Activities: Activity},
+        success: function (result) {
+            if (result == "OK") {
+                location.href ='@Url.Action("forum_mainblock")';
+            }
+            else {
+                alert(result);
+            }
+        }
+        });
+    });
+
+
+
+    //圖片上傳轉接器?
+</script>

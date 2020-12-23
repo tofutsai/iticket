@@ -1,0 +1,129 @@
+﻿@model prjITicket.ViewModel.VMforum_mainblock
+@using prjITicket.Models
+@{ int count = 0;
+    Member member = Session[CDictionary.SK_Logined_Member] as Member;
+    @functions{
+        public static string RemoveHtml(String html)
+        {
+            string text = System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", "");
+            text = System.Text.RegularExpressions.Regex.Replace(text, "&[^;]+;", "");
+            return text;
+        }
+        int count = 0;
+    }}
+@{
+    if (Model.ArticleCategoryID == 0)
+    {
+        <h1 class="my-4">
+            所有的文章列表
+        </h1>
+    }
+    else
+    {
+        <h1 class="my-4">
+            @(Model.ArticleCategories.Where(n => n.ArticleCategoryID == Model.ArticleCategoryID).FirstOrDefault().ArticleCategoryName)
+            <small>第@(Model.page + 1)頁</small>
+        </h1>
+    }
+    if (!string.IsNullOrEmpty(Model.searchWord))
+    {
+        <h4 class="my-4">
+            @(Model.searchWord) 的搜尋結果
+        </h4>
+    }
+}
+<hr />
+@foreach (var item in Model.Article.Take(4))
+{
+
+    <div class="row">
+        <div class="col-xl-1" style="height:auto"></div>
+        <div class="col-xl-5 col-lg-6 col-md-10">
+            <a href="~/Forum/forum_content/?articleID=@item.ArticleID">
+            <img id="img@(count)" class="img-fluid rounded mb-3 mb-md-0" style="width:600px;" src="@item.Picture" alt="" onerror="this.src='/Content/Forum_use/ImageStore/404Error.jpg'">
+            </a>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-10">
+            @if (member != null && (item.MemberID == member.MemberID || member.MemberRoleId ==4))
+            {
+                @Html.ActionLink(" 刪除 ", "Delete", "Forum", new { articleID = item.ArticleID }, null);
+                @Html.ActionLink(" 編輯 ", "before_Edit_article", "Forum", new { articleID = item.ArticleID }, null);
+            }
+            <h3>@Html.ActionLink(string.IsNullOrEmpty(item.ArticleTitle) ? "沒有標題" : item.ArticleTitle, "forum_content", "Forum", new { articleID = item.ArticleID }, null)</h3>
+            <p id="content" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;white-space: normal;">
+                @RemoveHtml(item.ArticleContent)
+            </p>
+            @Html.ActionLink("更多", "forum_content", "Forum", new { articleID = item.ArticleID }, new { @class = "btn btn-primary" })
+        </div>
+    </div>
+
+    <hr>
+    count++;
+}
+<!-- Pagination -->
+    <ul class="pagination justify-content-center">
+        @for (int i = 0; i <= Model.page; i++)
+        {
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="page(@i)">@(i + 1)</a>
+                </li>
+
+        }
+
+
+    </ul>
+<script>
+    function page(Page) {
+        var page = Page;
+            var searchText = $("#searchWord").val();
+        var CategoryID = @Model.ArticleCategoryID
+             $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, Page: page, CategoryID: CategoryID },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+    function SearchArticle() {
+        var area1 = 1;
+        var area2 = 1;
+        var area3 = 1;
+        if ($("#Editor").prop("checked")) {
+            area1 = 2;
+        }
+        if ($("#Title").prop("checked")) {
+            area2 = 3;
+        }
+        if ($("#Content").prop("checked")) {
+            area3 = 5;
+        }
+        var searchType = area1 * area2 * area3;
+            var CategoryID = @Model.ArticleCategoryID;
+            var searchText = $("#searchWord").val();
+            var Page = null;
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: CategoryID, searchType: searchType },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+    }
+
+        function category(ID) {
+        var CategoryID = ID.id;
+        var searchText = $("#searchWord").val();
+        var Page = null;
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("SearchArticle")",
+            data: { searchText: searchText, Page: Page, CategoryID: CategoryID },
+            success: function (result) {
+             $("#contentList").empty().html(result)
+             }
+            })
+    }
+</script>

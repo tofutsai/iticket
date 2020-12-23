@@ -1,0 +1,248 @@
+﻿@model prjITicket.ViewModel.QMember
+<script src="~/Content/js/main.js"></script>
+<link rel="stylesheet" href="~/Content/Login/fonts/material-icon/css/material-design-iconic-font.min.css">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="~/Content/Login/css_login/style.css">
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+@*sweetalert*@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    @{
+        /**/
+
+        ViewBag.Title = "註冊";
+    }
+
+
+
+    <div class="main">
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container_login">
+                <div class="signup-content">
+                    <div class="signup-content">
+                        <div class="signup-form">
+                            <h2 class="form-title">註冊帳號</h2>
+                            <form method="POST" class="register-form" id="register-form">
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @*<div class="form-group">
+                                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                        <input type="text" name="name" id="name" placeholder="Your Name" />
+
+                                    </div>*@
+                                <div class="form-group">
+                                    <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                    @*<input type="email" name="email" id="email" placeholder="Your Email" />*@
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @placeholder = "Your Email"
+                                   , type = "email", id = "e_format", name = "Email", oninput = "CheckMember(this.value)" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                    <span id="check"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                    @*<input type="password" name="pass" id="pass" placeholder="Password" />*@
+                                    @Html.PasswordFor(model => model.Password, new { @placeholder = "密碼", id = "test123", oninput = "CheckPassword(this.value)" })
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", id = "errorpass" })
+                                    <span style="color:darkgray" id="CheckPassword">密碼請輸入8-12碼,至少一個英文及數字</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                    @*<input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password" />*@
+                                    @Html.PasswordFor(model => model.Password, new { @placeholder = "再確認密碼", id = "test456", oninput = "NCheckPassword(this.value)" })
+                                    <span id="CheckPassword2"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="agreeterm" id="agree-term" class="agree-term" value="true" />
+                                    <label for="agree-term" class="label-agree-term"><span><span></span></span>我同意遵守  <a style="color:blue" onclick="hello()" href="#" class="term-service">個人資料蒐集聲明</a></label>
+                                </div>
+                                <span id="errorval" class="text-danger">@ViewBag.Message</span>
+                                <div class="form-group form-button">
+                                    <input type="button" name="signup" id="signup" class="form-submit" value="註冊" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="signup-image">
+                            <figure><img src="~/Content/Login/images/signup-image.jpg" alt="sing up image"></figure>
+                            @*<a href="#" class="signup-image-link">I am already member</a>*@
+                            @Html.ActionLink("我已有帳號", "Login", "Login", new { htmlAttributes = new { @class = "signup-image-link" }, style = "font-size:16px;" })
+                            @Html.ActionLink("商業註冊", "BussRegister", "Login", new { htmlAttributes = new { @class = "signup-image-link" }, style = "font-size:16px;" })
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-secondary" id="demouser">註冊DEMO</a>
+            </div>
+        </section>
+
+    </div>
+
+    <button id="ContextShow" type="button" class="btn btn-primary invisible position-absolute" data-toggle="modal" data-target="#exampleModalLong">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">個人資料蒐集聲明及服務條款</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <P>
+                        本公司非常重視您的隱私權，為維護您個人資料之安全性，謹遵循「個人資料保護法」（下稱個資法）規範，告知您相關權益，俾取得您同意本公司蒐集、處理及利用您所提供之個人資料：
+                    </P>
+                    <h3>一、蒐集目的：</h3>
+                    <p>
+                        本公司基於教育、諮詢與顧問服務，及其他經營合於營業登記項目或組織章程所定之業務，並為行銷、客戶管理、統計調查與分析、資訊與資料庫管理之目的，在個資法規範下蒐集、處理及利用您所提供之個人資料。
+                    </p>
+                    <h3>二、個人資料之類別：</h3>
+                    <ol>
+                        <li>基本資料（包括且不限於：姓名、身分證字號、住址、聯絡方式等）。</li>
+                        <li>個人特徵（包括且不限於：年齡、性別、出生年月日等）。</li>
+                        <li>教育相關資訊(包括且不限於：就讀學校、學習過程或考試紀錄等)。</li>
+                        <li>財務資訊(包括且不限於：信用卡或帳戶資訊等)。</li>
+                    </ol>
+
+                    <h3>三、個人資料利用之期間、地區、對象及方式：</h3>
+                    <ol>
+                        <li>於您使用本服務時，本公司將透過電子報、電子郵件、郵件、電話等方式，提供您相關資訊。</li>
+                        <li>將您所瀏覽之內容，依您個人屬性、購買紀錄或網站瀏覽紀錄等，進行個人化作業或使用服務分析、新服務之行銷、系統升級改進、產品(服務)研發、學術研究、客製化廣告、廣告效果評估及市場調查分析或改善現有服務等，並針對您於民調、活動、留言版等留存之意見，以及其他服務關連事項，與您進行聯繫。</li>
+                        <li>於您使用本服務時，網頁頁面中將自動顯示會員名稱，並提供內部及外部會員匿名研究或數據報告，以改進本公司的服務，滿足您對產品和服務的要求。</li>
+                        <li>因您使用本服務所提供之個人資料，本公司謹以上述目的、方式、範圍內為蒐集、儲存、處理、傳輸及使用，並供本公司於營運期間在中華民國境內，依法使用您的個人資料。</li>
+                    </ol>
+                    <h3>四、資料保密性與安全性：</h3>
+                    <p>本公司對於所屬員工存取您的個人資料有嚴格的規範，並符合法規要求，以保護您個人資料的安全。</p>
+                    <h3> 五、依個資法第3條規定得行使之權利及方式：</h3>
+                    <ol>
+                        <li>您使用本服務後，得向本公司請求查詢、閱覽、更正及刪除所留存之資料，倘您前述請求，致影響前述目的之執行，本公司得限制或終止您的會員資格，且本公司就您的查詢、閱覽或複製得請求支付必要成本費用。</li>
+                        <li>若您拒絕提供使用本服務所必須之資料，將可能導致無法使用本服務。</li>
+                    </ol>
+                    <h3> ※特別商議條款：</h3>
+                    <p>( 一 ) 為輔助本公司達成前條第(一)項之目的，本公司得將您因本服務所提供之個人資料，提供、揭露或轉介予所屬之關係企業或合作之第三人(包括且不限於經銷商)為蒐集、處理及利用；</p>
+                    <p>( 二 ) 為行銷、推介其他各項業務、產品(服務)等目的，提供、揭露或轉介予本公司之關係企業或合作之第三人為蒐集、處理及利用。</p>
+                    <p>
+                        註：如您為前二項同意後，仍得隨時以書面通知本公司停止提供、揭露或轉介您之個人資料。
+                        （三）如您不同意上述條款，將影響您即時取得輔助本公司達成前條第(一)項目的之關係企業或合作之第三人，為您提供與本服務相關之一切資訊；或影響您取得本公司之關係企業或合作之第三人為行銷、推介其他各項業務、產品(服務)。
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>function hello() {
+        $("#ContextShow").click();
+    }
+    $("#demouser").click(function () {
+        $("#e_format").val("iticketshopping1@gmail.com");
+        $("#test123").val("zz010203");
+        $("#test456").val("zz010203");
+        CheckMember("iticketshopping1@gmail.com");
+        CheckPassword();
+        NCheckPassword();
+    });</script>
+
+
+
+    <script>
+    $("#signup").click(function () {
+        if ($("#test123").val() != $("#test456").val()) {
+            $("#errorval").html("密碼不一樣").css('color', 'red');
+
+        }
+        else if ($("#test123").val() == "" || $("#test456").val() == "") {
+            $("#errorval").html("請輸入密碼").css('color', 'red');
+        }
+        else if (!$("#agree-term").prop("checked")) {
+            $("#errorval").html("請勾選同意").css('color', 'red');
+        }
+        else if (!$("#CheckPassword").html().includes("\u2705")) {
+            $("#errorval").html("欄位輸入不正確請在檢查").css('color', 'red');
+        }
+        else {
+            swal({
+                title: "註冊成功，請去信箱進行信箱驗證!",
+                text: "請點擊",
+                icon: "success",
+                button: { className: "btn-outline-light", text: "確定" },closeOnClickOutside:false,closeOnEsc:false,
+            }).then(x => {
+                if (x) { $("#register-form").submit(); }
+
+        });
+
+
+
+        }
+    });
+     function CheckMember(Email)
+    {
+        $.ajax({
+            type: 'GET',
+            url:`@Url.Action("IsHasMember")?Email=${Email}`,
+            success: function (result)
+            {
+                if (result == "\u2705 可以使用此帳號") {
+                    $("#check").css('color', 'green')
+                }
+                else {
+                    $("#check").css('color', 'black')
+                }
+                $("#check").html(result);
+            }
+        });
+
+    }
+
+      function CheckPassword(password)
+      {
+          if ($("#errorpass").val() != null) {
+              $("#CheckPassword").empty();
+          }
+          if (/^(?=.*[a-zA-Z])(?=.*\d).{8,12}$/.test($("#test123").val())) {
+              $("#CheckPassword").html("\u2705 密碼格式正確").css('color', 'green');
+          }
+          else {
+              $("#CheckPassword").html("請輸入8-12碼,至少一個英文及數字").css('color', 'red');
+          }
+        @*$.ajax({
+            type: 'GET',
+            url:`@Url.Action("IsPassword")?password=${password}`,
+            success: function (result)
+            {
+
+                if (result == "\u2705 密碼格式正確") {
+                    $("#CheckPassword").css('color', 'green')
+                }
+                else {
+                    $("#CheckPassword").css('color', 'red')
+                }
+                $("#CheckPassword").html(result);
+
+
+
+            }
+            });*@
+
+    }
+    function NCheckPassword(password)
+    {
+        if ($("#test123").val() != $("#test456").val()) {
+            $("#CheckPassword2").html("密碼不一樣").css('color', 'red');
+
+        }
+        else
+        {
+            $("#CheckPassword2").html("\u2705 重複輸入密碼正確").css('color', 'green');
+        }
+    }
+
+
+    </script>
+    <script type="text/javascript" color="255,0,0" opacity='1' zIndex="-10" count="76" src="~/Content/Login/functionJS/dist/canvas-nest.js"></script>

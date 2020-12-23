@@ -1,0 +1,363 @@
+﻿@using BackEnd
+@using prjITicket.ViewModel
+@model prjITicket.ViewModel.CBackEndActivityDetailModel
+
+@{
+    Layout = "~/Views/Shared/_BackEndLayoutPage.cshtml";
+
+    ViewBag.Title = "ActivityDetail";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+@{
+    if (Model.Detail.StatusID == 0)
+    {
+        <h1 class="mt-4">活動審核</h1>
+    }
+    else
+    {
+        <h1 class="mt-4">活動檢視</h1>
+    }
+}
+<input id="hiddenActivityID" type="hidden" value="@Html.DisplayFor(model => model.Detail.ActivityID)">
+<input id="hiddenActivityName" type="hidden" value="@Html.DisplayFor(model => model.Detail.ActivityName)">
+<input id="hiddenStatusID" type="hidden" value="@Html.DisplayFor(model => model.Detail.StatusID)">
+<input id="hiddenSellerID" type="hidden" value="@Html.DisplayFor(model => model.Detail.SellerID)" />
+
+<h1 class="mt-4"></h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("BackEndIndex","BackEndMain")">後台</a></li>
+    <li class="breadcrumb-item active">
+        <a href="@Url.Action("ActivityMaintain", "BackEndActivity")">活動列表</a>
+    </li>
+    @{
+        if (Model.Detail.StatusID == 0)
+        {
+            <li class="breadcrumb-item active">活動審核</li>
+        }
+        else
+        {
+            <li class="breadcrumb-item active">活動檢視</li>
+
+        }
+    }
+</ol>
+
+
+<div class="container-fluid">
+    <div class="card mb-4">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="ActivityDetailTable" style="width:100%;font-size:14px" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td>活動代碼</td>
+                        <td style="width:80%" id="idActivityID" colspan="2">
+                            @Html.DisplayFor(model => model.Detail.ActivityID)
+                        </td>
+                    </tr>
+                    <tr id="idCompanyName">
+                        <td>商家名稱</td>
+                        <td style="width:80%" colspan="2">
+                            @Html.DisplayFor(model => model.Detail.CompanyName)
+                        </td>
+                    </tr>
+                    <tr id="idActivityName">
+                        <td>活動名稱</td>
+                        <td style="width:80%" colspan="2">
+                            @Html.DisplayFor(model => model.Detail.ActivityName)
+                        </td>
+                    </tr>
+                    <tr id="idActivityAddress">
+                        <td>活動地點</td>
+                        <td style="width:80%" colspan="2">
+                            @Html.DisplayFor(model => model.Detail.ActivityAddress)
+                        </td>
+                    </tr>
+                    <tr id="idActivityTicketTime">
+                        <td>活動場次時間</td>
+                        <td style="width:80%;overflow : auto" colspan="2">
+                            <div style="max-height:190px;overflow : auto">
+                                @{
+                                    foreach (var t in Model.ActivityTimes)
+                                    {
+
+                                        <div>
+                                            @t.Tickettime.ToString("yyyy/MM/dd(ddd) HH:mm")
+                                            <hr />
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="idActivityHostword">
+                        <td>活動簡介</td>
+                        <td style="width:80%" colspan="2">
+                            @Html.DisplayFor(model => model.Detail.ActivityHost)
+                        </td>
+                    </tr>
+                    <tr id="idActivityDescription">
+                        <td>活動描述</td>
+                        <td style="width:80%;" colspan="2">
+                            <div style="max-height:190px;overflow : auto">
+                                @Html.DisplayFor(model => model.Detail.ActivityDescription)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="idActivirtyInfo">
+                        <td>活動資訊</td>
+                        <td style="width:80%" colspan="2">
+                            <div style="max-height:300px;overflow : auto">
+                                <div style="word-break:normal;"> @Html.Raw(@Model.Detail.ActivityInfo) </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @{
+                        if (!string.IsNullOrEmpty(Model.Detail.ActivityPicture))
+                        {
+
+                            <tr id="idActivityPicture">
+                                <td> 活動圖片 </td>
+                                <td style="colspan=" 2">
+                                    <img src="~/images/Activity/@Html.DisplayFor(model => model.Detail.ActivityPicture)" style="width:80%" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                    @{
+                        //Switcher
+                        if (Model.Detail.StatusID == 0)
+                        {
+                            <tr id="trActivityStatus">
+                                <td>活動審核</td>
+                                <td style="width:80%">
+                                    <div>
+                                        <div class="mid" style="position:relative">
+                                            <label class="rocker rocker-small">
+                                                <input type="checkbox" id="switcher" checked>
+                                                <span class="switch-left" id="idSwitcherYes">Yes</span>
+                                                <span class="switch-right" id="idSwitcherNo">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>活動狀態</td>
+                                <td style="width:80%">
+                                    @Model.Detail.StatusName
+                                </td>
+                            </tr>
+                        }
+                    }
+                    <tr id="idtrHidden" style="display: none;">
+                        <td>
+                            審核未通過原因
+                            <button type="button" id="iddemo" class="btn btn-outline-light">Demo</button>
+                        </td>
+                        <td>
+                            @{
+                                foreach (var r in Model.FailedReason)
+                                {
+                                    <div class="form-check clsDivReason">
+                                        <input class="form-check-input clsFailedReason" type="checkbox" name="@r.FailedReasonID" id="idckbox_@r.FailedReasonID" value="@r.FailedReason">
+                                        <label class="form-check-label" for="idckbox_@r.FailedReasonID">@r.FailedReason</label>
+                                        <textarea class="form-control clsFailedMessage" rows="2" style="margin-top:5px ; display:none ; font-size:14px ; font-family:微軟正黑體" id="idtext_@r.FailedReasonID"></textarea>
+                                    </div>
+                                }
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <center>
+                    @{
+                        if (Model.Detail.StatusID == 0)
+                        {
+                            <a class="btn btn-secondary" href="/BackEndActivity/ActivityMaintain">返回</a>
+                            <button class="btn btn-info" onclick="EditData()">送出</button>
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary" href="/BackEndActivity/ActivityMaintain">返回</a>
+                        }
+                    }
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function EditData() {
+
+        const btnCheck = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary ',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        if ($("#switcher").prop("checked")) {
+            btnCheck.fire({
+                title: '是否確定要審核通過?',
+                text: "提醒：審核通過活動即上架",
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '再想想',
+                confirmButtonText: '是',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //點擊"是"的BUTTON
+                    $.ajax({
+                        url: `/api/WebApi/updateActivtyStatus`,
+                        type: "PUT",
+                        data: {
+                            ActivityID: $("#hiddenActivityID").val(),
+                            StatusID: 1
+                        },
+                        success: function (data) {
+                            //跳出修改成功的訊息
+                            btnCheck.fire(
+                                '審核通過',
+                                '活動已審核通過並上架',
+                                'success'
+                            ).then((result2) => {
+                                if (result2.isConfirmed) {
+                                    location.href = "/BackEndActivity/ActivityMaintain";
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            //alert(xhr);
+                            btnCheck.fire(
+                                'Error',
+                                xhr,
+                                'error'
+                            )
+                        }
+                    });
+
+                }
+            })
+        }
+
+        else {
+            //Switcher切換到no
+
+            //設定為true通過
+            let flag = false;
+
+            $(".clsFailedReason").each(function () {
+                if ($(this).prop("checked")) {
+                    //有勾checkbox
+                    flag = true;
+
+                    if ($(this).next().next().val() == "") {
+                        flag = false;
+                        return false;
+                    }
+                }
+
+            })
+
+            if (!flag) {
+                Swal.fire({
+                    title: '必須選擇並填寫審核未通過的原因',
+                    text: "沒有填寫原因商家會不知道要改什麼",
+                    icon: 'warning',
+                    confirmButtonText: '好吧'
+                })
+                return;
+            }
+
+            btnCheck.fire({
+                title: '是否確定審核未通過?',
+                text: "提醒：審核未通過活動不會上架",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '是',
+                cancelButtonText: '我再看一下',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //點擊"是"的BUTTON
+                    $.ajax({
+                        url: `/api/WebApi/updateNoPassMessage`,
+                        type: "Post",
+                        data: {
+                            SellerID: $("#hiddenSellerID").val(),
+                            Message: "【活動名稱：" + $("#hiddenActivityName").val() + "】- "
+                                + $(".clsFailedReason").map(function () {
+                                    return $(this).prop("checked") ? "[" + $(this).val() + "]" + $(this).next().next().val() : null;
+                                }).get().join("  ")
+                        },
+                        success: function (data) {
+                            //跳出審核未通過的訊息
+                            btnCheck.fire(
+                                '已通知商家',
+                                '活動審核未通過並已通知商家',
+                                'success'
+                            ).then((result2) => {
+                                if (result2.isConfirmed) {
+                                    location.href = "/BackEndActivity/ActivityMaintain";
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            btnCheck.fire(
+                                'Error',
+                                xhr,
+                                'error'
+                            )
+                        }
+                    });
+
+                }
+            })
+        }
+
+    }
+
+</script>
+<script>
+
+    $("#switcher").click(function () {
+        if ($("#switcher").prop("checked")) {
+            $("#idtrHidden").css("display", "none")
+        } else {
+            $("#idtrHidden").css("display", "table-row")
+        }
+    })
+
+
+    $(".clsFailedReason").map(function () {
+        $(this).click(function () {
+
+            if ($(this).prop("checked")) {
+                $(this).next().next().show();
+            } else {
+                $(this).next().next().css("display", "none")
+            }
+        })
+
+    })
+
+    $("#iddemo").click(function () {
+        $("#idckbox_5").prop("checked", true)
+        $("#idtext_5").show()
+        $("#idtext_5").val("活動資訊不完整")
+
+        $("#idckbox_7").prop("checked", true)
+        $("#idtext_7").show()
+        $("#idtext_7").val("圖片解析度太低")
+    })
+</script>
+

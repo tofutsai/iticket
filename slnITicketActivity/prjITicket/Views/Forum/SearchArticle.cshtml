@@ -1,0 +1,199 @@
+﻿@model prjITicket.ViewModel.VMforum_mainblock
+@using prjITicket.Models
+@{ int count = 0;
+    Member member = Session[CDictionary.SK_Logined_Member] as Member;
+    @functions{
+        public static string RemoveHtml(String html)
+        {
+            string text = System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", "");
+            text = System.Text.RegularExpressions.Regex.Replace(text, "&[^;]+;", "");
+            return text;
+        }
+        int count = 0;
+        string TitleResult = "";
+    }}
+@{
+    if (Model.ArticleCategoryID != 0)
+    {
+        TitleResult += $"{Model.ArticleCategories.Where(n => n.ArticleCategoryID == Model.ArticleCategoryID).FirstOrDefault().ArticleCategoryName}";
+    }
+    if (!string.IsNullOrEmpty(Model.editor))
+    {
+        TitleResult += $"由{Model.editor}寫的文章";
+
+    }
+        <h1 class="my-4">
+            @(TitleResult)
+            <small>第@(Model.page + 1)頁</small>
+        </h1>
+    if (!string.IsNullOrEmpty(Model.searchWord))
+    {
+        <h4 class="my-4">
+            @(Model.searchWord) 的搜尋結果
+        </h4>
+    }
+}
+<hr />
+
+@foreach (var item in Model.Article.Take(4))
+{
+
+    <div class="row">
+        <div class="col-xl-1" style="height:auto"></div>
+        <div class="col-xl-5 col-lg-6 col-md-10 showReaded" style="position:relative">
+            @if (member != null && member.MemberID == item.MemberID)
+            {
+                <div class="readedhide" style="background-color:black; color:aliceblue; position:absolute;left:4%;top:3%;border-radius:6px;height:26px;width:auto;padding:0px 4px">💌@(item.Reply.Where(n => n.ArticleID == item.ArticleID && n.Readed == false).Count())</div>
+            }
+            <a href="~/Forum/forum_content/?articleID=@item.ArticleID"><img id="img@(count)" class="img-fluid rounded mb-3 mb-md-0" style="width:600px;" src="@item.Picture" alt="" onerror="this.src='/Content/Forum_use/ImageStore/404Error.jpg'"></a>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-10">
+
+            <h3 style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;white-space: normal;">@Html.ActionLink(string.IsNullOrEmpty(item.ArticleTitle) ? "沒有標題" : item.ArticleTitle, "forum_content", "Forum", new { articleID = item.ArticleID }, null)</h3>
+            <div style="font-size:12px;color:darkgray">
+                <span style="margin-right:14px;">作者：@(item.Member.NickName)</span> 發文時間：@(item.Date)
+            </div>
+            <p id="content" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;white-space: normal;">
+                @RemoveHtml(item.ArticleContent)
+            </p>
+            @Html.ActionLink("更多", "forum_content", "Forum", new { articleID = item.ArticleID }, new { @class = "btn btn-primary" })
+            @if (member != null && (member.MemberRoleId == 4 || item.MemberID == member.MemberID))
+            {
+                @Html.ActionLink(" 刪除 ", "Delete", "Forum", new { articleID = item.ArticleID }, new { @class = "btn btn-danger" })
+            }
+            @if (member != null && (member.MemberRoleId == 4 || item.MemberID == member.MemberID))
+            {
+                @Html.ActionLink(" 編輯 ", "Edit_article", "Forum", new { articleID = item.ArticleID }, new { @class = "btn btn-warning" })
+
+            }
+        </div>
+    </div>
+
+    <hr>
+    count++;
+}
+<!-- Pagination -->
+<ul class="pagination justify-content-center">
+    @for (int i = 0; i <= Model.maxpage; i++)
+    {
+        <li class="page-item">
+            <a class="page-link" id="Page" name="@i" href="#" onclick="SearchArticle(this)">@(i + 1)</a>
+        </li>
+
+    }
+
+
+</ul>
+<script>
+       function before_edit_article() {
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("before_Edit_article")",
+            success: function (result) {
+                 if (result == "未登入") {
+                    swal({
+                        title: "權限不足",
+                        text: "尚未登入或帳號尚未驗證，即將跳轉至登入頁面",
+                        timer: 1500,
+                        type: "error",
+                        showConfirmButton: false
+                    }
+                    );
+                    setTimeout(function () {
+                        window.location.href = '@Url.Action("Login", "Login")'
+                    },2000)
+
+
+                        }
+
+                else if (result == "被停權") {
+                    swal("您不能發文", "您已被停權", "warning");
+                }
+                else {
+                    window.location.href = '@Url.Action("Edit_article", "Forum", null)'
+                }
+            }
+        })
+    }
+    function SearchArticle(ID) {
+        var area1 = 1;
+        var area2 = 1;
+        var area3 = 1;
+        if ($("#Editor").prop("checked")) {
+            area1 = 2;
+        }
+        if ($("#Title").prop("checked")) {
+            area2 = 3;
+        }
+        if ($("#Content").prop("checked")) {
+            area3 = 5;
+        }
+        var searchType = area1 * area2 * area3;
+        var change = null;
+        if (ID) {
+            change = ID.id;
+        }
+        var CategoryID = @Model.ArticleCategoryID;
+           var searchText = $("#searchWord").val();
+           var list = "@Model.list";
+        var editor = "@Model.editor";
+        var Page = @Model.page;
+        
+        if (change == "Page") {
+            change = ID.getAttribute("name");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: CategoryID, searchType: searchType, list: list, Page: change, editor: editor },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+        else if (change == "editor") {
+            change = ID.getAttribute("name");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: CategoryID, searchType: searchType, list: list, Page: 0, editor: change },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+        else if (change == "category") {
+            change = ID.getAttribute("name");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: change, searchType: searchType, list: list, Page: 0, editor: editor },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+        else if (change == "list") {
+            change = ID.getAttribute("name");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: CategoryID, searchType: searchType, list: change, Page: 0, editor: editor },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+        else {
+             $.ajax({
+                type: "post",
+                url: "@Url.Action("SearchArticle")",
+                data: { searchText: searchText, CategoryID: CategoryID, searchType: searchType, list: list, Page: 0, editor: editor },
+                success: function (result) {
+                    $("#contentList").empty().html(result)
+                }
+            })
+        }
+    }
+   
+   
+</script>
